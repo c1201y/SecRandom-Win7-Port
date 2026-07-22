@@ -1,0 +1,29 @@
+name: Pre-commit
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Install Python 3.8.10
+        run: uv python install 3.8.10
+
+      - name: set uv venv
+        run: uv venv
+      - name: Install pre-commit with uv
+        run: uv pip install pre-commit
+
+      - name: Run pre-commit on all files
+        run: uv run pre-commit run --all-files

@@ -1,0 +1,117 @@
+[project]
+name = "secrandom"
+version = "1.1.0"
+description = "公平随机抽取系统 - Modern educational tool with intelligent weighting algorithm (Win7 Compatible)"
+readme = "README.md"
+requires-python = ">=3.8,<3.13"
+
+dependencies = [
+    # === UI / 界面 ===
+    "PySide2-Fluent-Widgets>=1.0.0",
+    "PySide2>=5.15.0,<5.16",
+    "pyside2-frameless-window>=0.8.0",
+    "darkdetect>=0.3.0",
+    # === 核心/日志/工具 ===
+    # 注意：`asyncio` 为标准库，通常不应列在依赖中；已注释以提示移除
+    # "asyncio~=4.0.0",
+    "loguru~=0.5.3",
+    "colorama~=0.4.6",
+    "packaging",
+    "pyyaml>=5.4.1",
+    "pypinyin>=0.41.0",
+    "sentry-sdk>=0.14.0",
+    # === 数据处理 / 图像 / 文件 ===
+    "numpy>=1.19.0,<2.0.0",
+    "pandas>=1.2.0,<2.0.0",
+    "pillow>=8.0.0",
+    "openpyxl>=3.0.0",
+    "xlrd>=2.0.1",
+    "imageio>=2.8.0",
+    "opencv-python>=4.5.0,<4.9.0",
+    "qrcode>=7.3.0",
+    "pyqrcode~=1.2.1",
+    "pypng~=0.20220715.0",
+    "colorthief>=0.2.0",
+    # === 网络 / TTS 服务 ===
+    "requests>=2.25.0",
+    "aiohttp>=3.8.0",
+    "edge-tts>=6.0.0",
+    # === 音频 / TTS 本地 ===
+    "pyttsx3~=2.90",
+    "sounddevice>=0.4.0",
+    "soundfile>=0.10.0",
+    # === 系统 / 工具 ===
+    "psutil",
+    "keyboard",
+    # === 安全 / 加密 ===
+    "pyotp>=2.6.0",
+    "pycryptodome>=3.10.0",
+    # === 平台（Windows） ===
+    "pywin32; platform_system=='Windows'",
+    "win32_setctime~=1.0.0; platform_system == 'Windows'",
+    "winshell~=0.6; platform_system == 'Windows'",
+    "comtypes>=1.1.0",
+    "wmi>=1.4.9; platform_system == 'Windows'",
+    "pycaw>=20181226; platform_system == 'Windows'",
+    # === 平台（Linux） ===
+    "pulsectl>=21.5.8; platform_system == 'Linux'",
+    # === 通知工具 ===
+    "plyer>=2.0.0",
+    # === 构建 / 打包 / 模板 / 开发时工具 ===
+    "sip",
+    "jinja2~=3.1.6",
+    "pyinstaller>=5.0.0",
+    "nuitka>=2.8.6",
+    "pre-commit>=2.0.0",
+    "pythonnet>=2.5.2,<3.0.0",
+    "posthog>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=6.0", "black", "flake8"]
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# 添加这个配置告诉 setuptools 不要尝试自动发现包
+[tool.setuptools]
+py-modules = []
+
+[[tool.uv.index]]
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true
+
+[dependency-groups]
+dev = [
+    "pytest>=6.0",
+    "black",
+    "flake8",
+    "pyright>=1.1.407",
+    "pre-commit>=3.5.0",
+    "ruff>=0.14.3",
+    "tomlkit>=0.13.3",
+    "mypy>=1.19.0",
+    "netstandard-stubs>=2.0.1",
+]
+
+[tool.ruff]
+
+[tool.ruff.lint]
+# 忽略特定错误/警告（例如 F405: "name may be undefined, or defined from star imports"）
+ignore = [
+    "F405",
+    "E722",
+    "E501",
+    "B012",
+    "F403",
+    "C901",
+    "B007",
+    "F841",
+    "C416",
+    "C414",
+    "E402",
+]
+# 可选：关闭某些规则或配置
+extend-ignore = []
+select = ["E", "F", "W", "C", "B", "B9"]

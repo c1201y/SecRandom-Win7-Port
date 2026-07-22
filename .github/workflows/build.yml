@@ -1,0 +1,80 @@
+name: Build (Nuitka)
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "版本号 (e.g. v2.3.10)"
+        required: true
+        type: string
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13.5"
+
+      - name: Determine version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            V="${{ github.event.inputs.version }}"
+          else
+            V="${{ github.ref_name }}"
+          fi
+          PLAIN="${V#v}"
+          echo "version=$V" >> $GITHUB_OUTPUT
+          echo "plain=$PLAIN" >> $GITHUB_OUTPUT
+          echo "Version: $V"
+
+      - name: Update version in source
+        run: uv run python update_version.py
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+
+      - name: Build with Nuitka
+        run: uv run python build_nuitka.py
+        env:
+          CI: "true"
+
+      - name: Copy language modules
+        shell: pwsh
+        run: |
+          $dst = "dist/main.dist/app/Language/modules"
+          New-Item -ItemType Directory -Force -Path $dst | Out-Null
+          Copy-Item -Path "app/Language/modules/*.py" -Destination $dst -Force
+
+      - name: Pack
+        shell: pwsh
+        run: |
+          $name = "SecRandom-${{ steps.version.outputs.plain }}-${{ matrix.platform }}-x64"
+          Rename-Item -Path dist/main.dist -NewName $name
+          Compress-Archive -Path $name -DestinationPath "$name.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SecRandom-${{ steps.version.outputs.plain }}-${{ matrix.platform }}-x64
+          path: SecRandom-${{ steps.version.outputs.plain }}-${{ matrix.platform }}-x64/
+
+      - name: Create release (tag only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.version.outputs.version }}
+          draft: true
+          files: |
+            SecRandom-${{ steps.version.outputs.plain }}-${{ matrix.platform }}-x64.zip
