@@ -3,7 +3,7 @@ name = "secrandom"
 version = "2.3.100"
 description = "公平随机抽取系统 - Modern educational tool with intelligent weighting algorithm (Win7 Compatible)"
 readme = "README.md"
-requires-python = ">=3.8,<3.13"
+requires-python = ">=3.8,<3.14"
 
 dependencies = [
     # === UI / 界面 ===
