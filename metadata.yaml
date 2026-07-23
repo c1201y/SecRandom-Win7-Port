@@ -1,0 +1,17 @@
+latest:
+  release: v2.3.100
+  beta: v2.3.100
+  alpha: v2.3.100
+
+latest_no:
+  release: 2
+  beta: 2
+  alpha: 2
+
+subchannels:
+  system:
+    - windows
+  arch:
+    - x64
+
+name_format: SecRandom-Windows-Setup-[version]-[arch].exe
