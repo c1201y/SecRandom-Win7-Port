@@ -11,7 +11,7 @@ from datetime import datetime
 APPLY_NAME = "SecRandom"  # 软件名称
 VERSION = "v2.3.100"  # 软件当前版本
 NEXT_VERSION = "v2.3.100"  # 软件下一个版本
-CODENAME = "Shiroko"  # 软件代号
+CODENAME = "SecRandom"  # 软件代号
 SPECIAL_VERSION = VERSION if VERSION != "v0.0.0" else NEXT_VERSION
 
 
@@ -70,8 +70,8 @@ STRUCT = (
 )
 INITIAL_AUTHORING_YEAR = 2025  # 软件发布年份
 CURRENT_YEAR = datetime.now().year  # 软件当前年份
-AUTHOR = "lzy98276"  # 软件作者
-COPYRIGHT_HOLDER = "SECTL"
+AUTHOR = "c1201y"  # 软件作者
+COPYRIGHT_HOLDER = "椰汁"
 APP_DESCRIPTION = (
     "一个易用的点名/抽奖软件，专为教育场景设计，让课堂点名更高效透明！"  # 软件描述
 )
@@ -79,14 +79,14 @@ APP_COPYRIGHT = (
     f"Copyright © {INITIAL_AUTHORING_YEAR} {COPYRIGHT_HOLDER}"  # 软件版权信息
 )
 APP_LICENSE = "GPL-3.0 License"  # 软件许可证
-APP_EMAIL = "lzy98276@sectl.com"  # 软件作者邮箱
+APP_EMAIL = "c1201y@132614.xyz"  # 软件作者邮箱
 
 # -------------------- 联系与链接信息 --------------------
-GITHUB_WEB = "https://github.com/SECTL/SecRandom"  # 软件GitHub仓库
-BILIBILI_WEB = "https://space.bilibili.com/520571577"  # 软件作者Bilibili空间
-WEBSITE = "https://secrandom.sectl.top"  # 软件官方网站
-SECTL_WEBDITE = "https://sectl.top"  # 软件所属组织网站
-DONATION_URL = "https://afdian.com/a/lzy0983"  # 捐赠链接
+GITHUB_WEB = "https://github.com/c1201y/SecRandom-Win7-Port"  # 软件GitHub仓库
+BILIBILI_WEB = "https://space.bilibili.com/3546609547741581"  # 软件作者Bilibili空间
+WEBSITE = "https://home.132614.xyz"  # 软件官方网站
+SECTL_WEBDITE = "https://home.132614.xyz"  # 软件所属组织网站
+DONATION_URL = ""  # 捐赠链接（已移除）
 
 
 # ==================================================

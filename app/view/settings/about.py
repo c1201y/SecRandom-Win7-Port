@@ -194,13 +194,6 @@ class about_info(GroupHeaderCardWidget):
         )
         self.contributor_button.clicked.connect(self.show_contributors)
 
-        # 创建捐赠支持按钮
-        self.donation_button = PushButton(get_content_name_async("about", "donation"))
-        self.donation_button.setIcon(
-            get_theme_icon("ic_fluent_document_person_20_filled")
-        )
-        self.donation_button.clicked.connect(self.open_donation_url)
-
         self.addGroup(
             get_theme_icon("ic_fluent_branch_fork_link_20_filled"),
             get_content_name_async("about", "bilibili"),
@@ -218,12 +211,6 @@ class about_info(GroupHeaderCardWidget):
             get_content_name_async("about", "contributor"),
             get_content_description_async("about", "contributor"),
             self.contributor_button,
-        )
-        self.addGroup(
-            get_theme_icon("ic_fluent_document_person_20_filled"),
-            get_content_name_async("about", "donation"),
-            get_content_description_async("about", "donation"),
-            self.donation_button,
         )
         self.addGroup(
             get_theme_icon("ic_fluent_class_20_filled"),
@@ -287,10 +274,6 @@ class about_info(GroupHeaderCardWidget):
     def show_contributors(self):
         """显示贡献人员"""
         create_contributor_window()
-
-    def open_donation_url(self):
-        """打开捐赠链接"""
-        QDesktopServices.openUrl(QUrl(DONATION_URL))
 
     def _create_button_with_icon(self, button, icon_dir, icon_name):
         """创建带图标的按钮容器"""
