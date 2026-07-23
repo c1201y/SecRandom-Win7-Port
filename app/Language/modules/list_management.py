@@ -25,7 +25,6 @@ list_management = {
             "name": "点呼リスト",
             "description": "点呼用学生リストを管理",
         },
-        "lottery_list": {"name": "抽選リスト", "description": "抽選用賞品リストを管理"},
     },
 }
 

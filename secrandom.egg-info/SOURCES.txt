@@ -1,0 +1,8 @@
+LICENSE
+README.md
+pyproject.toml
+secrandom.egg-info/PKG-INFO
+secrandom.egg-info/SOURCES.txt
+secrandom.egg-info/dependency_links.txt
+secrandom.egg-info/requires.txt
+secrandom.egg-info/top_level.txt

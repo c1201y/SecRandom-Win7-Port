@@ -78,8 +78,31 @@ class about_banner(QWidget):
         # 使图片居中
         self.vBoxLayout.addWidget(self.banner_image, 0, Qt.AlignmentFlag.AlignCenter)
 
-        # 连接点击事件
-        self.banner_image.mousePressEvent = self._on_banner_clicked
+        # 安装事件过滤器（PySide2 实例属性覆写虚函数不可靠）
+        self.banner_image.installEventFilter(self)
+        self.banner_image.setCursor(Qt.CursorShape.PointingHandCursor)
+
+    def eventFilter(self, obj, event):
+        if obj is self.banner_image and event.type() == QEvent.Type.MouseButtonPress:
+            self.click_count += 1
+            self._save_click_count(self.click_count)
+            remaining = max(0, 10 - self.click_count)
+            if remaining > 0:
+                InfoBar.info(
+                    title=f"彩蛋进度 {self.click_count}/10",
+                    content=f"再点击 {remaining} 次解锁内幕设置",
+                    duration=1500,
+                    parent=self,
+                )
+            else:
+                InfoBar.success(
+                    title="已解锁！",
+                    content="请前往 设置 → 更多设置 查看",
+                    duration=3000,
+                    parent=self,
+                )
+            return True
+        return super().eventFilter(obj, event)
 
     def _load_click_count(self):
         """加载横幅点击次数"""
@@ -98,11 +121,6 @@ class about_banner(QWidget):
             write_behind_scenes_settings(data)
         except Exception as e:
             logger.exception(f"保存横幅点击次数失败: {e}")
-
-    def _on_banner_clicked(self, event):
-        """横幅点击事件"""
-        self.click_count += 1
-        self._save_click_count(self.click_count)
 
 
 # ==================================================
