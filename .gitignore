@@ -208,3 +208,7 @@ cython_debug/
 
 # ONNX face detection models (LFS, download separately)
 /data/cv_models
+
+# Build metadata
+*.egg-info/
+secrandom.egg-info

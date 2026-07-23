@@ -96,11 +96,16 @@ def collect_view_modules() -> List[str]:
 def collect_data_includes() -> List[DataInclude]:
     includes: List[DataInclude] = []
     if DATA_DIR.exists():
-        includes.append(DataInclude(DATA_DIR, "data", is_dir=True))
+        for root, dirs, files in os.walk(DATA_DIR):
+            for file in files:
+                src = Path(root) / file
+                rel = src.relative_to(PROJECT_ROOT)
+                includes.append(DataInclude(src, str(rel.parent), is_dir=False))
     if LANGUAGE_MODULES_DIR.exists():
-        includes.append(
-            DataInclude(LANGUAGE_MODULES_DIR, "app/Language/modules", is_dir=True)
-        )
+        for file in LANGUAGE_MODULES_DIR.glob("*.py"):
+            includes.append(
+                DataInclude(file, "app/Language/modules", is_dir=False)
+            )
     if LICENSE_FILE.exists():
         includes.append(DataInclude(LICENSE_FILE, ".", is_dir=False))
     return includes

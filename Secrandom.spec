@@ -1,9 +1,14 @@
 """PyInstaller spec leveraging shared packaging utilities."""
 
+import shutil
+from pathlib import Path
+
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs
 
 from packaging_utils import (
     ADDITIONAL_HIDDEN_IMPORTS,
+    PROJECT_ROOT,
+    DATA_DIR,
     collect_data_includes,
     collect_language_modules,
     collect_view_modules,
@@ -46,9 +51,8 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
     [],
+    exclude_binaries=True,
     name="SecRandom",
     debug=False,
     bootloader_ignore_signals=False,
@@ -64,3 +68,24 @@ exe = EXE(
     entitlements_file=None,
     icon="data\\assets\\icon\\secrandom-icon-paper.ico",
 )
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name="SecRandom",
+)
+
+# =====================================================
+# 后处理：将 data 目录（静态资源）复制到 exe 同级目录
+# 应用运行时从 sys.executable.parent 读取数据文件
+# =====================================================
+DIST_DIR = Path(SPEC).parent / "dist" / "SecRandom"
+for item in [DATA_DIR]:
+    target = DIST_DIR / item.name
+    if not target.exists():
+        print(f"Copying {item} -> {target}")
+        shutil.copytree(item, target, symlinks=False, dirs_exist_ok=True)
