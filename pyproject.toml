@@ -97,6 +97,9 @@ dev = [
 
 [tool.ruff]
 
+[tool.uv]
+environments = ["sys_platform == 'win32'"]
+
 [tool.ruff.lint]
 # 忽略特定错误/警告（例如 F405: "name may be undefined, or defined from star imports"）
 ignore = [
