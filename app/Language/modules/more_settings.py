@@ -102,27 +102,10 @@ about = {
         "github": {"name": "Github", "description": "访问项目代码仓库"},
         "bilibili": {
             "name": "Bilibili",
-            "description": "访问黎泽懿_Aionflux的Bilibili账号",
-        },
-        "contributor": {
-            "name": "贡献人员",
-            "description": "点击查看详细贡献者信息",
-            "contributor_role_1": "设计、创意、策划\n维护、文档、测试",
-            "contributor_role_2": "性能",
-            "contributor_role_3": "响应式前端页面\n设计及维护、文档",
-            "contributor_role_4": "创意、文档",
-            "contributor_role_5": "创意",
-            "contributor_role_6": "安装包制作",
-            "contributor_role_7": "响应式前端页面\n设计及维护、文档",
-            "contributor_role_10": "ClassIsland 插件\nClassIsland 联动",
-            "contributor_role_11": "日志",
+            "description": "访问椰汁的哔哩哔哩账户",
         },
         "donation": {"name": "捐赠支持", "description": "支持项目发展，感谢您的捐赠"},
         "website": {"name": "SecRandom 官网", "description": "访问SecRandom软件官网"},
-        "organization_website": {
-            "name": "SECTL 组织主站",
-            "description": "访问 SECTL 组织官网",
-        },
         "copyright": {"name": "版权", "description": "SecRandom遵循GPL-3.0协议"},
         "version": {"name": "版本", "description": "显示当前软件版本号"},
         "online_count": {"name": "当前在线", "description": "当前在线用户数量"},
@@ -144,19 +127,7 @@ about = {
         "github": {"name": "GitHub", "description": "Visit project repository"},
         "bilibili": {
             "name": "Bilibili",
-            "description": "Visit 黎泽懿_Aionflux's Bilibili account",
-        },
-        "contributor": {
-            "name": "Contributors",
-            "description": "Click to show full contributor information",
-            "contributor_role_1": "Design & Creativity & Test &\nMaintenance & Documentation",
-            "contributor_role_2": "Maintenance",
-            "contributor_role_3": "Responsive frontend page Design and Maintenance & Documentation",
-            "contributor_role_4": "Creativity & Documentation",
-            "contributor_role_5": "Creativity & Maintenance",
-            "contributor_role_6": "Test & Documentation & Install Package Making",
-            "contributor_role_7": "Responsive frontend page Design and Maintenance & Documentation",
-            "contributor_role_10": "Test & Documentation & Install Package Making",
+            "description": "Visit 椰汁's Bilibili account",
         },
         "donation": {"name": "Donate", "description": "Buy me a coffee"},
         "check_update": {
@@ -166,10 +137,6 @@ about = {
         "website": {
             "name": "SecRandom Website",
             "description": "Visit SecRandom's official website",
-        },
-        "organization_website": {
-            "name": "SECTL Organization Website",
-            "description": "Visit SECTL's official website",
         },
         "channel": {
             "name": "Update channel",
@@ -203,19 +170,7 @@ about = {
         },
         "bilibili": {
             "name": "Bilibili",
-            "description": "黎泽懿_AionfluxのBilibiliアカウントにアクセス",
-        },
-        "contributor": {
-            "name": "貢献者",
-            "description": "詳細な貢献者情報を表示するにはクリック",
-            "contributor_role_1": "デザイン、クリエイティブ、企画\nメンテナンス、ドキュメント、テスト",
-            "contributor_role_2": "メンテナンス",
-            "contributor_role_3": "レスポンシブフロントエンドページ\nデザイン及びメンテナンス、ドキュメント",
-            "contributor_role_4": "クリエイティブ、ドキュメント",
-            "contributor_role_5": "クリエイティブ、メンテナンス",
-            "contributor_role_6": "アプリテスト、ドキュメント、インストールパッケージ作成",
-            "contributor_role_7": "レスポンシブフロントエンドページ\nデザイン及びメンテナンス、ドキュメント",
-            "contributor_role_10": "ClassIsland プラグイン\nClassIsland 連動",
+            "description": "椰汁のBilibiliアカウントにアクセス",
         },
         "donation": {
             "name": "寄付",
@@ -224,10 +179,6 @@ about = {
         "website": {
             "name": "SecRandom 公式サイト",
             "description": "SecRandomソフト公式サイトにアクセス",
-        },
-        "organization_website": {
-            "name": "SECTL 組織メインサイト",
-            "description": "SECTL組織公式サイトにアクセス",
         },
         "copyright": {
             "name": "著作権",

@@ -29,9 +29,6 @@ from app.view.components.center_flow_layout import CenterFlowLayout
 from app.tools.online_status import get_cached_online_count, get_online_stats_async
 import app.core.window_manager as wm
 
-from app.page_building.another_window import create_contributor_window
-
-
 # ==================================================
 # 关于主容器类
 # ==================================================
@@ -78,31 +75,8 @@ class about_banner(QWidget):
         # 使图片居中
         self.vBoxLayout.addWidget(self.banner_image, 0, Qt.AlignmentFlag.AlignCenter)
 
-        # 安装事件过滤器（PySide2 实例属性覆写虚函数不可靠）
-        self.banner_image.installEventFilter(self)
-        self.banner_image.setCursor(Qt.CursorShape.PointingHandCursor)
-
-    def eventFilter(self, obj, event):
-        if obj is self.banner_image and event.type() == QEvent.Type.MouseButtonPress:
-            self.click_count += 1
-            self._save_click_count(self.click_count)
-            remaining = max(0, 10 - self.click_count)
-            if remaining > 0:
-                InfoBar.info(
-                    title=f"彩蛋进度 {self.click_count}/10",
-                    content=f"再点击 {remaining} 次解锁内幕设置",
-                    duration=1500,
-                    parent=self,
-                )
-            else:
-                InfoBar.success(
-                    title="已解锁！",
-                    content="请前往 设置 → 更多设置 查看",
-                    duration=3000,
-                    parent=self,
-                )
-            return True
-        return super().eventFilter(obj, event)
+        # 连接点击事件
+        self.banner_image.mousePressEvent = self._on_banner_clicked
 
     def _load_click_count(self):
         """加载横幅点击次数"""
@@ -122,6 +96,11 @@ class about_banner(QWidget):
         except Exception as e:
             logger.exception(f"保存横幅点击次数失败: {e}")
 
+    def _on_banner_clicked(self, event):
+        """横幅点击事件"""
+        self.click_count += 1
+        self._save_click_count(self.click_count)
+
 
 # ==================================================
 # 关于信息组件类
@@ -136,9 +115,6 @@ class about_info(GroupHeaderCardWidget):
         self.about_github_Button = HyperlinkButton(
             FIF.GITHUB, GITHUB_WEB, get_content_name_async("about", "github")
         )
-        github_widget = self._create_button_with_icon(
-            self.about_github_Button, "assets/icon", "sectl-icon.png"
-        )
 
         # 打开bilibili按钮
         self.about_bilibili_Button = HyperlinkButton(
@@ -146,27 +122,12 @@ class about_info(GroupHeaderCardWidget):
             BILIBILI_WEB,
             get_content_name_async("about", "bilibili"),
         )
-        bilibili_widget = self._create_button_with_icon(
-            self.about_bilibili_Button, "assets/contribution", "contributor1.png"
-        )
 
         # 打开网站按钮
         self.about_website_Button = HyperlinkButton(
             get_theme_icon("ic_fluent_globe_arrow_forward_20_filled"),
             WEBSITE,
             get_content_name_async("about", "website"),
-        )
-        website_widget = self._create_button_with_icon(
-            self.about_website_Button, "assets/icon", "secrandom-icon-paper.png"
-        )
-
-        self.about_organization_Button = HyperlinkButton(
-            get_theme_icon("ic_fluent_globe_arrow_forward_20_filled"),
-            SECTL_WEBDITE,
-            get_content_name_async("about", "organization_website"),
-        )
-        organization_widget = self._create_button_with_icon(
-            self.about_organization_Button, "assets/icon", "sectl-icon.png"
         )
 
         # 查看当前软件版本号
@@ -181,54 +142,43 @@ class about_info(GroupHeaderCardWidget):
             copyright_text = f"Copyright © {INITIAL_AUTHORING_YEAR}-{CURRENT_YEAR} {COPYRIGHT_HOLDER}"
 
         self.about_author_label = BodyLabel(copyright_text)
-        copyright_widget = self._create_label_with_icon(
-            self.about_author_label, "assets/icon", "sectl-icon.png"
-        )
 
-        # 创建贡献人员按钮
-        self.contributor_button = PushButton(
-            get_content_name_async("about", "contributor")
-        )
-        self.contributor_button.setIcon(
+        # 创建捐赠支持按钮
+        self.donation_button = PushButton(get_content_name_async("about", "donation"))
+        self.donation_button.setIcon(
             get_theme_icon("ic_fluent_document_person_20_filled")
         )
-        self.contributor_button.clicked.connect(self.show_contributors)
+        self.donation_button.clicked.connect(self.open_donation_url)
 
         self.addGroup(
             get_theme_icon("ic_fluent_branch_fork_link_20_filled"),
             get_content_name_async("about", "bilibili"),
             get_content_description_async("about", "bilibili"),
-            bilibili_widget,
+            self.about_bilibili_Button,
         )
         self.addGroup(
             FIF.GITHUB,
             get_content_name_async("about", "github"),
             get_content_description_async("about", "github"),
-            github_widget,
+            self.about_github_Button,
         )
         self.addGroup(
             get_theme_icon("ic_fluent_document_person_20_filled"),
-            get_content_name_async("about", "contributor"),
-            get_content_description_async("about", "contributor"),
-            self.contributor_button,
+            get_content_name_async("about", "donation"),
+            get_content_description_async("about", "donation"),
+            self.donation_button,
         )
         self.addGroup(
             get_theme_icon("ic_fluent_class_20_filled"),
             get_content_name_async("about", "copyright"),
             get_content_description_async("about", "copyright"),
-            copyright_widget,
-        )
-        self.addGroup(
-            get_theme_icon("ic_fluent_globe_arrow_forward_20_filled"),
-            get_content_name_async("about", "organization_website"),
-            get_content_description_async("about", "organization_website"),
-            organization_widget,
+            self.about_author_label,
         )
         self.addGroup(
             get_theme_icon("ic_fluent_globe_arrow_forward_20_filled"),
             get_content_name_async("about", "website"),
             get_content_description_async("about", "website"),
-            website_widget,
+            self.about_website_Button,
         )
         self.addGroup(
             get_theme_icon("ic_fluent_flag_pride_20_filled"),
@@ -271,45 +221,9 @@ class about_info(GroupHeaderCardWidget):
     def _update_online_count(self):
         self._fetch_online_count()
 
-    def show_contributors(self):
-        """显示贡献人员"""
-        create_contributor_window()
-
-    def _create_button_with_icon(self, button, icon_dir, icon_name):
-        """创建带图标的按钮容器"""
-        widget = QWidget()
-        layout = QHBoxLayout(widget)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(8)
-
-        layout.addWidget(button)
-
-        icon_path = get_data_path(icon_dir, icon_name)
-        icon_label = ImageLabel(f"{icon_path}")
-        icon_label.scaledToHeight(30)
-        icon_label.setBorderRadius(8, 8, 8, 8)
-        layout.addWidget(icon_label)
-
-        layout.addStretch()
-        return widget
-
-    def _create_label_with_icon(self, label, icon_dir, icon_name):
-        """创建带图标的标签容器"""
-        widget = QWidget()
-        layout = QHBoxLayout(widget)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(8)
-
-        layout.addWidget(label)
-
-        icon_path = get_data_path(icon_dir, icon_name)
-        icon_label = ImageLabel(f"{icon_path}")
-        icon_label.scaledToHeight(30)
-        icon_label.setBorderRadius(8, 8, 8, 8)
-        layout.addWidget(icon_label)
-
-        layout.addStretch()
-        return widget
+    def open_donation_url(self):
+        """打开捐赠链接"""
+        QDesktopServices.openUrl(QUrl(DONATION_URL))
 
 
 class user_info_card(HeaderCardWidget):
