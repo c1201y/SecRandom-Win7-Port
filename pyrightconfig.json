@@ -1,0 +1,8 @@
+{
+  "typeCheckingMode": "off",
+  "reportOptionalMemberAccess": "none",
+  "reportArgumentType": "none",
+  "reportCallIssue": "none",
+  "reportPossiblyUnboundVariable": "none",
+  "exclude": ["build", "dist", "__pycache__"]
+}

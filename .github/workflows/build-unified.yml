@@ -1,0 +1,444 @@
+name: 构建流程
+
+# 环境变量
+env:
+  PYTHON_VERSION: "3.13.5"
+  UV_VERSION: "latest"
+  ARTIFACT_RETENTION_DAYS: 30
+  CACHE_VERSION: v1
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  builder_matrix:
+    # 仅在push或pull_request事件包含"开始打包"关键词时执行，或有v开头的tag，或手动触发
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.head_commit.message, '开始打包') ||
+      startsWith(github.ref, 'refs/tags/v')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Windows PyInstaller 构建
+          - os: windows-2022
+            arch: x64
+            pack_mode: dir
+            packager: pyinstaller
+            platform: windows
+          # Linux PyInstaller 构建
+          - os: ubuntu-22.04
+            arch: amd64
+            pack_mode: dir
+            packager: pyinstaller
+            platform: linux
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: 安装 uv (Windows)
+        if: matrix.platform == 'windows'
+        uses: astral-sh/setup-uv@v4
+
+      - name: 安装 uv (Linux)
+        if: matrix.platform == 'linux'
+        uses: astral-sh/setup-uv@v4
+
+      - name: 显示构建信息
+        run: |
+          echo "构建信息:"
+          echo "- 平台: ${{ matrix.platform }}"
+          echo "- 架构: ${{ matrix.arch }}"
+          echo "- 打包工具: ${{ matrix.packager }}"
+          echo "- 打包模式: ${{ matrix.pack_mode }}"
+          echo "- 事件类型: ${{ github.event_name }}"
+          echo "- Ref: ${{ github.ref }}"
+          echo "- Commit: ${{ github.sha }}"
+          echo "- 构建矩阵: ${{ matrix.os }}"
+
+      - name: 检出仓库
+        uses: actions/checkout@v4.2.2
+        with:
+          lfs: true
+
+
+      - name: 缓存依赖
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/.cache/pip
+            ~/.venv
+          key: ${{ runner.os }}-${{ matrix.arch }}-${{ env.CACHE_VERSION }}-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-${{ env.CACHE_VERSION }}-
+            ${{ runner.os }}-${{ matrix.arch }}-
+
+      - name: 安装系统依赖 (Linux)
+        if: matrix.platform == 'linux'
+        run: |
+          echo "开始安装Linux系统依赖..."
+          sudo apt-get update || { echo "APT update failed, retrying..."; sleep 5; sudo apt-get update; }
+          sudo apt-get install -y \
+            libpulse-dev \
+            pulseaudio \
+            libportaudio2 \
+            libsndfile1 \
+            libasound2-dev \
+            portaudio19-dev \
+            libxcb-xinerama0 \
+            libxcb-cursor0 \
+            libxkbcommon-x11-0 \
+            libgl1-mesa-glx \
+            libegl1 \
+            libdbus-1-3 \
+            libxcb-icccm4 \
+            libxcb-image0 \
+            libxcb-keysyms1 \
+            libxcb-randr0 \
+            libxcb-render-util0 \
+            libxcb-shape0 \
+            libfuse2 \
+            squashfs-tools \
+            appstream \
+            desktop-file-utils \
+            dpkg-dev
+          echo "Linux系统依赖安装完成"
+        timeout-minutes: 10
+
+      - name: 初始化 zip 文件夹
+        run: mkdir zip
+
+      - name: 更新 version_info.txt
+        if: startsWith(github.ref_name, 'v')
+        run: |
+          python update_version.py
+        env:
+          VERSION: ${{ github.ref_name }}
+
+      # Windows PyInstaller 构建
+      - name: 运行 Windows PyInstaller 构建
+        if: |
+          matrix.platform == 'windows' &&
+          contains(github.event.head_commit.message, '开始打包')
+        run: |
+          echo "开始 Windows PyInstaller 构建流程..."
+          echo "使用uv进行依赖同步..."
+          uv sync --frozen
+          echo "依赖同步完成，开始打包..."
+          uv run build_pyinstaller.py
+
+      # Linux PyInstaller 构建
+      - name: 运行 Linux PyInstaller 构建
+        if: |
+          matrix.platform == 'linux' &&
+          contains(github.event.head_commit.message, '开始打包')
+        run: |
+          echo "开始 Linux PyInstaller 构建流程..."
+          echo "使用uv进行依赖同步..."
+          uv sync --frozen
+          echo "依赖同步完成，开始打包..."
+          uv run build_pyinstaller.py
+        env:
+          SECRANDOM_DEB_FILENAME_ARCH: ${{ matrix.arch }}
+          SECRANDOM_DEB_CONTROL_ARCH: ${{ matrix.arch }}
+
+      # Windows 打包操作
+      - name: Windows 打包操作
+        if: matrix.platform == 'windows'
+        run: |
+          echo "开始 Windows 打包操作..."
+
+          # 检查构建是否成功
+          if (!(Test-Path "dist/SecRandom" -PathType Container)) {
+            echo "错误：dist/SecRandom 目录不存在，构建可能失败了"
+            echo "可用的dist目录内容："
+            if (Test-Path "dist") {
+              Get-ChildItem -Path "dist" -Recurse
+            } else {
+              echo "dist 目录不存在"
+            }
+            exit 1
+          }
+
+          # 创建zip_dist/SecRandom目录
+          mkdir -p zip_dist/SecRandom
+
+          # 复制dist/SecRandom目录内容
+          Copy-Item -Recurse -Force dist/SecRandom/* zip_dist/SecRandom/
+
+          # 创建app目录
+          mkdir -p zip_dist/SecRandom/data
+
+          # 复制data文件夹到zip_dist/SecRandom目录下
+          Copy-Item -Recurse -Force data/* zip_dist/SecRandom/data/
+
+          # 复制 LICENSE 文件到zip_dist/SecRandom/data目录下
+          Copy-Item LICENSE zip_dist/SecRandom/data/
+
+          # 使用 zip 压缩文件
+          mkdir zip -Force
+          $outputZip = "zip/SecRandom-Windows-Portable-${{ github.ref_name }}-${{ matrix.arch }}.zip"
+          Compress-Archive -Path zip_dist/SecRandom/* -DestinationPath $outputZip -Force
+          echo "目录模式打包完成: $outputZip"
+
+      - name: 安装 Inno Setup 中文语言文件
+        if: matrix.platform == 'windows'
+        run: |
+          echo "下载 Inno Setup 中文语言文件..."
+          $langUrl = "https://raw.githubusercontent.com/kira-96/Inno-Setup-Chinese-Simplified-Translation/main/ChineseSimplified.isl"
+          $langPath = "C:\Program Files (x86)\Inno Setup 6\Languages\ChineseSimplified.isl"
+          $langDir = "C:\Program Files (x86)\Inno Setup 6\Languages"
+
+          # 确保 Languages 目录存在
+          if (!(Test-Path $langDir)) {
+            New-Item -ItemType Directory -Path $langDir -Force
+          }
+
+          # 下载中文语言文件
+          Invoke-WebRequest -Uri $langUrl -OutFile $langPath
+          echo "中文语言文件下载完成: $langPath"
+
+      - name: Inno Setup 打包
+        if: matrix.platform == 'windows'
+        run: |
+          echo "开始 Inno Setup 打包..."
+
+          # 确保构建输出目录存在
+          if (!(Test-Path "build")) {
+            mkdir build
+          }
+
+          # 运行 Inno Setup 编译器
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" SRsetup.iss
+
+          # 检查安装程序是否生成并移动到 zip 目录
+          if (Test-Path "build/SecRandom setup x64.exe") {
+            # 修改文件名以包含版本号，方便识别
+            $setupName = "SecRandom-Windows-Setup-${{ github.ref_name }}-${{ matrix.arch }}.exe"
+            Move-Item "build/SecRandom setup x64.exe" "zip/$setupName"
+            echo "Inno Setup 打包完成: zip/$setupName"
+          } else {
+            echo "错误：Inno Setup 安装程序未生成"
+            exit 1
+          }
+
+      # Linux 打包操作
+      - name: Linux 打包操作
+        if: matrix.platform == 'linux'
+        run: |
+          echo "开始 Linux 打包操作..."
+
+          # 检查构建输出是否存在
+          if [ ! -d "dist" ]; then
+            echo "错误：dist 目录不存在，构建可能失败了"
+            exit 1
+          fi
+
+          # 列出dist目录内容，用于调试
+          echo "dist目录内容："
+          ls -la dist/
+
+          # deb包构建已经在build_pyinstaller.py中完成
+          # 检查deb包是否生成（使用正确的通配符检查方式）
+          if ! ls zip/*.deb 2>/dev/null | grep -q .; then
+            echo "错误：deb包未生成，构建可能失败了"
+            echo "zip目录内容："
+            ls -la zip/
+            exit 1
+          fi
+
+          echo "deb包构建完成，位于zip目录下"
+
+          echo "开始构建 AppImage..."
+          APPDIR="appimage/AppDir"
+          rm -rf "$APPDIR"
+          mkdir -p "$APPDIR/usr/share"
+          mkdir -p "$APPDIR/usr/bin"
+
+          cp -r "dist/SecRandom" "$APPDIR/usr/share/SecRandom"
+
+          cat > "$APPDIR/AppRun" << 'EOF'
+          #!/bin/sh
+          set -e
+          HERE="$(dirname "$(readlink -f "$0")")"
+          exec "$HERE/usr/share/SecRandom/SecRandom.bin" "$@"
+          EOF
+          chmod +x "$APPDIR/AppRun"
+
+          cat > "$APPDIR/SecRandom.desktop" << 'EOF'
+          [Desktop Entry]
+          Type=Application
+          Name=SecRandom
+          Exec=SecRandom
+          Icon=SecRandom
+          Categories=Education;Utility;
+          Terminal=false
+          EOF
+
+          cp "data/assets/icon/secrandom-icon-paper.png" "$APPDIR/SecRandom.png"
+          ln -sf "../share/SecRandom/SecRandom.bin" "$APPDIR/usr/bin/SecRandom"
+
+          if [ "${{ matrix.arch }}" = "amd64" ]; then
+            TOOL_URL="https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+            TOOL_ARCH="x86_64"
+          fi
+
+          mkdir -p appimage/tools
+          curl -L "$TOOL_URL" -o appimage/tools/appimagetool.AppImage
+          chmod +x appimage/tools/appimagetool.AppImage
+          (cd appimage/tools && ./appimagetool.AppImage --appimage-extract >/dev/null 2>&1)
+
+          OUT="zip/SecRandom-Linux-AppImage-${{ github.ref_name }}-${{ matrix.arch }}.AppImage"
+          ARCH="$TOOL_ARCH" appimage/tools/squashfs-root/AppRun "$APPDIR" "$OUT"
+          chmod +x "$OUT" || true
+
+          echo "AppImage 构建完成: $OUT"
+          echo "zip目录内容："
+          ls -la zip/
+
+          if ! ls zip/*.AppImage 2>/dev/null | grep -q .; then
+            echo "错误：AppImage 未生成"
+            exit 1
+          fi
+
+      - name: 上传应用程序
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4.4.2
+        with:
+          name: ${{ matrix.platform }}-${{ matrix.arch }}-${{ matrix.pack_mode }}
+          path: ./zip
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+  release:
+    needs: [builder_matrix]
+    if: ${{startsWith(github.ref, 'refs/tags/')}}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+          lfs: true
+
+
+      - name: 准备发布
+        run: |
+          echo "准备发布目录..."
+          mkdir -p release
+          mkdir -p artifacts
+
+      - name: 下载 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          run-id: ${{ github.run_id }}
+
+      - name: 准备 artifacts
+        run: |
+          echo "整理构建产物..."
+          # Windows 构建产物
+          mv artifacts/windows-x64-dir/* release/ 2>/dev/null || echo "未找到 Windows x64 构建产物"
+          # Linux 构建产物
+          mv artifacts/linux-amd64-dir/* release/ 2>/dev/null || echo "未找到 Linux amd64 构建产物"
+          echo "构建产物整理完成"
+          ls -la release/
+
+      - name: 计算 SHA256 值
+        run: |
+          echo "开始计算SHA256校验值..."
+          cd release
+          echo "" > SHA256SUMS.txt
+          for file in *; do
+            if [ -f "$file" ]; then
+              echo "计算 $file 的SHA256值..."
+              sha256sum "$file" >> SHA256SUMS.txt
+            fi
+          done
+          echo "SHA256校验值计算完成："
+          cat SHA256SUMS.txt
+
+      - name: 验证 SHA256SUMS.txt 文件
+        run: |
+          echo "验证SHA256SUMS.txt文件..."
+          cd release
+          if [ ! -f "SHA256SUMS.txt" ]; then
+            echo "错误：在release目录中未找到SHA256SUMS.txt文件"
+            exit 1
+          fi
+          if [ ! -s "SHA256SUMS.txt" ]; then
+            echo "错误：SHA256SUMS.txt文件为空"
+            exit 1
+          fi
+          echo "SHA256SUMS.txt文件验证通过"
+          cd ..
+
+      - name: 生成 需发布 的表格信息
+        run: |
+          cd release
+          version_no_v="${{ github.ref_name }}"
+          version_no_v="${version_no_v#v}"
+          # 创建CHANGELOG目录结构
+          mkdir -p ../CHANGELOG/${{ github.ref_name }}
+          # 创建CHANGELOG.md文件（如果不存在）
+          touch ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "**Github 镜像 下载链接**" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| 镜像源 | 平台 | 支持架构 | 便携版 | 安装程序 |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| --- | --- | --- | --- | --- |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| ghproxy.sectl.top | Windows | x64 | [下载 ${{ github.ref_name }}](https://ghproxy.sectl.top/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-Windows-Portable-${{ github.ref_name }}-x64.zip) | [下载 ${{ github.ref_name }}](https://ghproxy.sectl.top/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-Windows-Setup-${{ github.ref_name }}-x64.exe) |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| ghproxy.sectl.top | Linux | amd64 | [下载 ${{ github.ref_name }}](https://ghproxy.sectl.top/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-Linux-AppImage-${{ github.ref_name }}-amd64.AppImage) | [下载 ${{ github.ref_name }}](https://ghproxy.sectl.top/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-linux-Setup-$version_no_v-amd64.deb) |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| ghfast.top | Windows | x64 | [下载 ${{ github.ref_name }}](https://ghfast.top/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-Windows-Portable-${{ github.ref_name }}-x64.zip) | [下载 ${{ github.ref_name }}](https://ghfast.top/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-Windows-Setup-${{ github.ref_name }}-x64.exe) |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| ghfast.top | Linux | amd64 | [下载 ${{ github.ref_name }}](https://ghfast.top/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-Linux-AppImage-${{ github.ref_name }}-amd64.AppImage) | [下载 ${{ github.ref_name }}](https://ghfast.top/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-linux-Setup-$version_no_v-amd64.deb) |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| gh-proxy.com | Windows | x64 | [下载 ${{ github.ref_name }}](https://gh-proxy.com/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-Windows-Portable-${{ github.ref_name }}-x64.zip) | [下载 ${{ github.ref_name }}](https://gh-proxy.com/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-Windows-Setup-${{ github.ref_name }}-x64.exe) |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| gh-proxy.com | Linux | amd64 | [下载 ${{ github.ref_name }}](https://gh-proxy.com/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-Linux-AppImage-${{ github.ref_name }}-amd64.AppImage) | [下载 ${{ github.ref_name }}](https://gh-proxy.com/https://github.com/SECTL/SecRandom/releases/download/${{ github.ref_name }}/SecRandom-linux-Setup-$version_no_v-amd64.deb) |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "**SHA256 校验值-请核对下载的文件的SHA256值是否正确**" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| 文件名 | SHA256 值 |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          echo "| --- | --- |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          while read -r line; do
+            hash=$(echo "$line" | awk '{print $1}')
+            file=$(echo "$line" | awk '{print $2}')
+            echo "| $file | $hash |" >> ../CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          done < SHA256SUMS.txt
+          rm SHA256SUMS.txt
+          cd ..
+
+      - name: 确定发布类型
+        id: release-type
+        run: |
+          if [[ "${{ github.ref }}" == *"beta"* || "${{ github.ref }}" == *"alpha"* ]]; then
+            echo "is_beta=true" >> $GITHUB_ENV
+          else
+            echo "is_beta=false" >> $GITHUB_ENV
+          fi
+
+      - name: 创建 GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: release/*
+          body_path: CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          draft: false
+          prerelease: ${{ env.is_beta == 'true' }}
+          tag_name: ${{ github.ref_name }}
+          name: SecRandom 新版本 - ${{ github.ref_name }}
+          fail_on_unmatched_files: true
+
+      - name: 创建 Sentry Release
+        uses: getsentry/action-release@v3
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: production
+          version: ${{ github.ref_name }}
