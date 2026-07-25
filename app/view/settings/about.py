@@ -27,6 +27,8 @@ from app.common.safety.secure_store import (
 from app.core.app_init import calculate_total_draw_counts
 from app.view.components.center_flow_layout import CenterFlowLayout
 from app.tools.online_status import get_cached_online_count, get_online_stats_async
+from qfluentwidgets import InfoBar, InfoBarPosition
+from app.Language.obtain_language import get_content_name_async
 import app.core.window_manager as wm
 
 # ==================================================
@@ -63,6 +65,7 @@ class about_banner(QWidget):
         self.banner_image.scaledToHeight(300)
         self.banner_image.setBorderRadius(12, 12, 12, 12)
         self.banner_image.setScaledContents(True)
+        self.banner_image.setCursor(Qt.PointingHandCursor)
 
         # 加载点击次数
         self.click_count = self._load_click_count()
@@ -75,8 +78,8 @@ class about_banner(QWidget):
         # 使图片居中
         self.vBoxLayout.addWidget(self.banner_image, 0, Qt.AlignmentFlag.AlignCenter)
 
-        # 连接点击事件
-        self.banner_image.mousePressEvent = self._on_banner_clicked
+        # 连接点击事件（ImageLabel 已有 clicked 信号）
+        self.banner_image.clicked.connect(self._on_banner_clicked)
 
     def _load_click_count(self):
         """加载横幅点击次数"""
@@ -96,10 +99,21 @@ class about_banner(QWidget):
         except Exception as e:
             logger.exception(f"保存横幅点击次数失败: {e}")
 
-    def _on_banner_clicked(self, event):
+    def _on_banner_clicked(self):
         """横幅点击事件"""
         self.click_count += 1
         self._save_click_count(self.click_count)
+
+        if self.click_count >= 10:
+            InfoBar.success(
+                title="内幕模式已解锁",
+                content="已开启内幕设置页面，请在「更多设置」中查看",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                duration=5000,
+                position=InfoBarPosition.TOP_RIGHT,
+                parent=self,
+            )
 
 
 # ==================================================

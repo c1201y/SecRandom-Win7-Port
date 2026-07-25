@@ -166,19 +166,6 @@ class more_settings_page(PivotPageTemplate):
     """创建更多设置页面"""
 
     def __init__(self, parent: QFrame = None, is_preview=False):
-        from app.common.safety.secure_store import read_behind_scenes_settings
-
-        # 读取横幅点击次数
-        click_count = 0
-        try:
-            data = read_behind_scenes_settings()
-            click_count = data.get("banner_click_count", 0)
-        except Exception:
-            pass
-
-        # 只有点击次数 >= 10 时才显示内幕设置页面
-        show_behind_scenes = click_count >= 10
-
         page_config = {
             "fair_draw": get_content_name_async("fair_draw_settings", "title"),
             "shortcut_settings": get_content_name_async("shortcut_settings", "title"),
@@ -188,12 +175,25 @@ class more_settings_page(PivotPageTemplate):
                 "sidebar_tray_management", "title"
             ),
         }
-        if show_behind_scenes:
-            page_config["behind_scenes_settings"] = get_content_name_async(
-                "behind_scenes_settings", "title"
-            )
         super().__init__(page_config, parent, is_preview_mode=is_preview)
         self.set_base_path("app.view.settings.more_settings")
+
+    def showEvent(self, event):
+        """每次显示时检查是否要解锁内幕设置页面"""
+        super().showEvent(event)
+        if "behind_scenes_settings" in self.page_infos:
+            return
+        from app.common.safety.secure_store import read_behind_scenes_settings
+        try:
+            data = read_behind_scenes_settings()
+            click_count = data.get("banner_click_count", 0)
+        except Exception:
+            click_count = 0
+        if click_count >= 10:
+            self.add_page(
+                "behind_scenes_settings",
+                get_content_name_async("behind_scenes_settings", "title"),
+            )
 
 
 class update_page(PageTemplate):

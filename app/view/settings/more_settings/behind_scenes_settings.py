@@ -100,20 +100,11 @@ class behind_scenes_settings_table(GroupHeaderCardWidget):
         self.current_mode = 0  # 0: 点名, 1: 抽奖
         self.probability_data = {}
 
-        # 创建模式选择区域
-        QTimer.singleShot(APPLY_DELAY, self.create_class_selection)
-
-        # 创建表格区域
-        QTimer.singleShot(APPLY_DELAY, self.create_table)
-
-        # 初始化名单列表
-        QTimer.singleShot(APPLY_DELAY, self.init_list_data)
-
-        # 设置文件系统监视器
-        QTimer.singleShot(APPLY_DELAY, self.setup_file_watcher)
-
-        # 初始化数据
-        QTimer.singleShot(APPLY_DELAY, self.refresh_data)
+        # 同步初始化（不用 QTimer 延迟，避免页面空白等待）
+        self.create_class_selection()
+        self.create_table()
+        self.init_list_data()
+        self.setup_file_watcher()
 
     def create_class_selection(self):
         """创建班级选择区域"""
