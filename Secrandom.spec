@@ -86,6 +86,7 @@ coll = COLLECT(
 DIST_DIR = Path(SPEC).parent / "dist" / "SecRandom"
 for item in [DATA_DIR]:
     target = DIST_DIR / item.name
-    if not target.exists():
-        print(f"Copying {item} -> {target}")
-        shutil.copytree(item, target, symlinks=False, dirs_exist_ok=True)
+    if target.exists():
+        shutil.rmtree(target)
+    print(f"Copying {item} -> {target}")
+    shutil.copytree(item, target, symlinks=False, dirs_exist_ok=True)

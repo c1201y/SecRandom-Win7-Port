@@ -1,12 +1,39 @@
 # PROJECT KNOWLEDGE BASE - SecRandom
 
-**Generated:** 2026-07-24
+**Generated:** 2026-07-30
 **Project:** SecRandom - 公平随机抽取系统 (Fair Random Selection System)
 **Stack:** Python 3.8.10 + PySide2 + PySide2-Fluent-Widgets
 **Win7:** ✅ 已适配 Windows 7 (改动见下文 Win7 Port 章节)
 **License:** GPLv3
 **Language:** 中文回复
 **Comments:** 中文注释
+
+---
+
+## SESSION SUMMARY (2026-07-30)
+
+### Fixes Applied
+| # | Issue | Root Cause | Fix | Files |
+|---|-------|-----------|-----|-------|
+| 1 | 引导页深色模式白底 | GuideWindow 未监听 `qconfig.themeChanged` | 连接 themeChanged 信号，`_apply_current_theme` 设置窗口/底栏 background-color | `app/view/guide/guide_window.py` |
+| 2 | 设置窗口关闭后泄漏 800MB+ | `closeEvent` 执行 `event.ignore(); hide()`，窗口及所有子页面滞留在内存 | `closeEvent` 改为 `event.accept(); self.deleteLater()`，断开全局 SettingsSignals 引用 | `app/view/settings/settings.py` |
+| 3 | WindowManager 持有已关闭窗口引用 | `_window_instances` dict 条目未清理 | SettingsWindow 新增 `windowClosed` 信号，WindowManager 连接并清空引用 | `app/core/window_manager.py` |
+| 4 | 引导页内存泄漏 | `WA_DeleteOnClose` 未设置，themeChanged 未断开 | 设置 `WA_DeleteOnClose`，`closeEvent` 中断开 themeChanged | `app/view/guide/guide_window.py` |
+| 5 | PyInstaller 构建后 data/ 目录不全 | spec 后处理用 `if not target.exists()` 跳过已存在目录，导致字体/assets 缺失 | 改为先 `rmtree` 再 `copytree`，确保增量构建也覆盖完整 | `Secrandom.spec` |
+| 6 | `build_pyinstaller.py` 编码崩溃 | `capture_output=True` + `encoding="utf-8"` 遇非 UTF-8 字节抛出 `UnicodeDecodeError` | 直接调用 PyInstaller 命令行绕过（脚本待修复） | `build_pyinstaller.py` |
+
+### Verification
+- ✅ 三项修改（GuideWindow、SettingsWindow、WindowManager）均通过导入测试
+- ✅ 字体加载（HarmonyOS_Sans_SC_Medium.ttf、FluentSystemIcons-Filled.ttf）在打包版中正常工作
+- ✅ 数据文件完整性确认：`data/assets/`、`data/font/`、`data/dlls/` 均正确包含
+- ✅ 打包版从运行到 UI 显示无报错
+
+### Known Remaining Issues
+| Issue | Impact | Workaround |
+|-------|--------|------------|
+| pythonnet 不可用（未安装 `clr`） | C# IPC 回退 | Expected on dev machines without .NET SDK |
+| TTS 初始化失败 `(-2147200966, ...)` | 语音播报不可用 | Expected on this machine (Win10) |
+| `build_pyinstaller.py` 编码问题 | 脚本不能直接运行 | 手动 `python -m PyInstaller Secrandom.spec --clean --noconfirm` |
 
 ---
 
