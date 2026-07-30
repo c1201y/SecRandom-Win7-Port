@@ -5,6 +5,7 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import QFont, QIcon
 from qfluentwidgets import *
+from qfluentwidgets import qconfig
 from qframelesswindow import FramelessWindow
 from app.view.guide.pages import *
 from loguru import logger
@@ -84,6 +85,16 @@ class GuideWindow(FramelessWindow):
 
         self.update_nav_buttons()
         self._on_page_changed(self.current_index)
+
+        # 主题切换监听
+        self._apply_current_theme()
+        try:
+            qconfig.themeChanged.connect(self._on_theme_changed)
+        except Exception:
+            pass
+
+        # 关闭时自动销毁，防止内存泄漏
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -425,6 +436,36 @@ class GuideWindow(FramelessWindow):
         # 页面切换监听
         self.stackedWidget.currentChanged.connect(self._on_page_changed)
 
+    def _is_dark_mode_by_settings(self) -> bool:
+        try:
+            theme = readme_settings("basic_settings", "theme")
+            if theme == "DARK":
+                return True
+            if theme == "AUTO":
+                try:
+                    from darkdetect import isDark
+                    return bool(isDark())
+                except Exception:
+                    return False
+            return False
+        except Exception:
+            return False
+
+    def _apply_current_theme(self) -> None:
+        try:
+            is_dark = self._is_dark_mode_by_settings()
+            bg = "#202020" if is_dark else "#ffffff"
+            self.setStyleSheet(f"background-color: {bg};")
+            self.bottomBar.setStyleSheet(f"background-color: {bg};")
+        except Exception:
+            pass
+
+    def _on_theme_changed(self) -> None:
+        try:
+            self._apply_current_theme()
+        except Exception:
+            pass
+
     def _on_page_changed(self, index):
         self.bottomBar.setVisible(self.pages[index] != self.welcomePage)
         if self.pages[index] == self.licensePage:
@@ -470,6 +511,11 @@ class GuideWindow(FramelessWindow):
             self.nextBtn.setText(get_any_position_value_async("guide", "next"))
 
     def closeEvent(self, event):
+        try:
+            qconfig.themeChanged.disconnect(self._on_theme_changed)
+        except Exception:
+            pass
+
         if self._guide_finished:
             event.accept()
             return super().closeEvent(event)
