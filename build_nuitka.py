@@ -117,13 +117,15 @@ def get_nuitka_command() -> list[str]:
     # 第三方包中有插件/集成系统的动态导入
     for pkg in DYNAMIC_IMPORT_PACKAGES:
         cmd.append(f"--include-package={pkg}")
-        cmd.append("-o")
-        cmd.append("SecRandom.exe")
+    
 
     if sys.platform == "win32" and ICON_FILE.exists():
         cmd.append(f"--windows-icon-from-ico={ICON_FILE}")
     elif sys.platform == "linux" and ICON_FILE.exists():
         cmd.append(f"--linux-icon={ICON_FILE}")
+
+    cmd.append("-o")
+    cmd.append("SecRandom.exe")
 
     cmd.append("main.py")
     return cmd
