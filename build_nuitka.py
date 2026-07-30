@@ -106,6 +106,7 @@ def get_nuitka_command() -> list[str]:
         else:
             cmd.append("--mingw64")
             cmd.append("--windows-console-mode=disable")
+            cmd.append("--windows-dependent-dll-dir=_internal")
     else:
         cmd.append("--linux-onefile-icon")
 
@@ -116,6 +117,8 @@ def get_nuitka_command() -> list[str]:
     # 第三方包中有插件/集成系统的动态导入
     for pkg in DYNAMIC_IMPORT_PACKAGES:
         cmd.append(f"--include-package={pkg}")
+        cmd.append("-o")
+        cmd.append("SecRandom.exe")
 
     if sys.platform == "win32" and ICON_FILE.exists():
         cmd.append(f"--windows-icon-from-ico={ICON_FILE}")
