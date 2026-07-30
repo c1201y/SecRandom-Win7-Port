@@ -106,7 +106,7 @@ def get_nuitka_command() -> list[str]:
         else:
             cmd.append("--mingw64")
             cmd.append("--windows-console-mode=disable")
-            cmd.append("--windows-dependent-dll-dir=_internal")
+            #cmd.append("--windows-dependent-dll-dir=_internal")
     else:
         cmd.append("--linux-onefile-icon")
 
