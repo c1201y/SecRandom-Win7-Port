@@ -46,6 +46,7 @@ class SettingsWindow(FluentWindow):
     showSettingsRequested = Signal(str)  # 请求显示设置页面
     showSettingsRequestedAbout = Signal()
     showMainPageRequested = Signal(str)  # 请求显示主页面
+    windowClosed = Signal()  # 窗口关闭时发出
 
     def __init__(self, parent=None, is_preview=False):
         self.resize_timer = None
@@ -396,22 +397,28 @@ class SettingsWindow(FluentWindow):
     # ==================================================
 
     def closeEvent(self, event):
-        """窗口关闭事件处理
-        拦截窗口关闭事件，隐藏窗口并保存窗口大小
+        """窗口关闭事件处理"""
 
-        Args:
-            event: 关闭事件对象
-        """
         try:
             self._stop_navigation_animations()
         except Exception:
             pass
-        self.hide()
-        event.ignore()
+
         is_maximized = self.isMaximized()
         update_settings("settings", "is_maximized", is_maximized)
         if not is_maximized:
             self.save_window_size(self.width(), self.height())
+
+        # 断开全局信号连接，打破引用链
+        try:
+            from app.tools.settings_access import get_settings_signals
+            get_settings_signals().settingChanged.disconnect(self._on_setting_changed)
+        except Exception:
+            pass
+
+        self.windowClosed.emit()
+        event.accept()
+        self.deleteLater()
 
     def _stop_navigation_animations(self):
         """在隐藏设置窗口前尽量停止导航动画，避免悬空回调。"""
