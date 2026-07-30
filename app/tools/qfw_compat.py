@@ -38,6 +38,18 @@ def _patch_simple(module, class_name):
     cls.__init__ = patched_init
 
 
+def _patch_scrollbar(module):
+    cls = getattr(module, "ScrollBar", None)
+    if cls is None:
+        return
+    orig = cls._onOpacityAniValueChanged
+
+    def patched(self, _value=None):
+        orig(self)
+
+    cls._onOpacityAniValueChanged = patched
+
+
 SIMPLE_CLASSES = [
     "PushButton",
     "PrimaryPushButton",
@@ -58,3 +70,4 @@ def apply_patches():
 
     for name in SIMPLE_CLASSES:
         _patch_simple(qfw, name)
+    _patch_scrollbar(qfw)
