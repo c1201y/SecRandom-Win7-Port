@@ -49,6 +49,23 @@ jobs:
       - name: Upgrade Nuitka
         run: uv pip install --upgrade nuitka
 
+      - name: Patch qfluentwidgets for Nuitka compatibility
+        run: |
+          uv run python -c "
+import pathlib, site
+for root in site.getsitepackages():
+    f = pathlib.Path(root) / 'qfluentwidgets' / 'components' / 'widgets' / 'scroll_bar.py'
+    if f.exists():
+        c = f.read_text(encoding='utf-8')
+        c = c.replace(
+            'def _onOpacityAniValueChanged(self):',
+            'def _onOpacityAniValueChanged(self, _value=None):'
+        )
+        f.write_text(c, encoding='utf-8')
+        print('Patched:', f)
+        break
+"
+
       - name: Build with Nuitka
         run: uv run python build_nuitka.py
         env:
