@@ -25,7 +25,7 @@ jobs:
 
       - uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.8"
+          python-version: "3.8"   # 固定为 3.8
 
       - name: Determine version
         id: version
@@ -51,7 +51,8 @@ jobs:
         env:
           CI: "true"
 
-      - name: Copy language modules
+      # 如果 build_nuitka.py 已通过 collect_data_includes 包含语言模块，此步骤可删除
+      - name: Copy language modules (redundant)
         shell: pwsh
         run: |
           $dst = "dist/main.dist/app/Language/modules"
@@ -62,13 +63,18 @@ jobs:
         shell: pwsh
         run: |
           $name = "SecRandom-${{ steps.version.outputs.plain }}-${{ matrix.platform }}-x64"
-          Rename-Item -Path dist/main.dist -NewName $name
+          Push-Location dist
+          Rename-Item -Path main.dist -NewName $name
           Compress-Archive -Path $name -DestinationPath "$name.zip"
+          Pop-Location
+          # 保存变量供后续步骤使用，避免 YAML 长行问题
+          echo "ARTIFACT_NAME=$name" >> $env:GITHUB_ENV
+          echo "ARTIFACT_PATH=dist/$name" >> $env:GITHUB_ENV
 
       - uses: actions/upload-artifact@v4
         with:
-          name: SecRandom-${{ steps.version.outputs.plain }}-${{ matrix.platform }}-x64
-          path: SecRandom-${{ steps.version.outputs.plain }}-${{ matrix.platform }}-x64/
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.ARTIFACT_PATH }}/   # 末尾斜杠表示上传目录内容
 
       - name: Create release (tag only)
         if: startsWith(github.ref, 'refs/tags/')
@@ -77,4 +83,4 @@ jobs:
           name: ${{ steps.version.outputs.version }}
           draft: true
           files: |
-            SecRandom-${{ steps.version.outputs.plain }}-${{ matrix.platform }}-x64.zip
+            ${{ env.ARTIFACT_PATH }}.zip
