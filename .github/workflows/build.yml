@@ -46,6 +46,9 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.version }}
 
+      - name: Upgrade Nuitka
+        run: uv pip install --upgrade nuitka
+
       - name: Build with Nuitka
         run: uv run python build_nuitka.py
         env:
