@@ -105,6 +105,7 @@ def get_nuitka_command() -> list[str]:
             cmd.append("--msvc=latest")
         else:
             cmd.append("--mingw64")
+            cmd.append("--windows-console-mode=disable")
     else:
         cmd.append("--linux-onefile-icon")
 
