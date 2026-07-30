@@ -681,6 +681,7 @@ class WindowManager:
         from app.view.settings.settings import SettingsWindow
 
         self.settings_window = SettingsWindow(is_preview=is_preview)
+        self.settings_window.windowClosed.connect(self._on_settings_window_closed)
 
     def show_settings_window(
         self, page_name: str = "basicSettingsInterface", is_preview: bool = False
@@ -735,6 +736,10 @@ class WindowManager:
         """重新创建设置窗口"""
         logger.debug("重新创建设置窗口")
         safe_close_window(self.settings_window)
+        self.settings_window = None
+
+    def _on_settings_window_closed(self) -> None:
+        """设置窗口关闭后清理引用"""
         self.settings_window = None
 
     def show_settings_window_about(self) -> None:
