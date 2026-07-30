@@ -101,7 +101,8 @@ def collect_data_includes() -> List[DataInclude]:
             for file in files:
                 src = Path(root) / file
                 rel = src.relative_to(PROJECT_ROOT)
-                includes.append(DataInclude(src, str(rel.parent), is_dir=False))
+                # ✅ 修改这里：使用完整相对路径（含文件名），而非仅父目录
+                includes.append(DataInclude(src, str(rel), is_dir=False))
     if LANGUAGE_MODULES_DIR.exists():
         for file in LANGUAGE_MODULES_DIR.glob("*.py"):
             includes.append(
