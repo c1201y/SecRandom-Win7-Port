@@ -67,7 +67,7 @@ jobs:
         run: |
           $name = "SecRandom-${{ steps.version.outputs.plain }}-${{ matrix.platform }}-x64"
           Push-Location dist
-          Rename-Item -Path SecRandom.dist -NewName $name
+          Rename-Item -Path main.dist -NewName $name
           Compress-Archive -Path $name -DestinationPath "$name.zip"
           Pop-Location
           # 保存变量供后续步骤使用，避免 YAML 长行问题
