@@ -61,7 +61,25 @@ def _gather_data_flags() -> list[str]:
         if not include.is_dir and target == ".":
             target = Path(source).name
         flags.append(f"{flag}={source}={target}")
+    flags.extend(_soundfile_data_flags())
     return flags
+
+
+def _soundfile_data_flags() -> list[str]:
+    """打包 soundfile 的 libsndfile DLL。
+
+    soundfile 0.11 通过 cffi 从 '_soundfile_data/libsndfile_64bit.dll' 加载，
+    ctypes 加载的 DLL Nuitka 无法自动追踪，需显式 include。
+    """
+    try:
+        import soundfile
+    except Exception:
+        return []
+    data_dir = Path(soundfile.__file__).parent / "_soundfile_data"
+    if not (data_dir / "libsndfile_64bit.dll").exists():
+        return []
+    print(f"  data  {data_dir} -> _soundfile_data")
+    return [f"--include-data-dir={data_dir}=_soundfile_data"]
 
 
 def _sanitize_version(ver_str: str) -> str:
