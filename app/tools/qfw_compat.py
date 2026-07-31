@@ -56,10 +56,11 @@ def _patch_pivot(module):
         return
 
     def patched(self, item=None):
-        # sender() 在 Nuitka 打包环境下可能返回 None，优先使用信号发射的参数
-        if item is None:
+        # 编译期已 patch：itemClicked 发射 self（PivotItem），item 即控件对象。
+        # 兜底旧构建：itemClicked 仍发射 bool 哨兵 (True)，此时只能从 sender() 获取 PivotItem。
+        if item is None or not hasattr(item, "property"):
             item = self.sender()
-        if item is not None:
+        if item is not None and hasattr(item, "property"):
             self.setCurrentItem(item.property("routeKey"))
 
     cls._onItemClicked = patched
