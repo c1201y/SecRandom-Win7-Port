@@ -39,6 +39,62 @@ def patch_file(py: pathlib.Path) -> int:
     return count
 
 
+def patch_sender_usage(py: pathlib.Path) -> int:
+    """修复依赖 self.sender() 的槽函数。
+
+    Nuitka 打包环境下 QObject.sender() 可能返回 None。
+    将 'item = self.sender()' 改为优先使用信号发射的参数 args[0]。
+    """
+    if py.name != "pivot.py":
+        return 0
+    text = py.read_text(encoding="utf-8", errors="replace")
+    pat = re.compile(
+        r"def _onItemClicked\(self,\s*\*args\):\n(\s*)item = self\.sender\(\)"
+        r"|def _onItemClicked\(self,\s*item=None\):\n(\s*)item = self\.sender\(\)"
+    )
+
+    def repl(m):
+        indent = m.group(1) or m.group(2)
+        return (
+            "def _onItemClicked(self, *args):\n"
+            f"{indent}item = args[0] if args else self.sender()"
+        )
+
+    new_text, n = pat.subn(repl, text)
+    if n:
+        py.write_text(new_text, encoding="utf-8")
+    return n
+
+
+LAMBDA_PATTERN = re.compile(r"\.connect\(\s*lambda\s*:")
+
+
+def patch_project_lambdas(project_root: pathlib.Path) -> int:
+    """修复 app/ 源码中信号连接的无参 lambda。
+
+    PySide2 解释模式下连接无参 lambda 到带参信号会自动截断参数；
+    Nuitka 编译后的 lambda 无法内省参数数量，信号发射参数时会抛
+    TypeError: <lambda>() takes 0 positional arguments but 1 was given。
+    将所有 '.connect(lambda: ...)' 改为 '.connect(lambda *_args: ...)'。
+    """
+    total = 0
+    files = 0
+    app_dir = project_root / "app"
+    for py in sorted(app_dir.rglob("*.py")):
+        if "__pycache__" in str(py):
+            continue
+        text = py.read_text(encoding="utf-8", errors="replace")
+        new_text = LAMBDA_PATTERN.sub(".connect(lambda *_args:", text)
+        if new_text != text:
+            py.write_text(new_text, encoding="utf-8")
+            n = len(LAMBDA_PATTERN.findall(text))
+            print(f"Lambda-fixed {py.relative_to(project_root)}: {n} lambda(s)")
+            total += n
+            files += 1
+    print(f"Lambda fix done. {files} files, {total} lambda(s).")
+    return total
+
+
 def main() -> None:
     total = 0
     patched_files = 0
@@ -51,11 +107,15 @@ def main() -> None:
             if "__pycache__" in str(py):
                 continue
             n = patch_file(py)
-            if n:
-                print(f"Patched {py.relative_to(base)}: {n} method(s)")
+            m = patch_sender_usage(py)
+            if n or m:
+                print(f"Patched {py.relative_to(base)}: {n} method(s), {m} sender fix")
                 patched_files += 1
-                total += n
+                total += n + m
     print(f"Done. {patched_files} files, {total} methods patched.")
+
+    project_root = pathlib.Path(__file__).resolve().parent.parent
+    patch_project_lambdas(project_root)
 
 
 if __name__ == "__main__":
