@@ -50,7 +50,7 @@ jobs:
         run: uv pip install --upgrade nuitka
 
       - name: Patch qfluentwidgets for Nuitka compatibility
-        run: uv run python -c "import importlib,pathlib;m=importlib.import_module('qfluentwidgets.components.widgets.scroll_bar');f=pathlib.Path(m.__file__);c=f.read_text('utf-8');c=c.replace('def _onOpacityAniValueChanged(self):','def _onOpacityAniValueChanged(self, _value=None):');f.write_text(c,'utf-8');print('Patched:',f)"
+        run: uv run python scripts/patch_qfluentwidgets_nuitka.py
 
       - name: Build with Nuitka
         run: uv run python build_nuitka.py
