@@ -76,10 +76,14 @@ def _soundfile_data_flags() -> list[str]:
     except Exception:
         return []
     data_dir = Path(soundfile.__file__).parent / "_soundfile_data"
-    if not (data_dir / "libsndfile_64bit.dll").exists():
+    dll = data_dir / "libsndfile_64bit.dll"
+    if not dll.exists():
         return []
     print(f"  data  {data_dir} -> _soundfile_data")
-    return [f"--include-data-dir={data_dir}=_soundfile_data"]
+    return [
+        f"--include-data-dir={data_dir}=_soundfile_data",
+        f"--include-data-file={dll}=libsndfile.dll",
+    ]
 
 
 def _sanitize_version(ver_str: str) -> str:
