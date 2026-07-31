@@ -50,6 +50,18 @@ def _patch_scrollbar(module):
     cls._onOpacityAniValueChanged = patched
 
 
+def _patch_pivot(module):
+    cls = getattr(module, "Pivot", None)
+    if cls is None:
+        return
+    orig = cls._onItemClicked
+
+    def patched(self, item=None):
+        orig(self)
+
+    cls._onItemClicked = patched
+
+
 SIMPLE_CLASSES = [
     "PushButton",
     "PrimaryPushButton",
@@ -71,3 +83,4 @@ def apply_patches():
     for name in SIMPLE_CLASSES:
         _patch_simple(qfw, name)
     _patch_scrollbar(qfw)
+    _patch_pivot(qfw)
