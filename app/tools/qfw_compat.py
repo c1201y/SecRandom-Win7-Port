@@ -54,10 +54,13 @@ def _patch_pivot(module):
     cls = getattr(module, "Pivot", None)
     if cls is None:
         return
-    orig = cls._onItemClicked
 
     def patched(self, item=None):
-        orig(self)
+        # sender() 在 Nuitka 打包环境下可能返回 None，优先使用信号发射的参数
+        if item is None:
+            item = self.sender()
+        if item is not None:
+            self.setCurrentItem(item.property("routeKey"))
 
     cls._onItemClicked = patched
 
