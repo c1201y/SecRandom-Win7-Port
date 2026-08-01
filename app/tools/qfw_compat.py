@@ -38,34 +38,6 @@ def _patch_simple(module, class_name):
     cls.__init__ = patched_init
 
 
-def _patch_scrollbar(module):
-    cls = getattr(module, "ScrollBar", None)
-    if cls is None:
-        return
-    orig = cls._onOpacityAniValueChanged
-
-    def patched(self, _value=None):
-        orig(self)
-
-    cls._onOpacityAniValueChanged = patched
-
-
-def _patch_pivot(module):
-    cls = getattr(module, "Pivot", None)
-    if cls is None:
-        return
-
-    def patched(self, item=None):
-        # 编译期已 patch：itemClicked 发射 self（PivotItem），item 即控件对象。
-        # 兜底旧构建：itemClicked 仍发射 bool 哨兵 (True)，此时只能从 sender() 获取 PivotItem。
-        if item is None or not hasattr(item, "property"):
-            item = self.sender()
-        if item is not None and hasattr(item, "property"):
-            self.setCurrentItem(item.property("routeKey"))
-
-    cls._onItemClicked = patched
-
-
 SIMPLE_CLASSES = [
     "PushButton",
     "PrimaryPushButton",
@@ -86,5 +58,3 @@ def apply_patches():
 
     for name in SIMPLE_CLASSES:
         _patch_simple(qfw, name)
-    _patch_scrollbar(qfw)
-    _patch_pivot(qfw)
