@@ -1,4 +1,4 @@
-name: 构建 (PyInstaller)
+name: build(PyInstaller)
 
 env:
   PYTHON_VERSION: "3.8"
@@ -56,12 +56,12 @@ jobs:
 
       - name: 打包便携版 (zip)
         run: |
-          mkdir -p zip_dist/SecRandom
+          New-Item -ItemType Directory -Force -Path zip_dist/SecRandom
           Copy-Item -Recurse -Force dist/SecRandom/* zip_dist/SecRandom/
-          mkdir -p zip_dist/SecRandom/data
+          New-Item -ItemType Directory -Force -Path zip_dist/SecRandom/data
           Copy-Item -Recurse -Force data/* zip_dist/SecRandom/data/
           Copy-Item LICENSE zip_dist/SecRandom/data/
-          mkdir -p zip
+          New-Item -ItemType Directory -Force -Path zip
           $name = "SecRandom-Windows-Portable-${{ github.ref_name }}-x64.zip"
           Compress-Archive -Path zip_dist/SecRandom/* -DestinationPath "zip/$name" -Force
           echo "便携版打包完成: zip/$name"
