@@ -2,9 +2,11 @@
 # 导入库
 # ==================================================
 
+import gc
+
 from loguru import logger
 from PySide2.QtWidgets import QApplication, QWidget, QScroller, QSizePolicy
-from PySide2.QtGui import QIcon
+from PySide2.QtGui import QIcon, QPixmapCache
 from PySide2.QtCore import QTimer, QEvent, Signal, QSize, Qt
 from PySide2.QtWidgets import QVBoxLayout
 from qfluentwidgets import (
@@ -34,6 +36,26 @@ from app.page_building.window_template import BackgroundLayer
 from app.Language.obtain_language import get_content_name_async
 from app.common.IPC_URL.url_command_handler import URLCommandHandler
 from app.common.search.settings_search_controller import SettingsSearchController
+
+
+def _trim_working_set():
+    """强制操作系统回收已释放页面的工作集
+
+    设置窗口关闭后对象已被销毁，但进程分配器与 Windows 堆会保留
+    已释放的内存页，导致任务管理器显示的内存占用不下降。
+    调用 EmptyWorkingSet 将这些空闲页交还操作系统。
+    """
+    import ctypes
+
+    try:
+        from ctypes import wintypes
+
+        psapi = ctypes.WinDLL("psapi")
+        psapi.EmptyWorkingSet.argtypes = [wintypes.HANDLE]
+        psapi.EmptyWorkingSet.restype = wintypes.BOOL
+        psapi.EmptyWorkingSet(ctypes.windll.kernel32.GetCurrentProcess())
+    except Exception:
+        pass
 
 
 # ==================================================
@@ -98,8 +120,7 @@ class SettingsWindow(FluentWindow):
         """设置定时器"""
         self.resize_timer = QTimer(self)
         self.resize_timer.setSingleShot(True)
-        self.resize_timer.timeout.connect(
-            lambda: self.save_window_size(self.width(), self.height())
+        self.resize_timer.timeout.connect(lambda *_args: self.save_window_size(self.width(), self.height())
         )
 
     def _setup_window_properties(self):
@@ -419,6 +440,9 @@ class SettingsWindow(FluentWindow):
         self.windowClosed.emit()
         event.accept()
         self.deleteLater()
+        QPixmapCache.clear()
+        gc.collect()
+        QTimer.singleShot(200, _trim_working_set)
 
     def _stop_navigation_animations(self):
         """在隐藏设置窗口前尽量停止导航动画，避免悬空回调。"""
