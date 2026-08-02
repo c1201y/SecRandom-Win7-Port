@@ -170,13 +170,3 @@ jobs:
           prerelease: ${{ contains(steps.get_version.outputs.version, 'beta') || contains(steps.get_version.outputs.version, 'alpha') }}
           tag_name: ${{ steps.get_version.outputs.version }}
           name: SecRandom 新版本 - ${{ steps.get_version.outputs.version }}
-
-      - name: 创建 Sentry Release (可选)
-        uses: getsentry/action-release@v3
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
-          version: ${{ steps.get_version.outputs.version }}
