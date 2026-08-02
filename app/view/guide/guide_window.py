@@ -455,12 +455,20 @@ class GuideWindow(FramelessWindow):
         try:
             is_dark = self._is_dark_mode_by_settings()
             bg = "#202020" if is_dark else "#ffffff"
-            self.setStyleSheet(f"background-color: {bg};")
-            self.bottomBar.setStyleSheet(f"background-color: {bg};")
+            # 用 objectName 限定选择器，只给窗口和底栏上背景色，
+            # 避免裸 background-color 级联到子控件、覆盖主题卡片的自身背景
+            self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+            self.setObjectName("GuideWindow")
+            self.bottomBar.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+            self.bottomBar.setObjectName("GuideBottomBar")
+            self.setStyleSheet(
+                f"#GuideWindow {{ background-color: {bg}; }}\n"
+                f"#GuideBottomBar {{ background-color: {bg}; }}"
+            )
         except Exception:
             pass
 
-    def _on_theme_changed(self) -> None:
+    def _on_theme_changed(self, *args):
         try:
             self._apply_current_theme()
         except Exception:
@@ -477,7 +485,7 @@ class GuideWindow(FramelessWindow):
         if self.pages[self.current_index] == self.licensePage:
             self.nextBtn.setEnabled(accepted)
 
-    def next_page(self):
+    def next_page(self, *args):
         next_idx = self.current_index + 1
 
         if next_idx < len(self.pages):
@@ -488,7 +496,7 @@ class GuideWindow(FramelessWindow):
             self.guideFinished.emit()
             self.close()
 
-    def prev_page(self):
+    def prev_page(self, *args):
         if self._prev_override_index is not None:
             target = self._prev_override_index
             self._prev_override_index = None
