@@ -99,7 +99,7 @@ class about_banner(QWidget):
         except Exception as e:
             logger.exception(f"保存横幅点击次数失败: {e}")
 
-    def _on_banner_clicked(self):
+    def _on_banner_clicked(self, *args):
         """横幅点击事件"""
         self.click_count += 1
         self._save_click_count(self.click_count)
@@ -145,7 +145,7 @@ class about_info(GroupHeaderCardWidget):
         )
 
         # 查看当前软件版本号
-        version_text = f"{SPECIAL_VERSION} | {CODENAME} ({SYSTEM}-{ARCH})"
+        version_text = f"{SPECIAL_VERSION} 移植版 | {CODENAME} ({SYSTEM}-{ARCH})"
         self.about_version_label = BodyLabel(version_text)
 
         # 查看当前软件版权所属
@@ -156,13 +156,6 @@ class about_info(GroupHeaderCardWidget):
             copyright_text = f"Copyright © {INITIAL_AUTHORING_YEAR}-{CURRENT_YEAR} {COPYRIGHT_HOLDER}"
 
         self.about_author_label = BodyLabel(copyright_text)
-
-        # 创建捐赠支持按钮
-        self.donation_button = PushButton(get_content_name_async("about", "donation"))
-        self.donation_button.setIcon(
-            get_theme_icon("ic_fluent_document_person_20_filled")
-        )
-        self.donation_button.clicked.connect(self.open_donation_url)
 
         self.addGroup(
             get_theme_icon("ic_fluent_branch_fork_link_20_filled"),
@@ -175,12 +168,6 @@ class about_info(GroupHeaderCardWidget):
             get_content_name_async("about", "github"),
             get_content_description_async("about", "github"),
             self.about_github_Button,
-        )
-        self.addGroup(
-            get_theme_icon("ic_fluent_document_person_20_filled"),
-            get_content_name_async("about", "donation"),
-            get_content_description_async("about", "donation"),
-            self.donation_button,
         )
         self.addGroup(
             get_theme_icon("ic_fluent_class_20_filled"),
@@ -232,12 +219,8 @@ class about_info(GroupHeaderCardWidget):
 
         get_online_stats_async(on_result)
 
-    def _update_online_count(self):
+    def _update_online_count(self, *args):
         self._fetch_online_count()
-
-    def open_donation_url(self):
-        """打开捐赠链接"""
-        QDesktopServices.openUrl(QUrl(DONATION_URL))
 
 
 class user_info_card(HeaderCardWidget):
@@ -377,7 +360,7 @@ class user_info_card(HeaderCardWidget):
     def _format_label_text(self, title, value):
         return f"{title}: {value}"
 
-    def _update_runtime_label(self):
+    def _update_runtime_label(self, *args):
         total_seconds = self._get_total_runtime_seconds()
         runtime_text = self._format_duration(total_seconds)
         self.runtime_label.setText(
@@ -392,7 +375,7 @@ class user_info_card(HeaderCardWidget):
         session_seconds = self._get_runtime_seconds()
         return self._runtime_base_seconds + session_seconds
 
-    def _copy_user_info(self):
+    def _copy_user_info(self, *args):
         text = "\n".join(
             [
                 self.user_name_label.text(),
