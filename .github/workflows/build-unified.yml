@@ -10,6 +10,11 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "版本号 (例如 v1.0.0)"
+        required: true
+        type: string
 
 concurrency:
   group: build-${{ github.ref }}
@@ -42,12 +47,22 @@ jobs:
             ${{ runner.os }}-x64-${{ env.CACHE_VERSION }}-
             ${{ runner.os }}-x64-
 
-      - name: 更新版本信息 (tag)
-        if: startsWith(github.ref_name, 'v')
+      - name: 确定版本号
+        id: get_version
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $V = "${{ github.event.inputs.version }}"
+          } else {
+            $V = "${{ github.ref_name }}"
+          }
+          echo "version=$V" >> $env:GITHUB_OUTPUT
+          echo "Version: $V"
+
+      - name: 更新版本信息
         run: |
           python update_version.py
         env:
-          VERSION: ${{ github.ref_name }}
+          VERSION: ${{ steps.get_version.outputs.version }}
 
       - name: 同步依赖并构建
         run: |
@@ -62,7 +77,7 @@ jobs:
           Copy-Item -Recurse -Force data/* zip_dist/SecRandom/data/
           Copy-Item LICENSE zip_dist/SecRandom/data/
           New-Item -ItemType Directory -Force -Path zip
-          $name = "SecRandom-Windows-Portable-${{ github.ref_name }}-x64.zip"
+          $name = "SecRandom-Windows-Portable-${{ steps.get_version.outputs.version }}-x64.zip"
           Compress-Archive -Path zip_dist/SecRandom/* -DestinationPath "zip/$name" -Force
           echo "便携版打包完成: zip/$name"
 
@@ -75,7 +90,7 @@ jobs:
         run: |
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" SRsetup.iss
           if (Test-Path "build/SecRandom setup x64.exe") {
-            $setupName = "SecRandom-Windows-Setup-${{ github.ref_name }}-x64.exe"
+            $setupName = "SecRandom-Windows-Setup-${{ steps.get_version.outputs.version }}-x64.exe"
             Move-Item "build/SecRandom setup x64.exe" "zip/$setupName"
             echo "安装程序生成: zip/$setupName"
           } else {
@@ -92,7 +107,9 @@ jobs:
 
   release:
     needs: [build]
-    if: startsWith(github.ref, 'refs/tags/')
+    if: |
+      startsWith(github.ref, 'refs/tags/') ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -101,6 +118,17 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+
+      - name: 确定版本号
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${{ github.ref_name }}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
 
       - name: 下载 artifacts
         uses: actions/download-artifact@v4
@@ -118,7 +146,7 @@ jobs:
 
       - name: 生成 Release 说明
         run: |
-          version="${{ github.ref_name }}"
+          version="${{ steps.get_version.outputs.version }}"
           version_no_v="${version#v}"
           mkdir -p CHANGELOG/$version
           cat > CHANGELOG/$version/CHANGELOG.md << EOF
@@ -137,11 +165,11 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: release/*
-          body_path: CHANGELOG/${{ github.ref_name }}/CHANGELOG.md
+          body_path: CHANGELOG/${{ steps.get_version.outputs.version }}/CHANGELOG.md
           draft: false
-          prerelease: ${{ contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
-          tag_name: ${{ github.ref_name }}
-          name: SecRandom 新版本 - ${{ github.ref_name }}
+          prerelease: ${{ contains(steps.get_version.outputs.version, 'beta') || contains(steps.get_version.outputs.version, 'alpha') }}
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: SecRandom 新版本 - ${{ steps.get_version.outputs.version }}
 
       - name: 创建 Sentry Release (可选)
         uses: getsentry/action-release@v3
@@ -151,4 +179,4 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: production
-          version: ${{ github.ref_name }}
+          version: ${{ steps.get_version.outputs.version }}
