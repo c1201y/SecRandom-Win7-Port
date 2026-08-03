@@ -451,22 +451,48 @@ class GuideWindow(FramelessWindow):
         except Exception:
             return False
 
-    def _apply_current_theme(self) -> None:
+        def _apply_current_theme(self) -> None:
         try:
+            # 1. 获取当前的主题模式
             is_dark = self._is_dark_mode_by_settings()
-            bg = "#202020" if is_dark else "#ffffff"
-            # 用 objectName 限定选择器，只给窗口和底栏上背景色，
-            # 避免裸 background-color 级联到子控件、覆盖主题卡片的自身背景
+            
+            # 2. 使用 qfluentwidgets 内置的标准颜色
+            # 如果是深色模式，使用 FluencyStyleSheetBase._darkBackgroundColor (通常是 #202020)
+            # 如果是浅色模式，使用 FluencyStyleSheetBase._lightBackgroundColor (通常是 #f3f3f3)
+            # 这里我们直接引用库里的变量，或者手动指定更柔和的颜色
+            if is_dark:
+                bg_color = "#202020"  # 标准深色背景
+                text_color = "#ffffff" # 必须强制设置文字为白色，否则看不见
+            else:
+                bg_color = "#f3f3f3"  # 标准浅色背景 (比纯白更护眼)
+                text_color = "#000000" # 黑色文字
+
+            # 3. 应用样式表
+            # 注意：这里增加了 color 属性来强制改变文字颜色
             self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
             self.setObjectName("GuideWindow")
+            
             self.bottomBar.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
             self.bottomBar.setObjectName("GuideBottomBar")
+            
             self.setStyleSheet(
-                f"#GuideWindow {{ background-color: {bg}; }}\n"
-                f"#GuideBottomBar {{ background-color: {bg}; }}"
+                f"#GuideWindow {{ "
+                f"background-color: {bg_color}; "
+                f"color: {text_color}; "  # <--- 关键修复：设置全局文字颜色
+                f"}}\n"
+                f"#GuideBottomBar {{ "
+                f"background-color: {bg_color}; "
+                f"color: {text_color}; "
+                f"}}"
             )
-        except Exception:
-            pass
+            
+            # 4. 强制更新子控件样式（防止缓存）
+            self.style().unpolish(self)
+            self.style().polish(self)
+            self.update()
+
+        except Exception as e:
+            logger.error(f"应用主题失败: {e}")
 
     def _on_theme_changed(self, *args):
         try:
