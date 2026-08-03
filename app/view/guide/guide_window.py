@@ -1,9 +1,9 @@
 # ==================================================
 # 导入库
 # ==================================================
-from PySide6.QtWidgets import *
-from PySide6.QtCore import *
-from PySide6.QtGui import QFont, QIcon
+from PySide2.QtWidgets import *
+from PySide2.QtCore import *
+from PySide2.QtGui import QFont, QIcon
 from qfluentwidgets import *
 from qframelesswindow import FramelessWindow
 from app.view.guide.pages import *
@@ -12,12 +12,6 @@ from app.Language.obtain_language import get_any_position_value_async
 from app.tools.settings_access import update_settings
 from app.tools.personalised import load_custom_font
 from app.tools.path_utils import get_data_path
-
-
-# ==================================================
-# 强制使用浅色主题，无论系统何时都是浅色
-# ==================================================
-setTheme(Theme.LIGHT)
 
 
 # ==================================================
@@ -39,7 +33,7 @@ class GuideWindow(FramelessWindow):
         except Exception:
             self.titleBar.setFixedHeight(self._DEFAULT_TITLEBAR_HEIGHT)
         self.setWindowIcon(
-            QIcon(str(get_data_path("assets/icon", "secrandom-icon-paper.png")))
+            QIcon(str(get_data_path("assets/icon", "secrandom-icon-paper.ico")))
         )
         self.setWindowTitle("SecRandom")
         self.resize(width, height)
@@ -71,12 +65,10 @@ class GuideWindow(FramelessWindow):
         self.bottomLayout = QHBoxLayout(self.bottomBar)
         self.bottomLayout.setContentsMargins(20, 10, 20, 20)
 
-        self.prevBtn = PushButton(
-            get_any_position_value_async("guide", "previous"), self
-        )
-        self.nextBtn = PrimaryPushButton(
-            get_any_position_value_async("guide", "next"), self
-        )
+        self.prevBtn = PushButton(self)
+        self.prevBtn.setText(get_any_position_value_async("guide", "previous"))
+        self.nextBtn = PrimaryPushButton(self)
+        self.nextBtn.setText(get_any_position_value_async("guide", "next"))
         self.bottomLayout.addStretch(1)
         self.bottomLayout.addWidget(self.prevBtn)
         self.bottomLayout.addWidget(self.nextBtn)
