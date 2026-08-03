@@ -3,7 +3,7 @@
 # ==================================================
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
-from PySide2.QtGui import QFont, QIcon
+from PySide2.QtGui import QFont, QIcon, QColor, QPalette
 from qfluentwidgets import *
 from qfluentwidgets import qconfig
 from qframelesswindow import FramelessWindow
@@ -451,48 +451,25 @@ class GuideWindow(FramelessWindow):
         except Exception:
             return False
 
-        def _apply_current_theme(self) -> None:
+    def _apply_current_theme(self) -> None:
+        """深色模式适配：深色主题下将窗口与底栏背景调暗，浅色恢复默认
+
+        使用调色板而非样式表，避免级联到子控件、覆盖主题卡片的自身背景。
+        """
         try:
-            # 1. 获取当前的主题模式
             is_dark = self._is_dark_mode_by_settings()
-            
-            # 2. 使用 qfluentwidgets 内置的标准颜色
-            # 如果是深色模式，使用 FluencyStyleSheetBase._darkBackgroundColor (通常是 #202020)
-            # 如果是浅色模式，使用 FluencyStyleSheetBase._lightBackgroundColor (通常是 #f3f3f3)
-            # 这里我们直接引用库里的变量，或者手动指定更柔和的颜色
-            if is_dark:
-                bg_color = "#202020"  # 标准深色背景
-                text_color = "#ffffff" # 必须强制设置文字为白色，否则看不见
-            else:
-                bg_color = "#f3f3f3"  # 标准浅色背景 (比纯白更护眼)
-                text_color = "#000000" # 黑色文字
-
-            # 3. 应用样式表
-            # 注意：这里增加了 color 属性来强制改变文字颜色
-            self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-            self.setObjectName("GuideWindow")
-            
-            self.bottomBar.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-            self.bottomBar.setObjectName("GuideBottomBar")
-            
-            self.setStyleSheet(
-                f"#GuideWindow {{ "
-                f"background-color: {bg_color}; "
-                f"color: {text_color}; "  # <--- 关键修复：设置全局文字颜色
-                f"}}\n"
-                f"#GuideBottomBar {{ "
-                f"background-color: {bg_color}; "
-                f"color: {text_color}; "
-                f"}}"
-            )
-            
-            # 4. 强制更新子控件样式（防止缓存）
-            self.style().unpolish(self)
-            self.style().polish(self)
-            self.update()
-
-        except Exception as e:
-            logger.error(f"应用主题失败: {e}")
+            app_window_color = QApplication.palette().color(QPalette.ColorRole.Window)
+            for widget in (self, self.bottomBar):
+                palette = widget.palette()
+                if is_dark:
+                    palette.setColor(QPalette.ColorRole.Window, QColor("#202020"))
+                    widget.setAutoFillBackground(True)
+                else:
+                    palette.setColor(QPalette.ColorRole.Window, app_window_color)
+                    widget.setAutoFillBackground(False)
+                widget.setPalette(palette)
+        except Exception:
+            pass
 
     def _on_theme_changed(self, *args):
         try:
