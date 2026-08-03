@@ -1,11 +1,10 @@
 # ==================================================
 # 导入库
 # ==================================================
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import QFont, QIcon, QColor, QPalette
+from PySide6.QtWidgets import *
+from PySide6.QtCore import *
+from PySide6.QtGui import QFont, QIcon
 from qfluentwidgets import *
-from qfluentwidgets import qconfig
 from qframelesswindow import FramelessWindow
 from app.view.guide.pages import *
 from loguru import logger
@@ -13,6 +12,12 @@ from app.Language.obtain_language import get_any_position_value_async
 from app.tools.settings_access import update_settings
 from app.tools.personalised import load_custom_font
 from app.tools.path_utils import get_data_path
+
+
+# ==================================================
+# 强制使用浅色主题，无论系统何时都是浅色
+# ==================================================
+setTheme(Theme.LIGHT)
 
 
 # ==================================================
@@ -34,7 +39,7 @@ class GuideWindow(FramelessWindow):
         except Exception:
             self.titleBar.setFixedHeight(self._DEFAULT_TITLEBAR_HEIGHT)
         self.setWindowIcon(
-            QIcon(str(get_data_path("assets/icon", "secrandom-icon-paper.ico")))
+            QIcon(str(get_data_path("assets/icon", "secrandom-icon-paper.png")))
         )
         self.setWindowTitle("SecRandom")
         self.resize(width, height)
@@ -66,10 +71,12 @@ class GuideWindow(FramelessWindow):
         self.bottomLayout = QHBoxLayout(self.bottomBar)
         self.bottomLayout.setContentsMargins(20, 10, 20, 20)
 
-        self.prevBtn = PushButton(self)
-        self.prevBtn.setText(get_any_position_value_async("guide", "previous"))
-        self.nextBtn = PrimaryPushButton(self)
-        self.nextBtn.setText(get_any_position_value_async("guide", "next"))
+        self.prevBtn = PushButton(
+            get_any_position_value_async("guide", "previous"), self
+        )
+        self.nextBtn = PrimaryPushButton(
+            get_any_position_value_async("guide", "next"), self
+        )
         self.bottomLayout.addStretch(1)
         self.bottomLayout.addWidget(self.prevBtn)
         self.bottomLayout.addWidget(self.nextBtn)
@@ -85,16 +92,6 @@ class GuideWindow(FramelessWindow):
 
         self.update_nav_buttons()
         self._on_page_changed(self.current_index)
-
-        # 主题切换监听
-        self._apply_current_theme()
-        try:
-            qconfig.themeChanged.connect(self._on_theme_changed)
-        except Exception:
-            pass
-
-        # 关闭时自动销毁，防止内存泄漏
-        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -436,47 +433,6 @@ class GuideWindow(FramelessWindow):
         # 页面切换监听
         self.stackedWidget.currentChanged.connect(self._on_page_changed)
 
-    def _is_dark_mode_by_settings(self) -> bool:
-        try:
-            theme = readme_settings("basic_settings", "theme")
-            if theme == "DARK":
-                return True
-            if theme == "AUTO":
-                try:
-                    from darkdetect import isDark
-                    return bool(isDark())
-                except Exception:
-                    return False
-            return False
-        except Exception:
-            return False
-
-    def _apply_current_theme(self) -> None:
-        """深色模式适配：深色主题下将窗口与底栏背景调暗，浅色恢复默认
-
-        使用调色板而非样式表，避免级联到子控件、覆盖主题卡片的自身背景。
-        """
-        try:
-            is_dark = self._is_dark_mode_by_settings()
-            app_window_color = QApplication.palette().color(QPalette.ColorRole.Window)
-            for widget in (self, self.bottomBar):
-                palette = widget.palette()
-                if is_dark:
-                    palette.setColor(QPalette.ColorRole.Window, QColor("#202020"))
-                    widget.setAutoFillBackground(True)
-                else:
-                    palette.setColor(QPalette.ColorRole.Window, app_window_color)
-                    widget.setAutoFillBackground(False)
-                widget.setPalette(palette)
-        except Exception:
-            pass
-
-    def _on_theme_changed(self, *args):
-        try:
-            self._apply_current_theme()
-        except Exception:
-            pass
-
     def _on_page_changed(self, index):
         self.bottomBar.setVisible(self.pages[index] != self.welcomePage)
         if self.pages[index] == self.licensePage:
@@ -488,7 +444,7 @@ class GuideWindow(FramelessWindow):
         if self.pages[self.current_index] == self.licensePage:
             self.nextBtn.setEnabled(accepted)
 
-    def next_page(self, *args):
+    def next_page(self):
         next_idx = self.current_index + 1
 
         if next_idx < len(self.pages):
@@ -499,7 +455,7 @@ class GuideWindow(FramelessWindow):
             self.guideFinished.emit()
             self.close()
 
-    def prev_page(self, *args):
+    def prev_page(self):
         if self._prev_override_index is not None:
             target = self._prev_override_index
             self._prev_override_index = None
@@ -522,11 +478,6 @@ class GuideWindow(FramelessWindow):
             self.nextBtn.setText(get_any_position_value_async("guide", "next"))
 
     def closeEvent(self, event):
-        try:
-            qconfig.themeChanged.disconnect(self._on_theme_changed)
-        except Exception:
-            pass
-
         if self._guide_finished:
             event.accept()
             return super().closeEvent(event)
