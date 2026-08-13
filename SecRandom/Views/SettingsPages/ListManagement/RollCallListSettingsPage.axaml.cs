@@ -142,15 +142,15 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
         var group = AddInputField(form, LR.C_Group, student.Group);
         var tags = AddInputField(form, LR.C_Tags, student.Tags);
 
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.C_Edit,
             Content = form,
             PrimaryButtonText = LR.M_ListNameDialogPrimary_Rename,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
-        if (result != FAContentDialogResult.Primary)
+        if (result != ContentDialogResult.Primary)
             return;
 
         var studentId = id.Text?.Trim() ?? string.Empty;
@@ -310,14 +310,14 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
         var group = AddInputField(form, LR.C_Group);
         var tags = AddInputField(form, LR.C_Tags);
 
-        var dialog = new FAContentDialog
+        var dialog = new ContentDialog
         {
             Title = LR.M_AddMemberTitle,
             Content = form,
             PrimaryButtonText = LR.C_AddMember,
             CloseButtonText = LR.C_Cancel,
             IsPrimaryButtonEnabled = false,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         };
 
         void UpdateCanConfirm()
@@ -332,7 +332,7 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
 
         var studentId = id.Text?.Trim() ?? string.Empty;
         var studentName = name.Text?.Trim() ?? string.Empty;
-        if (result != FAContentDialogResult.Primary)
+        if (result != ContentDialogResult.Primary)
             return;
 
         if (string.IsNullOrWhiteSpace(studentId) && string.IsNullOrWhiteSpace(studentName))
@@ -375,16 +375,16 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
 
     private async Task<bool> ConfirmClearStudentHistoryAsync(string listName)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_AddMemberHistoryResetTitle,
             Content = string.Format(LR.M_AddMemberHistoryResetContent, listName),
             PrimaryButtonText = LR.M_AddMemberHistoryResetPrimary,
             CloseButtonText = LR.M_AddMemberHistoryResetSecondary,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private static TextBox AddInputField(StackPanel form, string label, string initialText = "")
@@ -400,44 +400,44 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
 
     private async Task<bool> ConfirmOverwriteAsync(int currentCount, int importCount)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_OverwriteTitle,
             Content = string.Format(LR.M_OverwriteContent, currentCount, importCount),
             PrimaryButtonText = LR.M_OverwritePrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task<bool> ConfirmDeleteAsync(string listName)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_DeleteListTitle,
             Content = string.Format(LR.M_DeleteListContent, listName),
             PrimaryButtonText = LR.M_DeleteListPrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task<bool> ConfirmDeleteMemberAsync(string memberName)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_DeleteMemberTitle,
             Content = string.Format(LR.M_DeleteMemberContent, memberName, SelectedStudentListName),
             PrimaryButtonText = LR.M_DeleteMemberPrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task<string?> ShowListNameDialogAsync(string title, string primaryButtonText, string listName)
@@ -445,20 +445,20 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
         var textBox = new TextBox
         {
             Text = listName,
-            PlaceholderText = LR.M_ListNamePlaceholder,
+            Watermark = LR.M_ListNamePlaceholder,
             MinWidth = 320
         };
 
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = title,
             Content = textBox,
             PrimaryButtonText = primaryButtonText,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary ? textBox.Text?.Trim() : null;
+        return result == ContentDialogResult.Primary ? textBox.Text?.Trim() : null;
     }
 
     private bool ValidateNewListName(string listName)

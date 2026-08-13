@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,24 +19,24 @@
                          Glyph="{sr:Fi ColorFilled}"
                          Margin="0 0 0 4" />
 
-            <fa:FASettingsExpander x:Name="S_Theme_Theme"
+            <fa:SettingsExpander x:Name="S_Theme_Theme"
                                    Header="{x:Static lspa:Resources.S_Theme_Theme}"
                                    Description="{x:Static lspa:Resources.S_Theme_Theme_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi DarkThemeFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ComboBox SelectedIndex="{Binding Settings.Theme}">
                         <ComboBoxItem Content="{x:Static lspa:Resources.O_Theme_Light}" />
                         <ComboBoxItem Content="{x:Static lspa:Resources.O_Theme_Dark}" />
                         <ComboBoxItem Content="{x:Static lspa:Resources.O_Theme_Auto}" />
                     </ComboBox>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Theme_ThemeColor"
+            <fa:SettingsExpander x:Name="S_Theme_ThemeColor"
                                    Header="{x:Static lspa:Resources.S_Theme_ThemeColor}"
                                    Description="{x:Static lspa:Resources.S_Theme_ThemeColor_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi ColorFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <ColorPicker Color="{Binding Settings.ThemeColor}"
                                      VerticalAlignment="Center"
@@ -48,8 +48,8 @@
                             <ComboBoxItem Content="{x:Static lspa:Resources.O_ThemeColorMode_Custom}" />
                         </ComboBox>
                     </StackPanel>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
             <Separator Margin="0 12 0 4" />
             <sr:IconText x:Name="S_Font"
@@ -57,20 +57,20 @@
                          Glyph="{sr:Fi TextFontFilled}"
                          Margin="0 0 0 4" />
 
-            <fa:FASettingsExpander x:Name="S_Font_FontFamily"
+            <fa:SettingsExpander x:Name="S_Font_FontFamily"
                                    Header="{x:Static lspa:Resources.S_Font_FontFamily}"
                                    Description="{x:Static lspa:Resources.S_Font_FontFamily_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi TextFontFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <sr:FontComboBox Value="{Binding Settings.Font}" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Font_FontWeight"
+            <fa:SettingsExpander x:Name="S_Font_FontWeight"
                                    Header="{x:Static lspa:Resources.S_Font_FontWeight}"
                                    Description="{x:Static lspa:Resources.S_Font_FontWeight_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi TextBoldFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ComboBox SelectedIndex="{Binding Settings.FontWeight}">
                         <ComboBoxItem Content="{x:Static lspa:Resources.O_FontWeight_Thin}" />
                         <ComboBoxItem Content="{x:Static lspa:Resources.O_FontWeight_ExtraLight}" />
@@ -82,8 +82,8 @@
                         <ComboBoxItem Content="{x:Static lspa:Resources.O_FontWeight_ExtraBold}" />
                         <ComboBoxItem Content="{x:Static lspa:Resources.O_FontWeight_Black}" />
                     </ComboBox>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
             <TabControl Classes="compact" Padding="0">
                 <TabItem Header="{x:Static lspa:Resources.C_Font_Preview}">

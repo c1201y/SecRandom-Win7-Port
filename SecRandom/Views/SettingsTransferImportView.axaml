@@ -1,4 +1,5 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns:sr="http://secrandom.sectl.cn/schemas/xaml/core"
+             xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,7 +15,7 @@
                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap"
                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-                <GroupBox IsVisible="{Binding IsQrMode}" Header="{Binding TransferMethodLabel}">
+                <sr:GroupBox IsVisible="{Binding IsQrMode}" Header="{Binding TransferMethodLabel}">
                     <StackPanel Spacing="10">
                         <ComboBox IsVisible="{Binding HasCameraSelection}"
                                   ItemsSource="{Binding CameraOptions}"
@@ -42,16 +43,16 @@
                             <StackPanel Grid.Row="2" Grid.Column="1"><TextBlock Classes="caption" Text="{Binding TransferElapsedLabel}" /><TextBlock Text="{Binding ElapsedText}" FontSize="18" /></StackPanel>
                         </Grid>
                     </StackPanel>
-                </GroupBox>
+                </sr:GroupBox>
 
-                <GroupBox IsVisible="{Binding IsSessionCodeMode}" Header="{Binding TransferMethodLabel}">
+                <sr:GroupBox IsVisible="{Binding IsSessionCodeMode}" Header="{Binding TransferMethodLabel}">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{Binding SessionCodeHint}" TextWrapping="Wrap"
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         <TextBox x:Name="SessionCodeInput" MaxLength="12" TextAlignment="Center" FontSize="17"
                                  TextChanged="SessionCodeInput_OnTextChanged" />
                     </StackPanel>
-                </GroupBox>
+                </sr:GroupBox>
 
             </StackPanel>
         </ScrollViewer>

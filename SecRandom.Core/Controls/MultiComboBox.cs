@@ -34,7 +34,7 @@ public class MultiComboBox : ItemsControl
         AvaloniaProperty.Register<MultiComboBox, IList?>(nameof(SelectedItems));
 
     public static readonly StyledProperty<string?> PlaceholderTextProperty =
-        TextBox.PlaceholderTextProperty.AddOwner<MultiComboBox>();
+        TextBox.WatermarkProperty.AddOwner<MultiComboBox>();
 
     public static readonly StyledProperty<object?> InnerLeftContentProperty =
         AvaloniaProperty.Register<MultiComboBox, object?>(nameof(InnerLeftContent));

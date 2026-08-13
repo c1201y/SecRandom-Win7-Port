@@ -571,14 +571,14 @@ public partial class PluginsSettingsPage : UserControl, INotifyPropertyChanged
 
         TextBox sourceUrlBox = new()
         {
-            PlaceholderText = LR.C_SourceUrl,
+            Watermark = LR.C_SourceUrl,
             Text = SourceEditorUrl
         };
         sourceUrlBox.TextChanged += (_, _) => SourceEditorUrl = sourceUrlBox.Text ?? string.Empty;
 
         TextBox sourceMirrorUrlBox = new()
         {
-            PlaceholderText = LR.C_SourceMirrorUrl,
+            Watermark = LR.C_SourceMirrorUrl,
             Text = SourceEditorMirrorUrl
         };
         sourceMirrorUrlBox.TextChanged += (_, _) => SourceEditorMirrorUrl = sourceMirrorUrlBox.Text ?? string.Empty;

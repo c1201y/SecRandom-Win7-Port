@@ -12,17 +12,17 @@
                 DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:SpecificAnnouncementAttachedSettingsControl}}">
         <sr:Field Label="{x:Static las:Resources.C_SpecificVoiceAlias}">
             <TextBox Text="{Binding TtsAlias, Mode=TwoWay}"
-                      PlaceholderText="{x:Static las:Resources.C_SpecificVoiceAliasPlaceholder}" />
+                      Watermark="{x:Static las:Resources.C_SpecificVoiceAliasPlaceholder}" />
         </sr:Field>
 
         <sr:Field Label="{x:Static las:Resources.C_SpecificVoicePrefix}">
             <TextBox Text="{Binding Prefix, Mode=TwoWay}"
-                      PlaceholderText="{x:Static las:Resources.C_SpecificVoiceOptional}" />
+                      Watermark="{x:Static las:Resources.C_SpecificVoiceOptional}" />
         </sr:Field>
 
         <sr:Field Label="{x:Static las:Resources.C_SpecificVoiceSuffix}">
             <TextBox Text="{Binding Suffix, Mode=TwoWay}"
-                      PlaceholderText="{x:Static las:Resources.C_SpecificVoiceOptional}" />
+                      Watermark="{x:Static las:Resources.C_SpecificVoiceOptional}" />
         </sr:Field>
 
         <TextBlock Text="{x:Static las:Resources.C_SpecificVoiceDescription}"

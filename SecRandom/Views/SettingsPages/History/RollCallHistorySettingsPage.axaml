@@ -18,14 +18,12 @@
         <Grid Grid.Row="0" ColumnDefinitions="* * Auto" ColumnSpacing="4">
             <ComboBox Grid.Column="0"
                       HorizontalAlignment="Stretch"
-                      PlaceholderText="{x:Static langs:Resources.C_SelectClass}"
-                      ItemsSource="{Binding ClassNames}"
+ItemsSource="{Binding ClassNames}"
                       SelectedItem="{Binding SelectedClassName, Mode=TwoWay}" />
 
             <ComboBox Grid.Column="1"
                       HorizontalAlignment="Stretch"
-                      PlaceholderText="{x:Static langs:Resources.C_SelectMode}"
-                      ItemsSource="{Binding ModeOptions}"
+ItemsSource="{Binding ModeOptions}"
                       SelectedValue="{Binding SelectedMode, Mode=TwoWay}"
                       SelectedValueBinding="{Binding Key}">
                 <ComboBox.ItemTemplate>

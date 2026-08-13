@@ -139,15 +139,15 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
         var count = AddInputField(form, LR.C_Count, prize.Count.ToString(System.Globalization.CultureInfo.CurrentCulture));
         var tags = AddInputField(form, LR.C_Tags, prize.Tags);
 
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.C_Edit,
             Content = form,
             PrimaryButtonText = LR.M_ListNameDialogPrimary_Rename,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
-        if (result != FAContentDialogResult.Primary)
+        if (result != ContentDialogResult.Primary)
             return;
 
         var prizeId = id.Text?.Trim() ?? string.Empty;
@@ -311,14 +311,14 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
         var count = AddInputField(form, LR.C_Count, "1");
         var tags = AddInputField(form, LR.C_Tags);
 
-        var dialog = new FAContentDialog
+        var dialog = new ContentDialog
         {
             Title = LR.M_AddPrizeTitle,
             Content = form,
             PrimaryButtonText = LR.C_AddPrize,
             CloseButtonText = LR.C_Cancel,
             IsPrimaryButtonEnabled = false,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         };
 
         void UpdatePrimaryButtonState()
@@ -331,7 +331,7 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
         name.TextChanged += (_, _) => UpdatePrimaryButtonState();
         var result = await dialog.ShowAsync(TopLevel.GetTopLevel(this));
 
-        if (result != FAContentDialogResult.Primary)
+        if (result != ContentDialogResult.Primary)
             return;
 
         var prizeId = id.Text?.Trim() ?? string.Empty;
@@ -377,44 +377,44 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
 
     private async Task<bool> ConfirmOverwriteAsync(int currentCount, int importCount)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_OverwriteTitle,
             Content = string.Format(LR.M_OverwriteContent, currentCount, importCount),
             PrimaryButtonText = LR.M_OverwritePrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task<bool> ConfirmDeleteAsync(string listName)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_DeleteListTitle,
             Content = string.Format(LR.M_DeleteListContent, listName),
             PrimaryButtonText = LR.M_DeleteListPrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task<bool> ConfirmDeletePrizeAsync(string prizeName)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_DeletePrizeTitle,
             Content = string.Format(LR.M_DeletePrizeContent, prizeName, SelectedPrizeListName),
             PrimaryButtonText = LR.M_DeletePrizePrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task<string?> ShowListNameDialogAsync(string title, string primaryButtonText, string listName)
@@ -422,20 +422,20 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
         var textBox = new TextBox
         {
             Text = listName,
-            PlaceholderText = LR.M_ListNamePlaceholder,
+            Watermark = LR.M_ListNamePlaceholder,
             MinWidth = 320
         };
 
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = title,
             Content = textBox,
             PrimaryButtonText = primaryButtonText,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary ? textBox.Text?.Trim() : null;
+        return result == ContentDialogResult.Primary ? textBox.Text?.Trim() : null;
     }
 
     private bool ValidateNewListName(string listName)

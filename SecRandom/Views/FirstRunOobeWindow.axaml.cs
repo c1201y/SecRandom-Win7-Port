@@ -24,7 +24,7 @@ using LR = SecRandom.Langs.FirstRunOobe.Resources;
 
 namespace SecRandom.Views;
 
-public partial class FirstRunOobeWindow : FAAppWindow
+public partial class FirstRunOobeWindow : AppWindow
 {
     private bool _canClose;
     private bool _isDevelopmentAdornerAdded;
@@ -249,16 +249,16 @@ public partial class FirstRunOobeWindow : FAAppWindow
 
     private async Task<string?> PromptListNameAsync(string title, string primaryButtonText, string initialName)
     {
-        var input = new TextBox { Text = initialName, PlaceholderText = LR.C_ListNamePlaceholder, MinWidth = 320 };
-        var result = await new FAContentDialog
+        var input = new TextBox { Text = initialName, Watermark = LR.C_ListNamePlaceholder, MinWidth = 320 };
+        var result = await new ContentDialog
         {
             Title = title,
             Content = input,
             PrimaryButtonText = primaryButtonText,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(this);
-        return result == FAContentDialogResult.Primary ? input.Text?.Trim() : null;
+        return result == ContentDialogResult.Primary ? input.Text?.Trim() : null;
     }
 
     private async Task<bool> ConfirmDeleteListAsync(string listName, int listCount)
@@ -269,15 +269,15 @@ public partial class FirstRunOobeWindow : FAAppWindow
             return false;
         }
 
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.C_DeleteListTitle,
             Content = string.Format(LR.M_DeleteListContent, listName),
             PrimaryButtonText = LR.C_DeleteList,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(this);
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task ImportStudentsAsync(IReadOnlyList<Shared.Models.Profile.Student> students)
@@ -303,15 +303,15 @@ public partial class FirstRunOobeWindow : FAAppWindow
         if (currentCount == 0)
             return true;
 
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.C_OverwriteTitle,
             Content = string.Format(LR.M_OverwriteListContent, listName, currentCount, importCount),
             PrimaryButtonText = LR.C_Overwrite,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(this);
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private void OpenImportDrawer(Control importView)
@@ -380,15 +380,15 @@ public partial class FirstRunOobeWindow : FAAppWindow
                 return;
             }
 
-            var confirmed = await new FAContentDialog
+            var confirmed = await new ContentDialog
             {
                 Title = LR.C_ImportTitle,
                 Content = string.Format(LR.M_ImportConfirmation, inspection.ProducerVersion, inspection.FileCount),
                 PrimaryButtonText = LR.C_Import,
                 CloseButtonText = LR.C_Cancel,
-                DefaultButton = FAContentDialogButton.Close
+                DefaultButton = ContentDialogButton.Close
             }.ShowAsync(this);
-            if (confirmed != FAContentDialogResult.Primary)
+            if (confirmed != ContentDialogResult.Primary)
                 return;
 
             if (isAllData)
@@ -418,12 +418,12 @@ public partial class FirstRunOobeWindow : FAAppWindow
 
     private async Task ShowDialogAsync(string title, string content)
     {
-        await new FAContentDialog
+        await new ContentDialog
         {
             Title = title,
             Content = content,
             CloseButtonText = LR.C_Close,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(this);
     }
 
@@ -452,15 +452,15 @@ public partial class FirstRunOobeWindow : FAAppWindow
 
     private async Task ConfirmExitAsync()
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.C_ExitTitle,
             Content = LR.C_ExitDescription,
             PrimaryButtonText = LR.C_Exit,
             CloseButtonText = LR.C_ContinueSetup,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(this);
-        if (result != FAContentDialogResult.Primary)
+        if (result != ContentDialogResult.Primary)
             return;
 
         _canClose = true;

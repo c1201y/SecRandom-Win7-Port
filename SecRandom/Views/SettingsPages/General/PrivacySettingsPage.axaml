@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,14 +16,14 @@
                          Glyph="{sr:Fi PulseSquareFilled}"
                          Margin="0 0 0 4" />
 
-            <fa:FASettingsExpander x:Name="S_SentryTelemetry_Enabled"
+            <fa:SettingsExpander x:Name="S_SentryTelemetry_Enabled"
                                    Header="{x:Static lsp:Resources.S_SentryTelemetry_Enabled}"
                                    Description="{x:Static lsp:Resources.S_SentryTelemetry_Enabled_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi PulseFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ToggleSwitch IsChecked="{Binding Settings.SentryTelemetryEnabled}" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
             <Separator Margin="0 12 0 4" />
             <sr:IconText x:Name="S_OnlineStatus"
@@ -31,18 +31,18 @@
                          Glyph="{sr:Fi GlobeFilled}"
                          Margin="0 0 0 4" />
 
-            <fa:FASettingsExpander x:Name="S_OnlineStatus_Mode"
+            <fa:SettingsExpander x:Name="S_OnlineStatus_Mode"
                                    Header="{x:Static lsp:Resources.S_OnlineStatus_Mode}"
                                    Description="{x:Static lsp:Resources.S_OnlineStatus_Mode_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi GlobeFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ComboBox SelectedIndex="{Binding Settings.OnlineStatusMode}">
                         <ComboBoxItem Content="{x:Static lsp:Resources.O_OnlineStatusMode_Full}" />
                         <ComboBoxItem Content="{x:Static lsp:Resources.O_OnlineStatusMode_Anonymous}" />
                         <ComboBoxItem Content="{x:Static lsp:Resources.O_OnlineStatusMode_Off}" />
                     </ComboBox>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

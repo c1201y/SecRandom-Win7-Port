@@ -5,6 +5,7 @@
                     xmlns:sr="http://secrandom.sectl.cn/schemas/xaml/core"
                     xmlns:fa="using:FluentAvalonia.UI.Controls"
                     xmlns:core="using:SecRandom.Core"
+                    xmlns:coreviews="clr-namespace:SecRandom.Core.Views;assembly=SecRandom.Core"
                     xmlns:ls="clr-namespace:SecRandom.Langs.SettingsView"
                     xmlns:ml="clr-namespace:SecRandom.Langs.Mobile"
                     xmlns:views="using:SecRandom.Views"
@@ -12,13 +13,13 @@
                     x:Class="SecRandom.Views.SettingsView"
                     x:DataType="views:SettingsView"
                     Header="{x:Static ml:Resources.P_Settings}"
-                    NavigationPage.HasNavigationBar="False"
+                    coreviews:NavigationPage.HasNavigationBar="False"
                     Loaded="OnLoaded"
                     Unloaded="OnUnloaded">
     <Grid RowDefinitions="Auto *">
         <Border Grid.Row="0" Height="48"
                 Background="Transparent"
-                WindowDecorationProperties.ElementRole="TitleBar">
+               >
             <Grid ColumnDefinitions="Auto * 3* * Auto">
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="8" Spacing="8">
                     <Border Width="60" IsVisible="{Binding ViewModel.IsMacOs}" />
@@ -30,7 +31,7 @@
                             Click="TogglePaneButton_OnClick"
                             IsVisible="{Binding !#NavigationView.IsPaneToggleButtonVisible}"
                             MinWidth="40" Width="48"
-                            WindowDecorationProperties.ElementRole="User" />
+                           />
 
                     <Button Name="BackButton"
                             HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -39,14 +40,14 @@
                             IsVisible="{Binding ViewModel.CanGoBack}"
                             MinWidth="40" Width="48"
                             Classes="nav-back"
-                            WindowDecorationProperties.ElementRole="User" />
+                           />
 
                     <Button HorizontalAlignment="Center" VerticalAlignment="Center"
                             Width="40" Height="36" IsHitTestVisible="True"
                             Theme="{DynamicResource TransparentButton}"
                             IsVisible="{Binding HomeButtonVisible}"
                             Click="MobileHomeButton_OnClick"
-                            WindowDecorationProperties.ElementRole="User">
+                           >
                         <sr:FluentIcon Glyph="{sr:Fi HomeFilled}" FontSize="16"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Button>
@@ -71,12 +72,12 @@
                                  MaxDropDownHeight="480"
                                  ItemsSource="{Binding ViewModel.SettingsMetadata}"
                                  ItemFilter="{x:Static views:SettingsView.SettingsFilterProperty}"
-                                 PlaceholderText="{x:Static ls:Resources.C_SearchBox_Watermark}"
+                                 Watermark="{x:Static ls:Resources.C_SearchBox_Watermark}"
                                  Text="{Binding ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  SelectedItem="{Binding ViewModel.SelectedSettings}"
                                  SelectionChanged="SearchBox_OnSelectionChanged"
                                  KeyUp="SearchBox_OnKeyUp"
-                                 WindowDecorationProperties.ElementRole="User">
+                                >
                     <AutoCompleteBox.InnerRightContent>
                         <StackPanel Orientation="Horizontal">
                             <Button Width="30" Height="30" Padding="0"
@@ -102,7 +103,7 @@
                             IsVisible="{Binding ViewModel.IsRequestedRestart}"
                             ToolTip.Tip="{x:Static ls:Resources.M_NeedsRestarting_Tooltip}"
                             Click="ButtonRestartApp_OnClick"
-                            WindowDecorationProperties.ElementRole="User">
+                           >
                         <sr:IconText Glyph="{sr:Fi ArrowCounterclockwiseFilled}"
                                      Text="{x:Static ls:Resources.M_NeedsRestarting}" />
                     </Button>
@@ -117,7 +118,7 @@
                             ToolTip.Tip="{x:Static ls:Resources.C_MoreOptions}"
                             VerticalAlignment="Center" HorizontalAlignment="Right"
                             Margin="0 0 4 0"
-                            WindowDecorationProperties.ElementRole="User">
+                           >
                         <sr:FluentIcon Glyph="{sr:Fi MoreHorizontalFilled}" />
 
                         <Button.Flyout>
@@ -187,7 +188,7 @@
             </Grid>
         </Border>
 
-        <fa:FANavigationView Grid.Row="1"
+        <fa:NavigationView Grid.Row="1"
                              x:Name="NavigationView"
                              PaneDisplayMode="Auto"
                              IsSettingsVisible="False"
@@ -195,11 +196,11 @@
                              FooterMenuItemsSource="{Binding ViewModel.NavigationViewFooterItems, Mode=OneWay}"
                              SelectedItem="{Binding ViewModel.SelectedNavigationViewItem, UpdateSourceTrigger=PropertyChanged}"
                              ItemInvoked="NavigationView_OnItemInvoked">
-            <fa:FANavigationView.Styles>
-                <Style Selector="fa|FANavigationView#NavigationView:minimal">
+            <fa:NavigationView.Styles>
+                <Style Selector="fa|NavigationView#NavigationView:minimal">
                     <Setter Property="IsPaneToggleButtonVisible" Value="False" />
                 </Style>
-            </fa:FANavigationView.Styles>
+            </fa:NavigationView.Styles>
 
             <sr:DrawerHost IsDrawerOpen="{Binding ViewModel.IsDrawerOpen, Mode=TwoWay}"
                            DrawerPlacement="Right"
@@ -220,12 +221,12 @@
                                    Theme="{StaticResource TitleTextBlockStyle}" />
                     </Grid>
 
-                    <fa:FAFrame Grid.Row="1"
+                    <fa:Frame Grid.Row="1"
                                 x:Name="NavigationFrame"
                                 IsNavigationStackEnabled="False" CacheSize="0"
                                 Content="{Binding ViewModel.FrameContent}" />
                 </Grid>
             </sr:DrawerHost>
-        </fa:FANavigationView>
+        </fa:NavigationView>
     </Grid>
 </views:SettingsView>

@@ -100,9 +100,8 @@ public class DrawerHost : ContentControl
         if (_ignoreLayer != null)
             _ignoreLayer.PointerPressed -= IgnoreLayerOnPointerPressed;
 
-        _ignoreLayer = this.GetTemplateDescendants().OfType<Border>().FirstOrDefault(x => x.Name == "PART_IgnoreLayer");
-        _drawerContentBorder = this.GetTemplateDescendants().OfType<Border>()
-            .FirstOrDefault(x => x.Name == "PART_DrawerContentBorder");
+        _ignoreLayer = e.NameScope.Find<Border>("PART_IgnoreLayer");
+        _drawerContentBorder = e.NameScope.Find<Border>("PART_DrawerContentBorder");
 
         if (_drawerContentBorder != null)
             _drawerContentBorder.SizeChanged += DrawerContentBorderOnSizeChanged;

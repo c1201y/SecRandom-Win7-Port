@@ -7,7 +7,7 @@ using SecRandom.Services.Music;
 
 namespace SecRandom.Views.SettingsPages.Picking;
 
-public partial class DrawMusicSettingsExpander : FASettingsExpander
+public partial class DrawMusicSettingsExpander : SettingsExpander
 {
     public static readonly StyledProperty<DrawSettingsConfigBase?> SettingsProperty =
         AvaloniaProperty.Register<DrawMusicSettingsExpander, DrawSettingsConfigBase?>(nameof(Settings));

@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,20 +19,20 @@
                          Glyph="{sr:Fi PersonVoiceFilled}"
                          Margin="0 0 0 4" />
 
-            <fa:FASettingsExpander x:Name="S_Playback_Enable"
+            <fa:SettingsExpander x:Name="S_Playback_Enable"
                                    Header="{x:Static lsp:Resources.S_Playback_Enable}"
                                    Description="{x:Static lsp:Resources.S_Playback_Enable_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi Speaker2Filled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ToggleSwitch IsChecked="{Binding Settings.VoiceEnable}" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Playback_Engine"
+            <fa:SettingsExpander x:Name="S_Playback_Engine"
                                    Header="{x:Static lsp:Resources.S_Playback_Engine}"
                                    Description="{x:Static lsp:Resources.S_Playback_Engine_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi PersonVoiceFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ComboBox MinWidth="220"
                                ItemsSource="{Binding VoiceEngineOptions}"
                                SelectedValue="{Binding Settings.VoiceEngine, Mode=TwoWay}"
@@ -43,14 +43,14 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Playback_Voice"
+            <fa:SettingsExpander x:Name="S_Playback_Voice"
                                     Header="{x:Static lsp:Resources.S_Playback_Voice}"
                                     Description="{x:Static lsp:Resources.S_Playback_Voice_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi MicFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ComboBox MinWidth="300"
                               IsEnabled="{Binding !IsLoadingCurrentVoices}"
                               ItemsSource="{Binding CurrentVoiceOptions}"
@@ -67,26 +67,26 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Playback_Actions"
+            <fa:SettingsExpander x:Name="S_Playback_Actions"
                                     Header="{x:Static lsp:Resources.S_Playback_Actions}"
                                     Description="{x:Static lsp:Resources.S_Playback_Actions_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi PersonVoiceFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button Content="{x:Static lsp:Resources.C_RefreshVoices}" Click="RefreshVoicesButton_OnClick" />
                         <Button Classes="accent" Content="{x:Static lsp:Resources.C_TestVoice}" Click="TestVoiceButton_OnClick" />
                     </StackPanel>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Playback_Volume"
+            <fa:SettingsExpander x:Name="S_Playback_Volume"
                                    Header="{x:Static lsp:Resources.S_Playback_Volume}"
                                    Description="{x:Static lsp:Resources.S_Playback_Volume_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi Speaker2Filled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <Grid Width="280" ColumnDefinitions="*,Auto" ColumnSpacing="12">
                         <Slider Minimum="0"
                                 Maximum="100"
@@ -100,14 +100,14 @@
                             <TextBlock Text="%" />
                         </StackPanel>
                     </Grid>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Playback_SpeechRate"
+            <fa:SettingsExpander x:Name="S_Playback_SpeechRate"
                                    Header="{x:Static lsp:Resources.S_Playback_SpeechRate}"
                                    Description="{x:Static lsp:Resources.S_Playback_SpeechRate_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi TopSpeedFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <Grid Width="280" ColumnDefinitions="*,Auto" ColumnSpacing="12">
                         <Slider Minimum="1"
                                 Maximum="200"
@@ -121,17 +121,17 @@
                             <TextBlock Text="%" />
                         </StackPanel>
                     </Grid>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Playback_WaitComplete"
+            <fa:SettingsExpander x:Name="S_Playback_WaitComplete"
                                    Header="{x:Static lsp:Resources.S_Playback_WaitComplete}"
                                    Description="{x:Static lsp:Resources.S_Playback_WaitComplete_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi TimerFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ToggleSwitch IsChecked="{Binding Settings.VoiceWaitComplete}" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
             <Separator Margin="0 12 0 4" />
             <sr:IconText x:Name="S_Content"
@@ -139,23 +139,23 @@
                          Glyph="{sr:Fi TextFontFilled}"
                          Margin="0 0 0 4" />
 
-            <fa:FASettingsExpander x:Name="S_Content_AnnounceId"
+            <fa:SettingsExpander x:Name="S_Content_AnnounceId"
                                    Header="{x:Static lsp:Resources.S_Content_AnnounceId}"
                                    Description="{x:Static lsp:Resources.S_Content_AnnounceId_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi TextFontFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ToggleSwitch IsChecked="{Binding Settings.AnnounceId}" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Content_AnnounceName"
+            <fa:SettingsExpander x:Name="S_Content_AnnounceName"
                                    Header="{x:Static lsp:Resources.S_Content_AnnounceName}"
                                    Description="{x:Static lsp:Resources.S_Content_AnnounceName_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi TextFontFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ToggleSwitch IsChecked="{Binding Settings.AnnounceName}" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
         </StackPanel>
     </ScrollViewer>

@@ -5,27 +5,15 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using CameraView;
 
 namespace SecRandom.Controls;
 
 /// <summary>
-/// Defers CameraView construction until a platform camera provider needs a live preview.
+/// Defers preview construction until a platform camera provider needs a live preview.
 /// </summary>
 public sealed class RosterQrCameraPreview : ContentControl
 {
-    private CameraViewControl? _cameraView;
     private Image? _imagePreview;
-
-    internal CameraViewControl GetOrCreateCameraView()
-    {
-        if (_cameraView is not null)
-            return _cameraView;
-
-        _cameraView = new CameraViewControl();
-        Content = _cameraView;
-        return _cameraView;
-    }
 
     /// <summary>
     /// Displays a captured JPEG frame for camera backends without a native Avalonia preview.
@@ -45,9 +33,6 @@ public sealed class RosterQrCameraPreview : ContentControl
 
     private void ShowFrame(byte[] frame)
     {
-        if (_cameraView is not null)
-            return;
-
         _imagePreview ??= new Image { Stretch = Stretch.UniformToFill };
         if (!ReferenceEquals(Content, _imagePreview))
             Content = _imagePreview;

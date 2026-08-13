@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -129,12 +129,12 @@ public partial class LinkageSettingsPage : UserControl
 
     private async void ViewCses_OnClick(object? sender, RoutedEventArgs e)
     {
-        await new FAContentDialog
+        await new ContentDialog
         {
             Title = LR.S_Cses,
             Content = CsesSummary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
     }
 
@@ -146,15 +146,15 @@ public partial class LinkageSettingsPage : UserControl
             return;
         }
 
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_CsesClearTitle,
             Content = LR.M_CsesClearContent,
             PrimaryButtonText = LR.C_Confirm,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
-        if (result != FAContentDialogResult.Primary)
+        if (result != ContentDialogResult.Primary)
             return;
 
         CsesStore.Clear();

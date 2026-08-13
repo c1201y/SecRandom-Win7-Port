@@ -18,7 +18,7 @@ public partial class SettingsViewModel : ObservableRecipient
 
     [ObservableProperty] private bool _isDrawerOpen;
     [ObservableProperty] private bool _isRequestedRestart;
-    [ObservableProperty] private FANavigationViewItemBase? _selectedNavigationViewItem;
+    [ObservableProperty] private NavigationViewItemBase? _selectedNavigationViewItem;
     [ObservableProperty] private PageInfo? _selectedPageInfo;
     [ObservableProperty] private SettingsMetadata? _selectedSettings;
     [ObservableProperty]
@@ -34,9 +34,9 @@ public partial class SettingsViewModel : ObservableRecipient
     public bool IsWindows => OperatingSystem.IsWindows();
     public bool IsMacOs => OperatingSystem.IsMacOS();
     public bool HasSearchText => !string.IsNullOrEmpty(SearchText);
-    public ObservableCollection<FANavigationViewItemBase> FlattenNavigationItems { get; } = [];
-    public ObservableCollection<FANavigationViewItemBase> NavigationViewItems { get; } = [];
-    public ObservableCollection<FANavigationViewItemBase> NavigationViewFooterItems { get; } = [];
+    public ObservableCollection<NavigationViewItemBase> FlattenNavigationItems { get; } = [];
+    public ObservableCollection<NavigationViewItemBase> NavigationViewItems { get; } = [];
+    public ObservableCollection<NavigationViewItemBase> NavigationViewFooterItems { get; } = [];
 
     public ObservableCollection<string> NavigationHistory { get; } = [];
 

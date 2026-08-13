@@ -14,7 +14,7 @@
             <TextBlock Text="{Binding TargetListDescription}" TextWrapping="Wrap"
                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-            <GroupBox Header="{Binding ExportModeLabel}">
+            <sr:GroupBox Header="{Binding ExportModeLabel}">
                 <ComboBox ItemsSource="{Binding ExportModes}"
                           SelectedItem="{Binding SelectedExportMode, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -23,9 +23,9 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-            </GroupBox>
+            </sr:GroupBox>
 
-            <GroupBox IsVisible="{Binding IsFileExportMode}" Header="{Binding FileExportTitle}">
+            <sr:GroupBox IsVisible="{Binding IsFileExportMode}" Header="{Binding FileExportTitle}">
                 <StackPanel Spacing="6">
                     <Button Classes="accent"
                             Content="{Binding ExportFileButtonText}"
@@ -42,9 +42,9 @@
                     <TextBlock Text="{Binding SupportedFileTypesText}" TextWrapping="Wrap"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
-            </GroupBox>
+            </sr:GroupBox>
 
-            <GroupBox IsVisible="{Binding IsDeviceExportMode}" Header="{Binding DeviceExportTitle}">
+            <sr:GroupBox IsVisible="{Binding IsDeviceExportMode}" Header="{Binding DeviceExportTitle}">
                 <StackPanel Spacing="10">
                     <Button Classes="accent" HorizontalAlignment="Left" HorizontalContentAlignment="Center"
                             Content="{Binding QrExportButtonText}"
@@ -117,7 +117,7 @@
                         <StackPanel Grid.Row="2" Grid.Column="1"><TextBlock Classes="caption" Text="{Binding StatusLabel}" /><TextBlock Text="{Binding StatusValue}" FontSize="18" TextTrimming="CharacterEllipsis" /></StackPanel>
                     </Grid>
                 </StackPanel>
-            </GroupBox>
+            </sr:GroupBox>
 
             </StackPanel>
         </ScrollViewer>

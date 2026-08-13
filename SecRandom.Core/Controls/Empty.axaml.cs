@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.Primitives;
 using FluentAvalonia.UI.Controls;
 using SecRandom.Core.Icons;
@@ -10,7 +10,7 @@ namespace SecRandom.Core.Controls;
 /// </summary>
 public class Empty : TemplatedControl
 {
-    public static readonly StyledProperty<FAIconSource> IconProperty = AvaloniaProperty.Register<Empty, FAIconSource>(
+    public static readonly StyledProperty<IconSource> IconProperty = AvaloniaProperty.Register<Empty, IconSource>(
         nameof(Icon), new FluentIconSource(FluentIcons.BorderNoneFilled)
         {
             FontSize = 64
@@ -25,7 +25,7 @@ public class Empty : TemplatedControl
     public static readonly StyledProperty<double> IconWidthProperty = AvaloniaProperty.Register<Empty, double>(
         nameof(IconWidth), 64.0);
 
-    public FAIconSource Icon
+    public IconSource Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

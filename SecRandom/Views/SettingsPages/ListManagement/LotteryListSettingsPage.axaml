@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -43,32 +43,32 @@
                 BorderBrush="{DynamicResource ControlElevationBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="4">
-            <fa:FACommandBar DefaultLabelPosition="Right">
-                <fa:FACommandBar.PrimaryCommands>
-                    <fa:FACommandBarButton IconSource="{sr:FluentIconSource {sr:Fi PeopleListFilled}}"
+            <fa:CommandBar DefaultLabelPosition="Right">
+                <fa:CommandBar.PrimaryCommands>
+                    <fa:CommandBarButton IconSource="{sr:FluentIconSource {sr:Fi PeopleListFilled}}"
                                            Label="{Binding SelectedPrizeListName}"
                                            ToolTip.Tip="{x:Static lr:Resources.C_CurrentList_D}"
                                            Click="ChangeCurrentListButton_OnClick" />
 
-                    <fa:FACommandBarButton IconSource="{sr:FluentIconSource {sr:Fi ArrowClockwiseFilled}}"
+                    <fa:CommandBarButton IconSource="{sr:FluentIconSource {sr:Fi ArrowClockwiseFilled}}"
                                            Label="{x:Static lr:Resources.C_Refresh}"
                                            Click="RefreshButton_OnClick" />
 
-                    <fa:FACommandBarSeparator />
+                    <fa:CommandBarSeparator />
 
-                    <fa:FACommandBarButton IconSource="{sr:FluentIconSource {sr:Fi PersonAddFilled}}"
+                    <fa:CommandBarButton IconSource="{sr:FluentIconSource {sr:Fi PersonAddFilled}}"
                                            Label="{x:Static lr:Resources.C_AddPrize}"
                                            Click="AddPrizeButton_OnClick" />
 
-                    <fa:FACommandBarButton IconSource="{sr:FluentIconSource {sr:Fi PeopleAddFilled}}"
+                    <fa:CommandBarButton IconSource="{sr:FluentIconSource {sr:Fi PeopleAddFilled}}"
                                            Label="{x:Static lr:Resources.C_ImportList}"
                                            Click="ImportButton_OnClick" />
 
-                    <fa:FACommandBarButton IconSource="{sr:FluentIconSource {sr:Fi ArrowDownloadFilled}}"
+                    <fa:CommandBarButton IconSource="{sr:FluentIconSource {sr:Fi ArrowDownloadFilled}}"
                                            Label="{Binding ExportListLabel}"
                                            Click="ExportButton_OnClick" />
-                </fa:FACommandBar.PrimaryCommands>
-            </fa:FACommandBar>
+                </fa:CommandBar.PrimaryCommands>
+            </fa:CommandBar>
         </Border>
 
         <Border Grid.Row="1" BorderBrush="{DynamicResource ControlElevationBorderBrush}"

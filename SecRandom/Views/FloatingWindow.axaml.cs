@@ -62,7 +62,6 @@ public partial class FloatingWindow : Window
         TransparencyLevelHint = [WindowTransparencyLevel.Transparent];
         this.ApplyPlatformFeatures(WindowFeatures.ToolWindow, enabled: true);
 
-        TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
         RenderOptions.SetBitmapInterpolationMode(this, BitmapInterpolationMode.HighQuality);
         RenderOptions.SetEdgeMode(this, EdgeMode.Antialias);
 

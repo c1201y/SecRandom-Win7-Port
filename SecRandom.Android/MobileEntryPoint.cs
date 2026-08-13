@@ -6,8 +6,6 @@ using Android.Runtime;
 using Android.Views;
 using Avalonia;
 using Avalonia.Android;
-using CameraView;
-using CameraView.Platforms.Android;
 using SecRandom.Core.Abstraction;
 using SecRandom.Platforms;
 using SecRandom.Platforms.Abstractions;
@@ -95,21 +93,8 @@ public sealed class MainActivity : AvaloniaMainActivity
 {
     protected override void OnCreate(Bundle? savedInstanceState)
     {
-        var cameraProvider = new AndroidCameraProvider(BaseContext!);
-        CameraProviderFactory.RegisterProvider(cameraProvider);
-        CameraProviderFactory.RegisterOrientationFactory(
-            () => new AndroidDeviceOrientationProvider(BaseContext!));
         base.OnCreate(savedInstanceState);
-        CameraProviderFactory.SetAndroidActivity(this);
         // Keep the viewport stable; MobileViewHost shifts only the obscured content region.
         Window?.SetSoftInputMode(SoftInput.AdjustNothing);
-    }
-
-    public override void OnRequestPermissionsResult(int requestCode, string[]? permissions,
-        Permission[]? grantResults)
-    {
-        base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        var granted = grantResults is { Length: > 0 } && grantResults[0] == Permission.Granted;
-        CameraProviderFactory.NotifyAndroidPermissionResult(granted);
     }
 }

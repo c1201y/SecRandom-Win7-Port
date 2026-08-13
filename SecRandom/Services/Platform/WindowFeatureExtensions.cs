@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Platform;
 using FluentAvalonia.UI.Windowing;
 using SecRandom.Core.Abstraction;
@@ -17,7 +17,7 @@ internal static class WindowFeatureExtensions
     }
 
     public static WindowFeatureApplyResult ApplyPlatformFeatures(
-        this FAAppWindow window,
+        this AppWindow window,
         WindowFeatures features,
         bool enabled)
     {

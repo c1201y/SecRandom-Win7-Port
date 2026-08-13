@@ -315,7 +315,7 @@ public sealed partial class MobileViewHost : UserControl, IViewHost
             new LinearEasing());
     }
 
-    private void OnDescendantGotFocus(object? sender, FocusChangedEventArgs e)
+    private void OnDescendantGotFocus(object? sender, GotFocusEventArgs e)
     {
         UpdateFocusedTextPresenter();
         UpdatePageContentOffsetForOpenInputPane();

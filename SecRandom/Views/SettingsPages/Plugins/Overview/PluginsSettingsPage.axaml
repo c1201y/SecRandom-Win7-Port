@@ -36,7 +36,7 @@
 <!--                         Padding="12"> -->
 <!--                     <Grid RowDefinitions="Auto,Auto,*" -->
 <!--                           RowSpacing="8"> -->
-<!--                         <TextBox PlaceholderText="{x:Static lp:Resources.C_SearchPlugin}" -->
+<!--                         <TextBox Watermark="{x:Static lp:Resources.C_SearchPlugin}" -->
 <!--                                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" /> -->
 <!-- -->
 <!--                         <Grid Grid.Row="1" -->

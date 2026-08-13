@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -43,7 +43,7 @@ using SecRandom.Platforms.Abstractions;
 
 namespace SecRandom.Views;
 
-public partial class SettingsView : ViewBase, IFANavigationPageFactory
+public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigationPageFactory
 {
     private const string DefaultDesktopPageId = "settings.overview";
     private readonly ILogger<SettingsView>? _logger;
@@ -94,7 +94,6 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory
                 Current = null;
         };
 
-        TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
         RenderOptions.SetBitmapInterpolationMode(this, BitmapInterpolationMode.HighQuality);
         RenderOptions.SetEdgeMode(this, EdgeMode.Antialias);
     }
@@ -190,7 +189,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory
             categoryControl = FindSettingsControl(pageRoot, settings.CategoryControlId);
             _logger?.LogInformation("分类控件: {Control}", categoryControl);
 
-            if (categoryControl is FASettingsExpander settingsExpander) settingsExpander.IsExpanded = true;
+            if (categoryControl is SettingsExpander settingsExpander) settingsExpander.IsExpanded = true;
         }
 
         Dispatcher.UIThread.Post(() =>
@@ -399,17 +398,17 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory
         if (_isPreviewMode || _isShowingRestartDialog) return;
         _isShowingRestartDialog = true;
 
-        var r = await new FAContentDialog
+        var r = await new ContentDialog
         {
             Title = Langs.SettingsView.Resources.M_NeedsRestarting,
             Content = Langs.SettingsView.Resources.M_NeedsRestarting_D,
             PrimaryButtonText = Langs.SettingsView.Resources.M_NeedsRestarting_Primary,
             CloseButtonText = Langs.SettingsView.Resources.M_NeedsRestarting_Close,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
         _isShowingRestartDialog = false;
-        if (r != FAContentDialogResult.Primary)
+        if (r != ContentDialogResult.Primary)
             return;
 
         if (_isPreviewMode)
@@ -776,15 +775,15 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory
 
     private async Task<bool> ConfirmImportAsync(string content)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = GetResource("M_ImportTitle"),
             Content = content,
             PrimaryButtonText = GetResource("C_Import"),
             CloseButtonText = GetResource("C_Cancel"),
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task ShowUnsupportedImportAsync(ImportInspection inspection)
@@ -795,42 +794,42 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory
         var details = inspection.Warnings.Count == 0
             ? GetResource("M_ImportUnsupportedContent")
             : string.Join(Environment.NewLine, inspection.Warnings);
-        await new FAContentDialog
+        await new ContentDialog
         {
             Title = GetResource("M_ImportUnsupportedTitle"),
             Content = string.Format(GetResource("M_ImportUnsupportedVersion"), detectedVersion, details),
             CloseButtonText = GetResource("C_Close"),
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
     }
 
     private async Task ShowImportFailureAsync(Exception exception)
     {
-        await new FAContentDialog
+        await new ContentDialog
         {
             Title = GetResource("M_ImportFailed"),
             Content = exception.Message,
             CloseButtonText = GetResource("C_Close"),
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
     }
 
     private async Task<bool?> ConfirmDiagnosticExportAsync()
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = GetResource("M_DiagnosticExportTitle"),
             Content = GetResource("M_DiagnosticExportContent"),
             PrimaryButtonText = GetResource("C_DiagnosticStandard"),
             SecondaryButtonText = GetResource("C_DiagnosticExtended"),
             CloseButtonText = GetResource("C_Cancel"),
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
         return result switch
         {
-            FAContentDialogResult.Primary => false,
-            FAContentDialogResult.Secondary => true,
+            ContentDialogResult.Primary => false,
+            ContentDialogResult.Secondary => true,
             _ => null
         };
     }
@@ -969,7 +968,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory
         RestorePreviewControls();
     }
 
-    private void NavigationFrame_OnNavigated(object? sender, FANavigationEventArgs e)
+    private void NavigationFrame_OnNavigated(object? sender, FluentAvalonia.UI.Navigation.NavigationEventArgs e)
     {
         if (_isPreviewMode)
             QueuePreviewPageDisable();
@@ -1024,11 +1023,11 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory
         if (!history.Any()) ViewModel.CanGoBack = false;
     }
 
-    private void NavigationView_OnItemInvoked(object? sender, FANavigationViewItemInvokedEventArgs e)
+    private void NavigationView_OnItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
     {
         PageInfo? info = null;
 
-        if (e.InvokedItemContainer is FANavigationViewItem { Tag: PageInfo containerInfo })
+        if (e.InvokedItemContainer is NavigationViewItem { Tag: PageInfo containerInfo })
             info = containerInfo;
         else if (e.InvokedItem is PageInfo invokedInfo)
             info = invokedInfo;

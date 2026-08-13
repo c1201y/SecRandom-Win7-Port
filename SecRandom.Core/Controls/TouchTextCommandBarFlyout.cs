@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using FluentAvalonia.UI.Controls;
@@ -9,7 +9,7 @@ namespace SecRandom.Core.Controls;
 /// <summary>
 /// A compact touch editing toolbar that keeps common text actions immediately available.
 /// </summary>
-public sealed class TouchTextCommandBarFlyout : FACommandBarFlyout
+public sealed class TouchTextCommandBarFlyout : CommandBarFlyout
 {
     private WeakReference<Control>? _target;
 
@@ -33,24 +33,24 @@ public sealed class TouchTextCommandBarFlyout : FACommandBarFlyout
 
         var selectionLength = Math.Abs(textBox.SelectionEnd - textBox.SelectionStart);
         if (!textBox.IsReadOnly && selectionLength > 0)
-            PrimaryCommands.Add(CreateButton(FAStandardUICommandKind.Cut, Cut));
+            PrimaryCommands.Add(CreateButton(StandardUICommandKind.Cut, Cut));
         if (selectionLength > 0 && textBox.PasswordChar == default)
-            PrimaryCommands.Add(CreateButton(FAStandardUICommandKind.Copy, Copy));
+            PrimaryCommands.Add(CreateButton(StandardUICommandKind.Copy, Copy));
         if (!textBox.IsReadOnly && textBox.CanPaste)
-            PrimaryCommands.Add(CreateButton(FAStandardUICommandKind.Paste, Paste));
+            PrimaryCommands.Add(CreateButton(StandardUICommandKind.Paste, Paste));
         if (!textBox.IsReadOnly && textBox.CanUndo)
-            SecondaryCommands.Add(CreateButton(FAStandardUICommandKind.Undo, Undo));
+            SecondaryCommands.Add(CreateButton(StandardUICommandKind.Undo, Undo));
         if (!textBox.IsReadOnly && textBox.CanRedo)
-            SecondaryCommands.Add(CreateButton(FAStandardUICommandKind.Redo, Redo));
+            SecondaryCommands.Add(CreateButton(StandardUICommandKind.Redo, Redo));
         if (!string.IsNullOrEmpty(textBox.Text))
-            SecondaryCommands.Add(CreateButton(FAStandardUICommandKind.SelectAll, SelectAll));
+            SecondaryCommands.Add(CreateButton(StandardUICommandKind.SelectAll, SelectAll));
     }
 
-    private IFACommandBarElement CreateButton(FAStandardUICommandKind kind, Action action)
+    private ICommandBarElement CreateButton(StandardUICommandKind kind, Action action)
     {
-        var command = new FAStandardUICommand(kind);
+        var command = new StandardUICommand(kind);
         command.ExecuteRequested += (_, _) => action();
-        return new FACommandBarButton { Command = command };
+        return new CommandBarButton { Command = command };
     }
 
     private void Cut() => Execute(textBox => textBox.Cut());

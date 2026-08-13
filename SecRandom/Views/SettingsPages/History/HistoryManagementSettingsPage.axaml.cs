@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -87,16 +87,16 @@ public partial class HistoryManagementSettingsPage : UserControl
 
     private async System.Threading.Tasks.Task<bool> ConfirmClearAsync(string name)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_ClearConfirm_Title,
             Content = string.Format(LR.M_ClearConfirm_Content, name),
             PrimaryButtonText = LR.C_Clear,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
 }

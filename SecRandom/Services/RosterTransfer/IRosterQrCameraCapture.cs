@@ -52,11 +52,11 @@ public sealed class RosterQrCameraCaptureFactory(IPlatformServiceRoot platform,
     private readonly IPlatformCameraDeviceCatalog _cameraDevices = cameraDevices ??
         throw new ArgumentNullException(nameof(cameraDevices));
 
-    public bool IsPreviewSupported => true;
+    public bool IsPreviewSupported => _platformKind is PlatformKind.Windows or PlatformKind.Linux or PlatformKind.MacOs;
 
     public async Task<IReadOnlyList<RosterQrCameraOption>> GetAvailableOptionsAsync(CancellationToken cancellationToken)
     {
-        if (_platformKind == PlatformKind.Ios)
+        if (!IsPreviewSupported)
             return [];
 
         return (await _cameraDevices.GetAvailableAsync(cancellationToken))
@@ -70,15 +70,14 @@ public sealed class RosterQrCameraCaptureFactory(IPlatformServiceRoot platform,
 
         return _platformKind switch
         {
-            PlatformKind.Windows when device is not null => new OpenCvRosterQrCameraCapture(VideoCaptureAPIs.DSHOW,
-                "Windows DirectShow", device.CaptureIndex),
-            PlatformKind.Linux when device is not null => new OpenCvRosterQrCameraCapture(VideoCaptureAPIs.V4L2,
-                "Linux V4L2", device.CaptureIndex),
-            PlatformKind.MacOs when device is not null => new OpenCvRosterQrCameraCapture(VideoCaptureAPIs.AVFOUNDATION,
-                "macOS AVFoundation", device.CaptureIndex),
-            _ => new CameraViewRosterQrCameraCapture((previewControl as RosterQrCameraPreview)?.GetOrCreateCameraView()
-                ?? throw new ArgumentException("The active camera provider requires a roster camera preview host.",
-                    nameof(previewControl)), device?.Facing ?? PlatformCameraFacing.Default)
+            PlatformKind.Windows => new OpenCvRosterQrCameraCapture(VideoCaptureAPIs.DSHOW,
+                "Windows DirectShow", device?.CaptureIndex ?? 0),
+            PlatformKind.Linux => new OpenCvRosterQrCameraCapture(VideoCaptureAPIs.V4L2,
+                "Linux V4L2", device?.CaptureIndex ?? 0),
+            PlatformKind.MacOs => new OpenCvRosterQrCameraCapture(VideoCaptureAPIs.AVFOUNDATION,
+                "macOS AVFoundation", device?.CaptureIndex ?? 0),
+            _ => throw new NotSupportedException(
+                "Camera capture is unavailable on this platform build without the CameraView provider.")
         };
     }
 }

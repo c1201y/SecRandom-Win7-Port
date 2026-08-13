@@ -93,15 +93,15 @@ public partial class MusicSettingsPage : UserControl, INotifyPropertyChanged
         if ((sender as Button)?.CommandParameter is not MusicTrack track)
             return;
 
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_DeleteTitle,
             Content = string.Format(LR.M_DeleteContent, track.DisplayName),
             PrimaryButtonText = LR.M_DeletePrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
-        if (result != FAContentDialogResult.Primary)
+        if (result != ContentDialogResult.Primary)
             return;
 
         await DrawAudio.StopAsync();

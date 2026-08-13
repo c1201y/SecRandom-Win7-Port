@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using FluentAvalonia.UI.Controls;
 
 namespace SecRandom.Core.Models.UI;
@@ -46,7 +46,7 @@ public class ToastMessage : ObservableRecipient
     /// <summary>
     ///     消息重要程度
     /// </summary>
-    public FAInfoBarSeverity Severity { get; init; } = FAInfoBarSeverity.Informational;
+    public InfoBarSeverity Severity { get; init; } = InfoBarSeverity.Informational;
 
     /// <summary>
     ///     操作按钮内容

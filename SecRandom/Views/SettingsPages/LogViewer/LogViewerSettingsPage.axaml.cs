@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -278,16 +278,16 @@ public partial class LogViewerSettingsPage : UserControl, INotifyPropertyChanged
 
     private async Task<bool> ConfirmDeleteAsync(string fileName)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_DeleteTitle,
             Content = string.Format(CultureInfo.CurrentCulture, LR.M_DeleteContent, fileName),
             PrimaryButtonText = LR.M_DeletePrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private static List<string> ReadTailLines(string path, int maxLines)

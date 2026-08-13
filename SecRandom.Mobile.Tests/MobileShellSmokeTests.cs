@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
@@ -79,7 +79,7 @@ public sealed class MobileShellSmokeTests
         var destinationItems = navigation.GetVisualDescendants().OfType<TabStripItem>().ToList();
         Assert.Equal(4, destinationItems.Count);
         Assert.All(destinationItems, item => Assert.True(item.Bounds.Width > 0));
-        Assert.Empty(root.GetVisualDescendants().OfType<FAItemsRepeater>());
+        Assert.Empty(root.GetVisualDescendants().OfType<ItemsRepeater>());
 
         Application.Current!.RequestedThemeVariant = ThemeVariant.Dark;
         Dispatcher.UIThread.RunJobs();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -846,7 +846,7 @@ public partial class RollCallListImportView : UserControl, INotifyPropertyChange
 
     private async Task ConfirmDuplicateNamesAsync(List<Student> students, IReadOnlyList<string> duplicatedNames)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_DuplicateTitle,
             Content = string.Format(LR.M_DuplicateContent, duplicatedNames.Count,
@@ -854,17 +854,17 @@ public partial class RollCallListImportView : UserControl, INotifyPropertyChange
             PrimaryButtonText = LR.M_DuplicatePrimary,
             SecondaryButtonText = LR.M_DuplicateSecondary,
             CloseButtonText = LR.M_DuplicateClose,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        if (result == FAContentDialogResult.Primary)
+        if (result == ContentDialogResult.Primary)
         {
             _logger.LogInformation("点名名单导入保留重复姓名：有效行数={Count}。", students.Count);
             _importHandler(students);
             return;
         }
 
-        if (result == FAContentDialogResult.Secondary)
+        if (result == ContentDialogResult.Secondary)
         {
             RosterImportParser.RenameDuplicatedStudents(students);
             _logger.LogInformation("点名名单导入已自动处理重复姓名：有效行数={Count}。", students.Count);

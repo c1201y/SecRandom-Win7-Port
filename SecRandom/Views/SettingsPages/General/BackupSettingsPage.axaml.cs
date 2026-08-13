@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
@@ -297,40 +297,40 @@ public partial class BackupSettingsPage : UserControl, INotifyPropertyChanged
 
     private async Task<bool> ConfirmRestoreAsync(string fileName)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_RestoreTitle,
             Content = string.Format(LR.M_RestoreContent, fileName),
             PrimaryButtonText = LR.M_RestorePrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task<bool> ConfirmDeleteAsync(string fileName)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_DeleteTitle,
             Content = string.Format(LR.M_DeleteContent, fileName),
             PrimaryButtonText = LR.M_DeletePrimary,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        return result == FAContentDialogResult.Primary;
+        return result == ContentDialogResult.Primary;
     }
 
     private async Task ShowErrorDialogAsync(string title, string message)
     {
-        await new FAContentDialog
+        await new ContentDialog
         {
             Title = title,
             Content = message,
             CloseButtonText = LR.C_Close,
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
     }
 

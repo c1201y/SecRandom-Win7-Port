@@ -16,9 +16,11 @@ public sealed class AndroidCameraDeviceCatalog(Context context) : IPlatformCamer
             return Task.FromResult<IReadOnlyList<PlatformCameraDevice>>([]);
 
         var devices = new List<PlatformCameraDevice>();
-        foreach (var (index, cameraId) in cameraManager.GetCameraIdList().Index())
+        var cameraIds = cameraManager.GetCameraIdList();
+        for (var index = 0; index < cameraIds.Length; index++)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            var cameraId = cameraIds[index];
             var characteristics = cameraManager.GetCameraCharacteristics(cameraId);
             var lensFacing = characteristics.Get(CameraCharacteristics.LensFacing) as Integer;
             var facing = (LensFacing)lensFacing!.IntValue() switch

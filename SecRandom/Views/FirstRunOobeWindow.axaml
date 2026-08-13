@@ -1,4 +1,4 @@
-<faWindowing:FAAppWindow xmlns="https://github.com/avaloniaui"
+<faWindowing:AppWindow xmlns="https://github.com/avaloniaui"
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -22,7 +22,7 @@
                     Orientation="Horizontal"
                     IsVisible="{Binding IsHostWindows}"
                     Classes.UseBackground="{Binding ViewModel.IsStatusVisible}"
-                    WindowDecorationProperties.ElementRole="TitleBar">
+                   >
             <StackPanel.Styles>
                 <Style Selector="StackPanel">
                     <Setter Property="Background" Value="Transparent" />
@@ -151,17 +151,17 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_RollCallList}"
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_RollCallList}"
                                                Description="{x:Static langs:Resources.C_RollCallListDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi PeopleListFilled}}"
                                                IsExpanded="True">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <ComboBox MinWidth="220"
                                           ItemsSource="{Binding ViewModel.StudentListNames}"
                                           SelectedItem="{Binding ViewModel.SelectedStudentListName, Mode=TwoWay}" />
-                            </fa:FASettingsExpander.Footer>
-                            <fa:FASettingsExpanderItem>
-                                <fa:FASettingsExpanderItem.Footer>
+                            </fa:SettingsExpander.Footer>
+                            <fa:SettingsExpanderItem>
+                                <fa:SettingsExpanderItem.Footer>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <Button Content="{x:Static langs:Resources.C_RefreshList}"
                                                 Click="RefreshStudentLists_OnClick" />
@@ -174,9 +174,9 @@
                                         <Button Classes="accent" Content="{x:Static langs:Resources.C_ImportRoster}"
                                                 Click="ImportRoster_OnClick" />
                                     </StackPanel>
-                                </fa:FASettingsExpanderItem.Footer>
-                            </fa:FASettingsExpanderItem>
-                        </fa:FASettingsExpander>
+                                </fa:SettingsExpanderItem.Footer>
+                            </fa:SettingsExpanderItem>
+                        </fa:SettingsExpander>
                     </StackPanel>
                 </ScrollViewer>
 
@@ -187,24 +187,24 @@
                         <TextBlock Text="{x:Static langs:Resources.C_LotteryDescription}"
                                    Margin="0 0 0 8"
                                    TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_LotteryEnabled}"
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_LotteryEnabled}"
                                                IconSource="{sr:FluentIconSource {sr:Fi GiftFilled}}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.MoreSettings.LotteryEnabled}" />
-                            </fa:FASettingsExpander.Footer>
-                        </fa:FASettingsExpander>
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_PrizeList}"
+                            </fa:SettingsExpander.Footer>
+                        </fa:SettingsExpander>
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_PrizeList}"
                                                Description="{x:Static langs:Resources.C_PrizeListDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi LotteryFilled}}"
                                                IsExpanded="True"
                                                IsVisible="{Binding ViewModel.MoreSettings.LotteryEnabled}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <ComboBox MinWidth="220"
                                           ItemsSource="{Binding ViewModel.PrizeListNames}"
                                           SelectedItem="{Binding ViewModel.SelectedPrizeListName, Mode=TwoWay}" />
-                            </fa:FASettingsExpander.Footer>
-                            <fa:FASettingsExpanderItem>
-                                <fa:FASettingsExpanderItem.Footer>
+                            </fa:SettingsExpander.Footer>
+                            <fa:SettingsExpanderItem>
+                                <fa:SettingsExpanderItem.Footer>
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <Button Content="{x:Static langs:Resources.C_RefreshList}"
                                                 Click="RefreshPrizeLists_OnClick" />
@@ -217,9 +217,9 @@
                                         <Button Classes="accent" Content="{x:Static langs:Resources.C_PrizeImport}"
                                                 Click="ImportPrizePool_OnClick" />
                                     </StackPanel>
-                                </fa:FASettingsExpanderItem.Footer>
-                            </fa:FASettingsExpanderItem>
-                        </fa:FASettingsExpander>
+                                </fa:SettingsExpanderItem.Footer>
+                            </fa:SettingsExpanderItem>
+                        </fa:SettingsExpander>
                     </StackPanel>
                 </ScrollViewer>
 
@@ -227,21 +227,21 @@
                     <StackPanel Margin="32" Spacing="8">
                         <TextBlock Text="{x:Static langs:Resources.C_AppearanceTitle}"
                                    Theme="{StaticResource TitleTextBlockStyle}" />
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_Theme}"
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_Theme}"
                                                Description="{x:Static langs:Resources.C_ThemeDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi DarkThemeFilled}}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <ComboBox SelectedIndex="{Binding ViewModel.Appearance.Theme}">
                                     <ComboBoxItem Content="{x:Static langs:Resources.O_ThemeLight}" />
                                     <ComboBoxItem Content="{x:Static langs:Resources.O_ThemeDark}" />
                                     <ComboBoxItem Content="{x:Static langs:Resources.O_ThemeAuto}" />
                                 </ComboBox>
-                            </fa:FASettingsExpander.Footer>
-                        </fa:FASettingsExpander>
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_ThemeColor}"
+                            </fa:SettingsExpander.Footer>
+                        </fa:SettingsExpander>
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_ThemeColor}"
                                                Description="{x:Static langs:Resources.C_ThemeColorDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi ColorFilled}}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <ColorPicker Color="{Binding ViewModel.Appearance.ThemeColor}"
                                                  IsVisible="{Binding ViewModel.Appearance.ThemeColorMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enums:ThemeColorMode.Custom}}" />
@@ -250,16 +250,16 @@
                                         <ComboBoxItem Content="{x:Static langs:Resources.O_CustomColor}" />
                                     </ComboBox>
                                 </StackPanel>
-                            </fa:FASettingsExpander.Footer>
-                        </fa:FASettingsExpander>
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_Opacity}"
+                            </fa:SettingsExpander.Footer>
+                        </fa:SettingsExpander>
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_Opacity}"
                                                Description="{x:Static langs:Resources.C_OpacityDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi WindowFilled}}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <NumericUpDown Value="{Binding ViewModel.FloatingWindow.FloatingWindowOpacity}"
                                                Minimum="20" Maximum="100" />
-                            </fa:FASettingsExpander.Footer>
-                        </fa:FASettingsExpander>
+                            </fa:SettingsExpander.Footer>
+                        </fa:SettingsExpander>
                     </StackPanel>
                 </ScrollViewer>
 
@@ -269,27 +269,27 @@
                                    Theme="{StaticResource TitleTextBlockStyle}" />
                         <TextBlock Text="{x:Static langs:Resources.C_DesktopDescription}"
                                    TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_Autostart}"
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_Autostart}"
                                                Description="{x:Static langs:Resources.C_AutostartDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi PowerFilled}}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.Autostart}" />
-                            </fa:FASettingsExpander.Footer>
-                        </fa:FASettingsExpander>
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_ShowStartupWindow}"
+                            </fa:SettingsExpander.Footer>
+                        </fa:SettingsExpander>
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_ShowStartupWindow}"
                                                Description="{x:Static langs:Resources.C_ShowStartupWindowDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi WindowFilled}}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.Basic.ShowStartupWindow}" />
-                            </fa:FASettingsExpander.Footer>
-                        </fa:FASettingsExpander>
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_ExternalIntegration}"
+                            </fa:SettingsExpander.Footer>
+                        </fa:SettingsExpander>
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_ExternalIntegration}"
                                                Description="{x:Static langs:Resources.C_ExternalIntegrationDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi LinkSquareFilled}}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.ExternalIntegration}" />
-                            </fa:FASettingsExpander.Footer>
-                        </fa:FASettingsExpander>
+                            </fa:SettingsExpander.Footer>
+                        </fa:SettingsExpander>
                     </StackPanel>
                 </ScrollViewer>
 
@@ -304,24 +304,24 @@
                         <TextBlock Text="{x:Static langs:Resources.C_PrivacyEncouragement}"
                                    TextWrapping="Wrap"
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_SentryTelemetry}"
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_SentryTelemetry}"
                                                Description="{x:Static langs:Resources.C_SentryTelemetryDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi PulseFilled}}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.PrivacySettings.SentryTelemetryEnabled}" />
-                            </fa:FASettingsExpander.Footer>
-                        </fa:FASettingsExpander>
-                        <fa:FASettingsExpander Header="{x:Static langs:Resources.C_OnlineStatus}"
+                            </fa:SettingsExpander.Footer>
+                        </fa:SettingsExpander>
+                        <fa:SettingsExpander Header="{x:Static langs:Resources.C_OnlineStatus}"
                                                Description="{x:Static langs:Resources.C_OnlineStatusDescription}"
                                                IconSource="{sr:FluentIconSource {sr:Fi GlobeFilled}}">
-                            <fa:FASettingsExpander.Footer>
+                            <fa:SettingsExpander.Footer>
                                 <ComboBox SelectedIndex="{Binding ViewModel.PrivacySettings.OnlineStatusMode}">
                                     <ComboBoxItem Content="{x:Static langs:Resources.O_OnlineStatusMode_Full}" />
                                     <ComboBoxItem Content="{x:Static langs:Resources.O_OnlineStatusMode_Anonymous}" />
                                     <ComboBoxItem Content="{x:Static langs:Resources.O_OnlineStatusMode_Off}" />
                                 </ComboBox>
-                            </fa:FASettingsExpander.Footer>
-                        </fa:FASettingsExpander>
+                            </fa:SettingsExpander.Footer>
+                        </fa:SettingsExpander>
                     </StackPanel>
                 </ScrollViewer>
 
@@ -415,4 +415,4 @@
             </StackPanel>
         </Grid>
     </Grid>
-</faWindowing:FAAppWindow>
+</faWindowing:AppWindow>

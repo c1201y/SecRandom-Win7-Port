@@ -9,8 +9,8 @@ namespace SecRandom.Core.Extensions;
 
 public static class PageItemsExtensions
 {
-    public static List<FANavigationViewItemBase> ToNavigationViewItems(this IEnumerable<PageInfo> infosEnumerable,
-        ObservableCollection<FANavigationViewItemBase> flattenNavigationItems)
+    public static List<NavigationViewItemBase> ToNavigationViewItems(this IEnumerable<PageInfo> infosEnumerable,
+        ObservableCollection<NavigationViewItemBase> flattenNavigationItems)
     {
         var infos = infosEnumerable
             .Where(info => !info.IsHide)
@@ -19,18 +19,18 @@ public static class PageItemsExtensions
             .GroupBy(x => x.GroupId)
             .ToList();
         var addedGroups = new HashSet<string>();
-        List<FANavigationViewItemBase> navigationViewItems = [];
+        List<NavigationViewItemBase> navigationViewItems = [];
 
         foreach (var i in infos)
         {
             if (i.GroupId != null && addedGroups.Contains(i.GroupId)) continue;
 
-            FANavigationViewItemBase item;
+            NavigationViewItemBase item;
 
             var group = PagesRegistryService.GroupItems.FirstOrDefault(group => group.Id == i.GroupId);
             if (i.GroupId != null && group != null)
             {
-                var groupItem = new FANavigationViewItem
+                var groupItem = new NavigationViewItem
                 {
                     IconSource = new FluentIconSource(group.IconGlyph),
                     Content = group.Name,

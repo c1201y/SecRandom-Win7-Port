@@ -36,18 +36,13 @@ internal static class AvaloniaUnsafeAccessorHelpers
 
     public static Win32CompositionMode? GetActiveWin32CompositionMode()
     {
-        // In Avalonia 12, IRenderTimer is no longer registered in the AvaloniaLocator.
-        // Composition connections register as IRenderLoop (via RenderLoop.FromTimer(connection)).
-        // We retrieve the IRenderLoop, then extract the underlying IRenderTimer from
-        // DefaultRenderLoop's private _timer field to determine the actual composition mode.
-        var renderLoop = GetAvaloniaLocatorService<IRenderLoop>();
-        if (renderLoop is null)
+        // On Avalonia 11 the platform timer is registered as IRenderTimer in the
+        // AvaloniaLocator, so its concrete class name identifies the composition mode.
+        var renderTimer = GetAvaloniaLocatorService<IRenderTimer>();
+        if (renderTimer is null)
             return Win32CompositionMode.RedirectionSurface;
 
-        var timerField = renderLoop.GetType().GetField("_timer",
-            BindingFlags.NonPublic | BindingFlags.Instance);
-        var timer = timerField?.GetValue(renderLoop);
-        var timerClassName = timer?.GetType().Name;
+        var timerClassName = renderTimer.GetType().Name;
 
         return timerClassName switch
         {

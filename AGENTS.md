@@ -10,7 +10,7 @@ Maintenance contract:
 - `docs/project_rules.md` is the source of truth when a convention conflicts with this summary.
 -->
 
-**Last Update:** 2026-08-11
+**Last Update:** 2026-08-13
 **Last Submit:** 51f7f7fd
 **Last modified model:** MiMoCode
 
@@ -116,6 +116,8 @@ Keep this map short and stable. When code moves, AI agents should re-read the mo
 | `MobileMediaLibraryService` / `MobileDrawMediaService` | mobile services | `SecRandom/Services/Mobile/` | Mobile-private media import/reference cleanup and draw-time per-record image/music/voice orchestration through head-injected native playback. |
 
 ## CONVENTIONS
+- This checkout is maintained for Windows desktop only. Do not install Android/iOS workloads, and do not build or publish Linux/macOS/mobile targets; only the desktop RID chain (`win-x64`/`win-x86`/`win-arm64`) is in scope.
+- Avalonia 11 / FluentAvalonia 2.x / net8.0 compatibility layer: `SecRandom.Core/Views/` replaces v12-only primitives with `Page`, `ContentPage`, `NavigationPage` (attached `HasNavigationBar`/`HasBackButton` + Push/Pop/ReplaceAsync APIs) and `Frame` (`IFANavigationPageFactory`); shells and mobile host use these. `SecRandom.Core/Controls/GroupBox.cs` + `Styles/GroupBox.axaml` (included by `StylesBase.axaml`) replace the v12 `GroupBox`. Do not reintroduce APIs Avalonia 11 lacks: ComboBox has no watermark (use a null option), `SystemDecorations` replaces `WindowDecorations`, no `TextOptions`/`TextBlock.TextRenderingMode`, templates use `e.NameScope.Find<T>()` instead of `GetTemplateDescendants`. FA 2.4.1 interfaces: `ICommandBarElement`, `INavigationPageFactory` (getter `Control GetPage(Type)`/`GetPageFromObject(object)`); `HotAvalonia` 2.x registers via `EnableHotReload()` from `HotAvalonia.Extensions`. `GlobalConstants.CommitHash` tolerates an empty GitInfo hash (uncommitted/CI-less checkouts); versioned builds still require a real git commit for CI versioning. Windows desktop exe outputs to `bin/Release/net8.0-windows10.0.19041.0`.
 - `docs/project_rules.md` overrides inference when adding features.
 - General settings now live under `MainConfigModel.General`; `MainConfigModel.Basic` / `Backup` remain compatibility bridges for existing callers while new config splits belong under `SecRandom.Core/Models/SubConfigs/General/`.
 - Basic settings are functional runtime controls: `ShowStartupWindow`, primary-window topmost mode, and background residency apply only to the primary `MainWindow`; `AutoSaveWindowSize` preserves independent geometry/maximized state for the primary and settings windows. Cross-platform autostart and `secrandom://` protocol registration belong to app-layer `DesktopIntegrationService`, which must use user-level Windows/Linux/macOS mechanisms and not silently persist a failed integration request.

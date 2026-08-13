@@ -7,8 +7,8 @@ public static class GlobalConstants
 {
     public static string Tag => GitInfo.Tag;
     public static string Branch => GitInfo.Branch;
-    public static string CommitHash => GitInfo.CommitHash[..7];
-    public static string FullCommitHash => GitInfo.CommitHash;
+    public static string CommitHash => GitInfo.CommitHash?.Length >= 7 ? GitInfo.CommitHash[..7] : GitInfo.CommitHash ?? string.Empty;
+    public static string FullCommitHash => GitInfo.CommitHash ?? string.Empty;
 
     public static string CodeName => @"Nonomi";
     public static string Version => $@"v{GitInfo.Version}";

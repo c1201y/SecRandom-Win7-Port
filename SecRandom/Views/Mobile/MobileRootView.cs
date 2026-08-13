@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -9,6 +9,7 @@ using SecRandom.Core;
 using SecRandom.Core.Controls;
 using SecRandom.Core.Views;
 using SecRandom.Services.Mobile;
+using ViewFrame = SecRandom.Core.Views.Frame;
 using LR = SecRandom.Langs.Mobile.Resources;
 
 namespace SecRandom.Views.Mobile;
@@ -19,8 +20,7 @@ public sealed partial class MobileRootView : ViewBase, IFANavigationPageFactory
     private readonly IMobileSettingsNavigator _settingsNavigator;
     private readonly ILogger<MobileRootView>? _logger;
     private readonly TabStrip _bottomNavigation;
-    private readonly FAFrame _pageOutlet;
-    private bool _isAdornerAdded;
+    private readonly ViewFrame _pageOutlet;    private bool _isAdornerAdded;
     private bool _synchronizingBottomNavigation;
     private MobileDestination _destination = MobileDestination.Draw;
 
@@ -32,7 +32,7 @@ public sealed partial class MobileRootView : ViewBase, IFANavigationPageFactory
         _logger = logger;
         InitializeComponent();
         _bottomNavigation = this.FindControl<TabStrip>(@"BottomNavigation")!;
-        _pageOutlet = this.FindControl<FAFrame>(@"PageOutlet")!;
+        _pageOutlet = this.FindControl<ViewFrame>(@"PageOutlet")!;
         _pageOutlet.NavigationPageFactory = this;
         NavigateRoot(MobileDestination.Draw);
         UpdateDestinationChrome();
@@ -88,12 +88,12 @@ public sealed partial class MobileRootView : ViewBase, IFANavigationPageFactory
         catch (Exception exception)
         {
             _logger?.LogError(exception, "无法打开移动端设置界面。");
-            await new FAContentDialog
+            await new ContentDialog
             {
                 Title = LR.M_OpenSettingsFailed,
                 Content = exception.Message,
                 CloseButtonText = LR.C_Close,
-                DefaultButton = FAContentDialogButton.Close
+                DefaultButton = ContentDialogButton.Close
             }.ShowAsync(TopLevel.GetTopLevel(this));
             SynchronizeBottomNavigation();
         }

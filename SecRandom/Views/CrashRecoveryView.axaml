@@ -3,10 +3,11 @@
                           xmlns:local="clr-namespace:SecRandom.Views"
                            xmlns:lcr="clr-namespace:SecRandom.Langs.CrashRecovery"
                            xmlns:sr="http://secrandom.sectl.cn/schemas/xaml/core"
+                           xmlns:coreviews="clr-namespace:SecRandom.Core.Views;assembly=SecRandom.Core"
                            x:Class="SecRandom.Views.CrashRecoveryView"
                            x:DataType="local:CrashRecoveryView"
                            Header="{x:Static lcr:Resources.Title}"
-                           NavigationPage.HasBackButton="False">
+                           coreviews:NavigationPage.HasBackButton="False">
     <sr:DrawerHost IsDrawerOpen="{Binding IsFeedbackDrawerOpen, Mode=TwoWay}"
                    DrawerPlacement="Right"
                    DrawerContent="{Binding FeedbackDrawer}">

@@ -11,7 +11,7 @@
         ShowActivated="False"
         Topmost="True"
         WindowStartupLocation="Manual"
-        WindowDecorations="None"
+        SystemDecorations="None"
         Background="Transparent"
         CanMinimize="False"
         CanMaximize="False"

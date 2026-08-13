@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
 using SecRandom.Core.Services.SingleInstance;
@@ -29,22 +29,22 @@ public static class DuplicateInstanceDialog
     /// </summary>
     public static async Task<DuplicateInstanceAction> ShowAsync(TopLevel parent)
     {
-        var dialog = new FAContentDialog
+        var dialog = new ContentDialog
         {
             Title = Langs.Common.Resources.MultiInstance_Title,
             Content = Langs.Common.Resources.MultiInstance_Message,
             PrimaryButtonText = Langs.Common.Resources.MultiInstance_OpenExisting,
             SecondaryButtonText = Langs.Common.Resources.MultiInstance_Restart,
             CloseButtonText = Langs.Common.Resources.MultiInstance_Cancel,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         };
 
         var result = await dialog.ShowAsync(parent);
 
         return result switch
         {
-            FAContentDialogResult.Primary => DuplicateInstanceAction.OpenExisting,
-            FAContentDialogResult.Secondary => DuplicateInstanceAction.Restart,
+            ContentDialogResult.Primary => DuplicateInstanceAction.OpenExisting,
+            ContentDialogResult.Secondary => DuplicateInstanceAction.Restart,
             _ => DuplicateInstanceAction.Cancel
         };
     }

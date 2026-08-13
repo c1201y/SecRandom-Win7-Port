@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -180,7 +180,7 @@ public partial class App : Application
         if (!Design.IsDesignMode && !OperatingSystem.IsMacOS() && !OperatingSystem.IsAndroid() &&
             !OperatingSystem.IsIOS())
         {
-            this.UseHotReload();
+            this.EnableHotReload();
         }
 
 #if DEBUG
@@ -546,7 +546,7 @@ public partial class App : Application
             WindowState = WindowState.Maximized,
             ShowInTaskbar = false,
             CanResize = false,
-            WindowDecorations = WindowDecorations.None,
+            SystemDecorations = SystemDecorations.None,
             Background = null,
             TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent }
         };
@@ -603,7 +603,7 @@ public partial class App : Application
         var host = new SecRandomTmpRootWindow();
         host.Opened += async (_, _) =>
         {
-            var dialog = new FATaskDialog
+            var dialog = new TaskDialog
             {
                 XamlRoot = host,
                 Title = CR.M_PortableDataDirectoryUnavailableTitle,
@@ -613,7 +613,7 @@ public partial class App : Application
                     preparation.DataRoot,
                     preparation.ErrorMessage ?? CR.M_UnknownError)
             };
-            dialog.Buttons.Add(new FATaskDialogButton(CR.C_Close, "close") { IsDefault = true });
+            dialog.Buttons.Add(new TaskDialogButton(CR.C_Close, "close") { IsDefault = true });
 
             await dialog.ShowAsync();
             host.Close();
@@ -1785,7 +1785,7 @@ public partial class App : Application
             SizeToContent = SizeToContent.WidthAndHeight,
             Topmost = true,
             WindowStartupLocation = WindowStartupLocation.CenterScreen,
-            WindowDecorations = WindowDecorations.None,
+            SystemDecorations = SystemDecorations.None,
             CanMinimize = false,
             CanMaximize = false,
             CanResize = false,

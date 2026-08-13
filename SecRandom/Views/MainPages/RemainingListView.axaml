@@ -2,10 +2,11 @@
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                          xmlns:local="using:SecRandom.Views.MainPages"
                          xmlns:vm="using:SecRandom.ViewModels.MainPages"
+                         xmlns:coreviews="clr-namespace:SecRandom.Core.Views;assembly=SecRandom.Core"
                          x:Class="SecRandom.Views.MainPages.RemainingListView"
                          x:DataType="local:RemainingListView"
-                         NavigationPage.HasBackButton="True"
-                         NavigationPage.HasNavigationBar="True">
+                         coreviews:NavigationPage.HasBackButton="True"
+                         coreviews:NavigationPage.HasNavigationBar="True">
     <local:RemainingListView.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="RollCallRemainingItemTemplate" DataType="vm:RollCallRemainingItem">

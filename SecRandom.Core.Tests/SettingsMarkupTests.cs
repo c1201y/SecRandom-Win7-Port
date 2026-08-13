@@ -1,4 +1,4 @@
-namespace SecRandom.Core.Tests;
+﻿namespace SecRandom.Core.Tests;
 
 public class SettingsMarkupTests
 {
@@ -108,7 +108,7 @@ public class SettingsMarkupTests
     {
         var document = System.Xml.Linq.XDocument.Load(GetNotificationMarkupPath());
         var overrideSections = document.Descendants()
-            .Where(element => element.Name.LocalName == "FASettingsExpander"
+            .Where(element => element.Name.LocalName == "SettingsExpander"
                               && element.Attribute("IsExpanded") is not null)
             .ToList();
 
@@ -116,10 +116,10 @@ public class SettingsMarkupTests
         Assert.All(overrideSections, section =>
         {
             var items = section.Elements()
-                .Where(element => element.Name.LocalName != "FASettingsExpander.Footer")
+                .Where(element => element.Name.LocalName != "SettingsExpander.Footer")
                 .ToList();
             Assert.NotEmpty(items);
-            Assert.All(items, item => Assert.Equal("FASettingsExpanderItem", item.Name.LocalName));
+            Assert.All(items, item => Assert.Equal("SettingsExpanderItem", item.Name.LocalName));
         });
     }
 
@@ -135,11 +135,10 @@ public class SettingsMarkupTests
     public void NotificationMonitorShowsUnspecifiedWhenNoValueIsSelected()
     {
         string markup = File.ReadAllText(GetNotificationMarkupPath());
+        string source = File.ReadAllText(GetNotificationSourcePath());
 
-        Assert.Contains(
-            "PlaceholderText=\"{x:Static lsp:Resources.O_Monitor_Unspecified}\"",
-            markup,
-            StringComparison.Ordinal);
+        Assert.DoesNotContain("Watermark=", markup, StringComparison.Ordinal);
+        Assert.Contains("O_Monitor_Unspecified", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -160,14 +159,14 @@ public class SettingsMarkupTests
             element.Name.LocalName == "StackPanel"
             && ((string?)element.Attribute("Classes"))?.Contains("page-container", StringComparison.Ordinal) == true);
         var rows = pageContainer.Elements()
-            .Where(element => element.Name.LocalName == "FASettingsExpander")
+            .Where(element => element.Name.LocalName == "SettingsExpander")
             .ToList();
 
         Assert.Equal(9, rows.Count);
         Assert.All(rows, row =>
         {
             Assert.Null(row.Attribute("IsExpanded"));
-            Assert.DoesNotContain(row.Elements(), child => child.Name.LocalName == "FASettingsExpanderItem");
+            Assert.DoesNotContain(row.Elements(), child => child.Name.LocalName == "SettingsExpanderItem");
         });
         Assert.DoesNotContain(
             document.Descendants(),
@@ -184,7 +183,7 @@ public class SettingsMarkupTests
         Assert.Contains("Header=\"{Binding AnimationTitle}\"", markup, StringComparison.Ordinal);
         Assert.DoesNotContain("AutoCloseTime", markup, StringComparison.Ordinal);
         Assert.Contains("Text=\"{Binding OverridableSettingsTitle}\"", markup, StringComparison.Ordinal);
-        Assert.DoesNotContain("FASettingsExpanderItem Content=\"{Binding EnabledTitle}\"", markup, StringComparison.Ordinal);
+        Assert.DoesNotContain("SettingsExpanderItem Content=\"{Binding EnabledTitle}\"", markup, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -301,7 +300,7 @@ public class SettingsMarkupTests
         {
             string expandedBinding = $"{{Binding Settings.{overrideName}, Mode=OneWay}}";
             var section = document.Descendants().SingleOrDefault(element =>
-                element.Name.LocalName is "FASettingsExpander" or "DrawMusicSettingsExpander"
+                element.Name.LocalName is "SettingsExpander" or "DrawMusicSettingsExpander"
                 && (string?)element.Attribute("IsExpanded") == expandedBinding);
             Assert.True(section is not null, $"{relativePath} is missing the {overrideName} override expander.");
 
@@ -314,15 +313,15 @@ public class SettingsMarkupTests
                     .Where(element => !element.Name.LocalName.EndsWith(".Footer", StringComparison.Ordinal))
                     .ToList();
                 Assert.NotEmpty(controlRows);
-                Assert.All(controlRows, row => Assert.Equal("FASettingsExpanderItem", row.Name.LocalName));
+                Assert.All(controlRows, row => Assert.Equal("SettingsExpanderItem", row.Name.LocalName));
                 continue;
             }
 
             var rows = section.Elements()
-                .Where(element => element.Name.LocalName != "FASettingsExpander.Footer")
+                .Where(element => element.Name.LocalName != "SettingsExpander.Footer")
                 .ToList();
             Assert.NotEmpty(rows);
-            Assert.All(rows, row => Assert.Equal("FASettingsExpanderItem", row.Name.LocalName));
+            Assert.All(rows, row => Assert.Equal("SettingsExpanderItem", row.Name.LocalName));
         }
     }
 
@@ -469,6 +468,12 @@ public class SettingsMarkupTests
     {
         return GetRepositoryPath(
             "SecRandom/Views/SettingsPages/Notification/NotificationChannelSettingsContent.axaml");
+    }
+
+    private static string GetNotificationSourcePath()
+    {
+        return GetRepositoryPath(
+            "SecRandom/Views/SettingsPages/Notification/NotificationChannelSettingsPageBase.cs");
     }
 
     private static string GetDefaultNotificationMarkupPath()

@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
 using SecRandom.Core.Models.UI;
 
@@ -38,7 +38,7 @@ public static class ToastsHelper
     {
         control.ShowToast(new ToastMessage(message)
         {
-            Severity = FAInfoBarSeverity.Warning
+            Severity = InfoBarSeverity.Warning
         });
     }
 
@@ -51,7 +51,7 @@ public static class ToastsHelper
     {
         control.ShowToast(new ToastMessage(message)
         {
-            Severity = FAInfoBarSeverity.Error,
+            Severity = InfoBarSeverity.Error,
             Duration = TimeSpan.FromSeconds(10)
         });
     }
@@ -65,7 +65,7 @@ public static class ToastsHelper
     {
         control.ShowToast(new ToastMessage(message)
         {
-            Severity = FAInfoBarSeverity.Success
+            Severity = InfoBarSeverity.Success
         });
     }
 
@@ -81,7 +81,7 @@ public static class ToastsHelper
         {
             Title = title,
             Message = exception.Message,
-            Severity = FAInfoBarSeverity.Error,
+            Severity = InfoBarSeverity.Error,
             AutoClose = false
         }));
     }

@@ -17,7 +17,7 @@ internal sealed class SecRandomTmpRootWindow : Window
         SizeToContent = SizeToContent.Manual;
         CanResize = false;
         ShowInTaskbar = false;
-        WindowDecorations = WindowDecorations.None;
+        SystemDecorations = SystemDecorations.None;
         Background = Brushes.Transparent;
         TransparencyLevelHint = [WindowTransparencyLevel.Transparent];
     }

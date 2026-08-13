@@ -24,6 +24,7 @@
     <StaticResource ResourceKey="FluentAvaloniaTheme" />
 
     <StyleInclude Source="/Styles/NavigationBackButton.axaml" />
+    <StyleInclude Source="/Styles/GroupBox.axaml" />
     <StyleInclude Source="/Styles/PopupAnimations.axaml" />
     <StyleInclude Source="/Styles/StackPanelIntroAnimation.axaml" />
     <StyleInclude Source="/Styles/TabStrip.axaml" />
@@ -44,7 +45,7 @@
         <Setter Property="TextElement.FontWeight" Value="{DynamicResource AppFontWeight}" />
     </Style>
 
-    <Style Selector="fa|FAContentDialog">
+    <Style Selector="fa|ContentDialog">
         <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}" />
         <Setter Property="FontWeight" Value="{DynamicResource AppFontWeight}" />
     </Style>
@@ -153,7 +154,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 
-    <Style Selector="fa|FASettingsExpanderItem">
+    <Style Selector="fa|SettingsExpanderItem">
         <Style Selector="^ ToggleSwitch">
             <Setter Property="Margin" Value="0 -12" />
             <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
@@ -166,11 +167,11 @@
     </Style>
 
     <Style
-        Selector="fa|FACommandBar.hide-popup-indicator fa|FACommandBarButton:labelright /template/ fa|FAFontIcon#SubItemChevron">
+        Selector="fa|CommandBar.hide-popup-indicator fa|CommandBarButton:labelright /template/ fa|FontIcon#SubItemChevron">
         <Setter Property="IsVisible" Value="False" />
     </Style>
     
-    <Style Selector=".settings fa|FANumberBox">
+    <Style Selector=".settings fa|NumberBox">
         <Setter Property="MinWidth" Value="128" />
     </Style>
     

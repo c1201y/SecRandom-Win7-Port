@@ -1,21 +1,22 @@
-<ContentPage xmlns="https://github.com/avaloniaui"
+<coreviews:ContentPage xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sr="http://secrandom.sectl.cn/schemas/xaml/core"
              xmlns:fa="using:FluentAvalonia.UI.Controls"
              xmlns:views="using:SecRandom.Views"
+             xmlns:coreviews="clr-namespace:SecRandom.Core.Views;assembly=SecRandom.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SecRandom.Views.MainView"
              x:DataType="views:MainView"
              Header="SecRandom"
-             NavigationPage.HasNavigationBar="False"
+             coreviews:NavigationPage.HasNavigationBar="False"
              Loaded="OnLoaded"
              Unloaded="OnUnloaded">
     <Grid RowDefinitions="Auto *">
         <Border Grid.Row="0" Height="48"
                 Background="Transparent"
-                WindowDecorationProperties.ElementRole="TitleBar">
+               >
             <StackPanel Orientation="Horizontal" Margin="8" Spacing="8">
                 <Border Width="60" IsVisible="{Binding IsMacOs}" />
                 
@@ -25,7 +26,7 @@
                         VerticalAlignment="Center"
                         Margin="-7 -8 -15 -8"
                         Click="TogglePaneButton_OnClick"
-                        WindowDecorationProperties.ElementRole="User" />
+                       />
 
                 <Image Source="/Assets/AppLogo.png"
                        Width="18" Height="18"
@@ -38,7 +39,7 @@
             </StackPanel>
         </Border>
 
-        <fa:FANavigationView Grid.Row="1"
+        <fa:NavigationView Grid.Row="1"
                              x:Name="NavigationView"
                              PaneDisplayMode="Left"
                              IsSettingsVisible="False"
@@ -67,12 +68,11 @@
                                    Theme="{StaticResource TitleTextBlockStyle}" />
                     </Grid>
 
-                    <fa:FAFrame Grid.Row="1"
+                    <coreviews:Frame Grid.Row="1"
                                 x:Name="NavigationFrame"
-                                IsNavigationStackEnabled="False" CacheSize="0"
                                 Content="{Binding ViewModel.FrameContent}" />
                 </Grid>
             </sr:DrawerHost>
-        </fa:FANavigationView>
+        </fa:NavigationView>
     </Grid>
-</ContentPage>
+</coreviews:ContentPage>

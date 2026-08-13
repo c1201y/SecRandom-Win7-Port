@@ -21,9 +21,9 @@ internal static class SecurityVerificationDialog
         var password = new TextBox
         {
             PasswordChar = '●',
-            PlaceholderText = SR.C_PasswordPlaceholder
+            Watermark = SR.C_PasswordPlaceholder
         };
-        var totp = new TextBox { PlaceholderText = SR.C_TotpPlaceholder, MaxLength = 6 };
+        var totp = new TextBox { Watermark = SR.C_TotpPlaceholder, MaxLength = 6 };
         var usb = new TextBlock
         {
             Text = SR.M_UsbMissing,
@@ -120,17 +120,17 @@ internal static class SecurityVerificationDialog
             panel.Children.Add(usbStatusPanel);
         }
 
-        var dialog = new FATaskDialog
+        var dialog = new TaskDialog
         {
             XamlRoot = xamlRoot,
             Title = SR.M_VerificationDialogTitle,
             Header = SR.M_VerificationDialogTitle,
             Content = panel
         };
-        dialog.Buttons.Add(new FATaskDialogButton(SR.C_Cancel, "cancel"));
+        dialog.Buttons.Add(new TaskDialogButton(SR.C_Cancel, "cancel"));
         if (request.AllowPreview)
-            dialog.Buttons.Add(new FATaskDialogButton(SR.C_Preview, "preview"));
-        dialog.Buttons.Add(new FATaskDialogButton(SR.C_Verify, "verify")
+            dialog.Buttons.Add(new TaskDialogButton(SR.C_Preview, "preview"));
+        dialog.Buttons.Add(new TaskDialogButton(SR.C_Verify, "verify")
         {
             IsDefault = true,
             Command = verifyAvailability

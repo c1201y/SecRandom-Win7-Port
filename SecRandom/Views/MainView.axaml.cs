@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -27,6 +27,7 @@ using SecRandom.Platforms.Abstractions;
 using SecRandom.Services;
 using SecRandom.Services.Mobile;
 using SecRandom.ViewModels;
+using ViewFrame = SecRandom.Core.Views.Frame;
 
 namespace SecRandom.Views;
 
@@ -34,8 +35,8 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
 {
     private const string DefaultMainPageId = "main.rollCall";
 
-    private readonly FAFrame? _navigationFrame;
-    private readonly FANavigationView? _navigationView;
+    private readonly ViewFrame? _navigationFrame;
+    private readonly NavigationView? _navigationView;
 
     private AppToastAdorner? _appToastAdorner;
     private bool _isAdornerAdded;
@@ -48,8 +49,8 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
         DataContext = this;
         InitializeComponent();
 
-        _navigationFrame = this.FindControl<FAFrame>("NavigationFrame");
-        _navigationView = this.FindControl<FANavigationView>("NavigationView");
+        _navigationFrame = this.FindControl<ViewFrame>("NavigationFrame");
+        _navigationView = this.FindControl<NavigationView>("NavigationView");
 
         _navigationFrame?.NavigationPageFactory = this;
         BuildNavigationMenuItems();
@@ -60,7 +61,6 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
                 Current = null;
         };
 
-        TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
         RenderOptions.SetBitmapInterpolationMode(this, BitmapInterpolationMode.HighQuality);
         RenderOptions.SetEdgeMode(this, EdgeMode.Antialias);
     }
@@ -72,9 +72,9 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
     public bool UseDesktopUI =>
         (IAppHost.TryGetService<IPlatformServiceRoot>() as MobilePlatformServiceRoot)?.UsesDesktopMainView ?? IsDesktop;
 
-    public static void ShowSuccessToast(string message) => ShowToast(message, FAInfoBarSeverity.Success);
+    public static void ShowSuccessToast(string message) => ShowToast(message, InfoBarSeverity.Success);
 
-    public static void ShowToast(string message, FAInfoBarSeverity severity)
+    public static void ShowToast(string message, InfoBarSeverity severity)
     {
         var view = Current;
         if (view is null)
@@ -202,7 +202,7 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
         }
         else
         {
-            _navigationView?.PaneDisplayMode = FANavigationViewPaneDisplayMode.LeftMinimal;
+            _navigationView?.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
             ViewModel.IsNavPaneToggleButtonVisible = true;
         }
     }
@@ -264,11 +264,11 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
         CloseDrawer();
     }
 
-    private void NavigationView_OnItemInvoked(object? sender, FANavigationViewItemInvokedEventArgs e)
+    private void NavigationView_OnItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
     {
         PageInfo? info = null;
 
-        if (e.InvokedItemContainer is FANavigationViewItem { Tag: PageInfo containerInfo })
+        if (e.InvokedItemContainer is NavigationViewItem { Tag: PageInfo containerInfo })
             info = containerInfo;
         else if (e.InvokedItem is PageInfo invokedInfo) info = invokedInfo;
 

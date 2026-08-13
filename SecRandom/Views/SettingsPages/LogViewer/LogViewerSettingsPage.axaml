@@ -70,7 +70,7 @@
                      MinWidth="196"
                      MaxWidth="256"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     PlaceholderText="{x:Static lsp:Resources.C_SearchWatermark}" />
+                     Watermark="{x:Static lsp:Resources.C_SearchWatermark}" />
         </Grid>
 
         <Border Grid.Row="2"

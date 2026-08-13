@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +33,7 @@ public sealed class MobileSettingsViewTests
             await navigator.OpenAsync();
 
             var settings = Assert.IsType<SettingsView>(Assert.Single(viewHost.PageStack));
-            Assert.NotNull(settings.FindControl<FluentAvalonia.UI.Controls.FANavigationView>("NavigationView"));
+            Assert.NotNull(settings.FindControl<FluentAvalonia.UI.Controls.NavigationView>("NavigationView"));
             Assert.True(navigator.IsOpen);
 
             Assert.True(await viewHost.CloseActiveViewAsync());

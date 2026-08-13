@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -113,7 +113,7 @@ public sealed class DesktopViewHostProvider : IViewHostProvider
     }
 }
 
-internal sealed class DesktopViewHostWindow : FAAppWindow, IViewHost
+internal sealed class DesktopViewHostWindow : AppWindow, IViewHost
 {
     private readonly ViewHostControl _contentHost;
     private bool _allowClose;

@@ -577,7 +577,7 @@ public sealed class UpdateCenterService(
             var output = process.StandardOutput.ReadToEnd();
             if (!process.WaitForExit(3000) || process.ExitCode != 0)
                 return false;
-            var runtime = OperatingSystem.IsWindows() ? "Microsoft.WindowsDesktop.App 10." : "Microsoft.NETCore.App 10.";
+            var runtime = OperatingSystem.IsWindows() ? "Microsoft.WindowsDesktop.App 8." : "Microsoft.NETCore.App 8.";
             return output.Split('\n').Any(line => line.StartsWith(runtime, StringComparison.Ordinal));
         }
         catch (Exception)

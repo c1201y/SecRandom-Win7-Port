@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,22 +16,22 @@
             <sr:IconText x:Name="S_Credentials" Text="{x:Static lsp:Resources.S_Credentials}" Glyph="{sr:Fi ShieldKeyholeFilled}"
                          Margin="0 0 0 4" />
 
-            <fa:FASettingsExpander x:Name="S_Enabled"
+            <fa:SettingsExpander x:Name="S_Enabled"
                                     Header="{x:Static lsp:Resources.S_Enabled}"
                                    Description="{x:Static lsp:Resources.S_Enabled_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi ShieldKeyholeFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ToggleSwitch IsChecked="{Binding IsSecurityEnabled, Mode=OneWay}"
                                   IsCheckedChanged="SecurityEnabled_OnIsCheckedChanged"
                                   IsEnabled="{Binding CanEnableSecurity}" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Password"
+            <fa:SettingsExpander x:Name="S_Password"
                                     Header="{x:Static lsp:Resources.S_Password}"
                                    Description="{x:Static lsp:Resources.S_Password_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi PasswordFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button Content="{x:Static lsp:Resources.C_SetPassword}"
                                 IsVisible="{Binding CanSetPassword}"
@@ -43,59 +43,59 @@
                                 IsVisible="{Binding HasPassword}"
                                 Click="RemovePassword_OnClick" />
                     </StackPanel>
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Totp"
+            <fa:SettingsExpander x:Name="S_Totp"
                                     Header="{x:Static lsp:Resources.S_Totp}"
                                    Description="{x:Static lsp:Resources.S_Totp_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi ShieldKeyholeFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <Button Content="{Binding TotpButtonText}" IsEnabled="{Binding CanConfigureAdditionalFactors}"
                             Click="ManageTotp_OnClick" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_Usb"
+            <fa:SettingsExpander x:Name="S_Usb"
                                     Header="{x:Static lsp:Resources.S_Usb}"
                                    Description="{x:Static lsp:Resources.S_Usb_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi UsbStickFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <Button Content="{x:Static lsp:Resources.C_ManageBindings}"
                             IsEnabled="{Binding CanConfigureAdditionalFactors}" Click="ManageUsb_OnClick" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
             <Separator Margin="0 12 0 4" />
             <sr:IconText Text="{x:Static lsp:Resources.S_Factors}" Glyph="{sr:Fi PasswordFilled}" Margin="0 0 0 4" />
 
-            <fa:FASettingsExpander x:Name="S_Factors"
+            <fa:SettingsExpander x:Name="S_Factors"
                                     Header="{x:Static lsp:Resources.S_Factors}"
                                     Description="{x:Static lsp:Resources.S_Factors_D}"
                                     IconSource="{sr:FluentIconSource {sr:Fi PasswordFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <sr:MultiComboBox MinWidth="260" ItemsSource="{Binding FactorOptions}"
                                        SelectedItems="{Binding SelectedFactorOptions}"
                                        IsEnabled="{Binding CanEditFactorSelection}" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_RequireAll"
+            <fa:SettingsExpander x:Name="S_RequireAll"
                                     Header="{x:Static lsp:Resources.S_RequireAll}"
                                    Description="{x:Static lsp:Resources.S_RequireAll_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi ShieldKeyholeFilled}}">
-                <fa:FASettingsExpander.Footer>
+                <fa:SettingsExpander.Footer>
                     <ToggleSwitch IsChecked="{Binding Settings.RequireAllSelectedFactors, Mode=OneWay}"
                                   Tag="RequireAllSelectedFactors"
                                   IsCheckedChanged="SecurityOption_OnIsCheckedChanged"
                                   IsEnabled="{Binding CanEditFactorSelection}" />
-                </fa:FASettingsExpander.Footer>
-            </fa:FASettingsExpander>
+                </fa:SettingsExpander.Footer>
+            </fa:SettingsExpander>
 
             <Separator Margin="0 12 0 4" />
             <sr:IconText x:Name="S_Protection" Text="{x:Static lsp:Resources.S_Protection}" Glyph="{sr:Fi LockClosedFilled}" Margin="0 0 0 4" />
 
-            <fa:FASettingsExpander x:Name="S_WindowOperations"
+            <fa:SettingsExpander x:Name="S_WindowOperations"
                                     Header="{x:Static lsp:Resources.S_WindowOperations}"
                                    Description="{x:Static lsp:Resources.S_WindowOperations_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi WindowFilled}}">
@@ -134,9 +134,9 @@
                           Tag="ProtectExit"
                           IsCheckedChanged="SecurityOption_OnIsCheckedChanged"
                           IsEnabled="{Binding CanEditProtectedOperations}" />
-            </fa:FASettingsExpander>
+            </fa:SettingsExpander>
 
-            <fa:FASettingsExpander x:Name="S_DrawOperations"
+            <fa:SettingsExpander x:Name="S_DrawOperations"
                                     Header="{x:Static lsp:Resources.S_DrawOperations}"
                                    Description="{x:Static lsp:Resources.S_DrawOperations_D}"
                                    IconSource="{sr:FluentIconSource {sr:Fi PeopleFilled}}">
@@ -175,7 +175,7 @@
                           Tag="ProtectLotteryReset"
                           IsCheckedChanged="SecurityOption_OnIsCheckedChanged"
                           IsEnabled="{Binding CanEditProtectedOperations}" />
-            </fa:FASettingsExpander>
+            </fa:SettingsExpander>
 
             <TextBlock Text="{Binding LockoutText}"
                        IsVisible="{Binding IsLockedOut}"

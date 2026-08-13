@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -144,7 +144,7 @@ public partial class DebugSettingsPage : UserControl, INotifyPropertyChanged
             return;
         }
 
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = DebugResources.Get("M_InternalSettings_ConfirmTitle"),
             Content = new TextBlock
@@ -154,10 +154,10 @@ public partial class DebugSettingsPage : UserControl, INotifyPropertyChanged
             },
             PrimaryButtonText = DebugResources.Get("C_Enable"),
             CloseButtonText = DebugResources.Get("C_Cancel"),
-            DefaultButton = FAContentDialogButton.Close
+            DefaultButton = ContentDialogButton.Close
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        if (result != FAContentDialogResult.Primary)
+        if (result != ContentDialogResult.Primary)
         {
             _isUpdatingInternalSettingsToggle = true;
             toggle.IsChecked = false;

@@ -111,14 +111,17 @@ public partial class AttachedSettingsControlPresenter : UserControl, INotifyProp
 
         TargetObject.AttachedObjects.TryGetValue(ControlInfo.Guid, out var settings);
         var control = AttachedSettingsControlBase.GetInstance(ControlInfo, ref settings);
-        control?.Target = TargetObject switch
+        if (control is not null)
         {
-            Student => AttachedSettingsTargets.Student,
-            Prize => AttachedSettingsTargets.Prize,
-            StudentList => AttachedSettingsTargets.StudentList,
-            PrizeList => AttachedSettingsTargets.PrizeList,
-            _ => AttachedSettingsTargets.None
-        };
+            control.Target = TargetObject switch
+            {
+                Student => AttachedSettingsTargets.Student,
+                Prize => AttachedSettingsTargets.Prize,
+                StudentList => AttachedSettingsTargets.StudentList,
+                PrizeList => AttachedSettingsTargets.PrizeList,
+                _ => AttachedSettingsTargets.None
+            };
+        }
 
         ContentObject = control;
         MainContentPresenter.Content = ContentObject;

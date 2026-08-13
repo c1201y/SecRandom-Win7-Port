@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
@@ -16,7 +16,7 @@ using SecRandom.Services.Platform;
 
 namespace SecRandom.Views;
 
-public partial class MainWindow : FAAppWindow
+public partial class MainWindow : AppWindow
 {
     private readonly MainWindowSettingsScope _settingsScope;
     private readonly BasicSettingsConfig? _settings;

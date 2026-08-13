@@ -1,8 +1,8 @@
-using FluentAvalonia.UI.Controls;
+﻿using FluentAvalonia.UI.Controls;
 
 namespace SecRandom.Core.Controls;
 
-public class FluentIcon : FAFontIcon
+public class FluentIcon : FontIcon
 {
     public FluentIcon()
     {

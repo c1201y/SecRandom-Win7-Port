@@ -17,13 +17,13 @@
             <TextBlock Text="{Binding TargetListDescription}" TextWrapping="Wrap"
                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
             
-            <fa:FAInfoBar Title="{x:Static lr:Resources.C_InfoTitle}"
+            <fa:InfoBar Title="{x:Static lr:Resources.C_InfoTitle}"
                           Message="{x:Static lr:Resources.C_InfoMessage}"
                           Severity="Informational"
                           IsClosable="False"
                           IsOpen="True" />
 
-            <GroupBox Header="{Binding ImportSourceLabel}">
+            <sr:GroupBox Header="{Binding ImportSourceLabel}">
                 <ComboBox ItemsSource="{Binding ImportModes}"
                           SelectedItem="{Binding SelectedImportModeOption, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -32,8 +32,8 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-            </GroupBox>
-            <GroupBox IsVisible="{Binding IsFileImportMode}"
+            </sr:GroupBox>
+            <sr:GroupBox IsVisible="{Binding IsFileImportMode}"
                       Header="{x:Static lr:Resources.C_SelectFile}">
                 <StackPanel Spacing="4">
                     <Button Classes="accent" Click="FileImportButton_OnClick">
@@ -49,9 +49,9 @@
                                TextWrapping="Wrap"
                                Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                 </StackPanel>
-            </GroupBox>
+            </sr:GroupBox>
 
-            <GroupBox IsVisible="{Binding IsQrImportMode}" Header="{Binding QrImportLabel}">
+            <sr:GroupBox IsVisible="{Binding IsQrImportMode}" Header="{Binding QrImportLabel}">
                 <StackPanel Spacing="10">
                     <ComboBox IsVisible="{Binding HasCameraSelection}"
                               ItemsSource="{Binding CameraOptions}"
@@ -77,18 +77,18 @@
                         <StackPanel Grid.Row="2" Grid.Column="1"><TextBlock Classes="caption" Text="{Binding TransferElapsedLabel}" /><TextBlock Text="{Binding QrElapsedText}" FontSize="18" /></StackPanel>
                     </Grid>
                 </StackPanel>
-            </GroupBox>
+            </sr:GroupBox>
 
-            <GroupBox IsVisible="{Binding IsSessionCodeImportMode}" Header="{Binding SessionCodeImportModeLabel}">
+            <sr:GroupBox IsVisible="{Binding IsSessionCodeImportMode}" Header="{Binding SessionCodeImportModeLabel}">
                 <StackPanel Spacing="8">
                     <TextBlock Text="{Binding SessionCodeHint}" TextWrapping="Wrap"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                     <TextBox x:Name="SessionCodeInput" MaxLength="12" TextAlignment="Center"
                              FontSize="17" TextChanged="SessionCodeInput_OnTextChanged" />
                 </StackPanel>
-            </GroupBox>
+            </sr:GroupBox>
 
-            <GroupBox IsVisible="{Binding IsFileImportMode}"
+            <sr:GroupBox IsVisible="{Binding IsFileImportMode}"
                       Header="{x:Static lr:Resources.C_ColumnMapping}">
                 <StackPanel Spacing="4">
                     <TextBlock Text="{x:Static lr:Resources.C_ColumnMapping_D}"
@@ -116,7 +116,7 @@
                                   SelectedItem="{Binding TagsColumn, Mode=TwoWay}" />
                     </sr:Field>
                 </StackPanel>
-            </GroupBox>
+            </sr:GroupBox>
 
             <Border IsVisible="{Binding HasPreview}"
                     BorderBrush="{DynamicResource ControlElevationBorderBrush}"

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
@@ -95,19 +95,19 @@ public partial class VerificationSettingsPage : UserControl
         var dialogContent = new StackPanel { Spacing = 4 };
         dialogContent.Children.Add(new TextBlock { Text = content, TextWrapping = Avalonia.Media.TextWrapping.Wrap });
         dialogContent.Children.Add(acknowledgement);
-        var dialog = new FAContentDialog
+        var dialog = new ContentDialog
         {
             Title = LR.C_ModeConfirmTitle,
             Content = dialogContent,
             PrimaryButtonText = LR.C_ModeConfirmSwitch,
             CloseButtonText = LR.C_Cancel,
-            DefaultButton = FAContentDialogButton.Close,
+            DefaultButton = ContentDialogButton.Close,
             IsPrimaryButtonEnabled = false
         };
         acknowledgement.IsCheckedChanged += (_, _) => dialog.IsPrimaryButtonEnabled = acknowledgement.IsChecked == true;
         var result = await dialog.ShowAsync(TopLevel.GetTopLevel(this));
 
-        if (result == FAContentDialogResult.Primary && acknowledgement.IsChecked == true)
+        if (result == ContentDialogResult.Primary && acknowledgement.IsChecked == true)
         {
             ConfigHandler.Data.General.Verification.Mode = requestedMode;
             ConfigHandler.Save();

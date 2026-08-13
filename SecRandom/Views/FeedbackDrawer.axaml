@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -37,15 +37,15 @@
 
                 <sr:Field Label="{x:Static ls:Resources.C_Feedback_Summary}">
                     <TextBox Text="{Binding ViewModel.Title, Mode=TwoWay}"
-                             PlaceholderText="{x:Static ls:Resources.C_Feedback_SummaryPlaceholder}" />
+                             Watermark="{x:Static ls:Resources.C_Feedback_SummaryPlaceholder}" />
                 </sr:Field>
 
                 <sr:Field Label="{x:Static ls:Resources.C_Feedback_ContactEmail}">
                     <TextBox Text="{Binding ViewModel.ContactEmail, Mode=TwoWay}"
-                             PlaceholderText="{x:Static ls:Resources.C_Feedback_ContactEmailPlaceholder}" />
+                             Watermark="{x:Static ls:Resources.C_Feedback_ContactEmailPlaceholder}" />
                 </sr:Field>
 
-                <fa:FAInfoBar IsVisible="{Binding ViewModel.IsBug}"
+                <fa:InfoBar IsVisible="{Binding ViewModel.IsBug}"
                               Severity="Informational"
                               IsOpen="True"
                               IsClosable="False"
@@ -55,17 +55,17 @@
                     <sr:Field Label="{x:Static ls:Resources.C_Feedback_Expected}">
                         <TextBox Text="{Binding ViewModel.ExpectedBehavior, Mode=TwoWay}"
                                  AcceptsReturn="True" TextWrapping="Wrap" MinHeight="82"
-                                 PlaceholderText="{x:Static ls:Resources.C_Feedback_ExpectedPlaceholder}" />
+                                 Watermark="{x:Static ls:Resources.C_Feedback_ExpectedPlaceholder}" />
                     </sr:Field>
                     <sr:Field Label="{x:Static ls:Resources.C_Feedback_Actual}">
                         <TextBox Text="{Binding ViewModel.ActualResult, Mode=TwoWay}"
                                  AcceptsReturn="True" TextWrapping="Wrap" MinHeight="82"
-                                 PlaceholderText="{x:Static ls:Resources.C_Feedback_ActualPlaceholder}" />
+                                 Watermark="{x:Static ls:Resources.C_Feedback_ActualPlaceholder}" />
                     </sr:Field>
                     <sr:Field Label="{x:Static ls:Resources.C_Feedback_Reproduce}">
                         <TextBox Text="{Binding ViewModel.ReproductionSteps, Mode=TwoWay}"
                                  AcceptsReturn="True" TextWrapping="Wrap" MinHeight="106"
-                                 PlaceholderText="{x:Static ls:Resources.C_Feedback_ReproducePlaceholder}" />
+                                 Watermark="{x:Static ls:Resources.C_Feedback_ReproducePlaceholder}" />
                     </sr:Field>
                 </StackPanel>
 
@@ -73,12 +73,12 @@
                     <sr:Field Label="{x:Static ls:Resources.C_Feedback_Motivation}">
                         <TextBox Text="{Binding ViewModel.Motivation, Mode=TwoWay}"
                                  AcceptsReturn="True" TextWrapping="Wrap" MinHeight="82"
-                                 PlaceholderText="{x:Static ls:Resources.C_Feedback_MotivationPlaceholder}" />
+                                 Watermark="{x:Static ls:Resources.C_Feedback_MotivationPlaceholder}" />
                     </sr:Field>
                     <sr:Field Label="{x:Static ls:Resources.C_Feedback_Request}">
                         <TextBox Text="{Binding ViewModel.FeatureRequest, Mode=TwoWay}"
                                  AcceptsReturn="True" TextWrapping="Wrap" MinHeight="106"
-                                 PlaceholderText="{x:Static ls:Resources.C_Feedback_RequestPlaceholder}" />
+                                 Watermark="{x:Static ls:Resources.C_Feedback_RequestPlaceholder}" />
                     </sr:Field>
                 </StackPanel>
             </StackPanel>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -838,7 +838,7 @@ public partial class LotteryListImportView : UserControl, INotifyPropertyChanged
 
     private async Task ConfirmDuplicateNamesAsync(List<Prize> prizes, IReadOnlyList<string> duplicatedNames)
     {
-        var result = await new FAContentDialog
+        var result = await new ContentDialog
         {
             Title = LR.M_DuplicateTitle,
             Content = string.Format(LR.M_DuplicateContent, duplicatedNames.Count,
@@ -846,17 +846,17 @@ public partial class LotteryListImportView : UserControl, INotifyPropertyChanged
             PrimaryButtonText = LR.M_DuplicatePrimary,
             SecondaryButtonText = LR.M_DuplicateSecondary,
             CloseButtonText = LR.M_DuplicateClose,
-            DefaultButton = FAContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary
         }.ShowAsync(TopLevel.GetTopLevel(this));
 
-        if (result == FAContentDialogResult.Primary)
+        if (result == ContentDialogResult.Primary)
         {
             _logger.LogInformation("奖品池导入保留重复名称：有效行数={Count}。", prizes.Count);
             _importHandler(prizes);
             return;
         }
 
-        if (result == FAContentDialogResult.Secondary)
+        if (result == ContentDialogResult.Secondary)
         {
             RosterImportParser.RenameDuplicatedPrizes(prizes);
             _logger.LogInformation("奖品池导入已自动处理重复名称：有效行数={Count}。", prizes.Count);

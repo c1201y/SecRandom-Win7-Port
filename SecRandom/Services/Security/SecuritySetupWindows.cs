@@ -40,8 +40,8 @@ internal static class SecuritySetupDialogs
         panel.Children.Add(confirmation);
 
         var dialog = CreateDialog(xamlRoot, hasPassword ? SR.M_PasswordDialogTitle : SR.M_SetPasswordDialogTitle, panel);
-        dialog.Buttons.Add(new FATaskDialogButton(SR.C_Cancel, "cancel"));
-        dialog.Buttons.Add(new FATaskDialogButton(SR.C_Save, "save") { IsDefault = true });
+        dialog.Buttons.Add(new TaskDialogButton(SR.C_Cancel, "cancel"));
+        dialog.Buttons.Add(new TaskDialogButton(SR.C_Save, "save") { IsDefault = true });
         dialog.Closing += (_, args) =>
         {
             if (Equals(args.Result, "save") && !string.Equals(password.Text, confirmation.Text, StringComparison.Ordinal))
@@ -64,8 +64,8 @@ internal static class SecuritySetupDialogs
         panel.Children.Add(current);
 
         var dialog = CreateDialog(xamlRoot, SR.M_PasswordDialogTitle, panel);
-        dialog.Buttons.Add(new FATaskDialogButton(SR.C_Cancel, "cancel"));
-        dialog.Buttons.Add(new FATaskDialogButton(SR.C_RemovePassword, "remove"));
+        dialog.Buttons.Add(new TaskDialogButton(SR.C_Cancel, "cancel"));
+        dialog.Buttons.Add(new TaskDialogButton(SR.C_RemovePassword, "remove"));
         return Equals(await dialog.ShowAsync(), "remove") ? current.Text : null;
     }
 
@@ -74,7 +74,7 @@ internal static class SecuritySetupDialogs
         var code = new TextBox
         {
             MaxLength = 6,
-            PlaceholderText = SR.C_TotpPlaceholder,
+            Watermark = SR.C_TotpPlaceholder,
             HorizontalContentAlignment = HorizontalAlignment.Center,
             FontSize = 20
         };
@@ -100,8 +100,8 @@ internal static class SecuritySetupDialogs
         panel.Children.Add(code);
 
         var dialog = CreateDialog(xamlRoot, SR.M_TotpDialogTitle, panel);
-        dialog.Buttons.Add(new FATaskDialogButton(SR.C_Cancel, "cancel"));
-        dialog.Buttons.Add(new FATaskDialogButton(SR.C_VerifyAndSave, "save") { IsDefault = true });
+        dialog.Buttons.Add(new TaskDialogButton(SR.C_Cancel, "cancel"));
+        dialog.Buttons.Add(new TaskDialogButton(SR.C_VerifyAndSave, "save") { IsDefault = true });
         return Equals(await dialog.ShowAsync(), "save") ? code.Text : null;
     }
 
@@ -140,8 +140,8 @@ internal static class SecuritySetupDialogs
         panel.Children.Add(tabs);
 
         var dialog = CreateDialog(xamlRoot, SR.M_UsbDialogTitle, panel);
-        var cancel = new FATaskDialogButton(SR.C_Cancel, "cancel");
-        var action = new FATaskDialogButton(SR.C_Bind, "bind") { IsDefault = true };
+        var cancel = new TaskDialogButton(SR.C_Cancel, "cancel");
+        var action = new TaskDialogButton(SR.C_Bind, "bind") { IsDefault = true };
         void UpdateActions()
         {
             var isBinding = tabs.SelectedIndex == 0;
@@ -283,7 +283,7 @@ internal static class SecuritySetupDialogs
         grid.Children.Add(valueBlock);
     }
 
-    private static FATaskDialog CreateDialog(TopLevel xamlRoot, string title, Control content) => new()
+    private static TaskDialog CreateDialog(TopLevel xamlRoot, string title, Control content) => new()
     {
         XamlRoot = xamlRoot,
         Title = title,
@@ -294,7 +294,7 @@ internal static class SecuritySetupDialogs
     private static TextBox CreatePasswordInput(string placeholderText) => new()
     {
         PasswordChar = '●',
-        PlaceholderText = placeholderText
+        Watermark = placeholderText
     };
 
     private static IImage BuildQrCode(string content)
