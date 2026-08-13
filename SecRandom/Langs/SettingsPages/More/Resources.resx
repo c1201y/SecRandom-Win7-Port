@@ -1,0 +1,179 @@
+<root>
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root" xmlns="">
+    <xsd:element name="root" msdata:IsDataSet="true" />
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Page_Title" xml:space="preserve">
+    <value>更多设置</value>
+  </data>
+  <data name="S_PageManagement" xml:space="preserve">
+    <value>页面管理</value>
+  </data>
+  <data name="S_LotteryEnabled" xml:space="preserve">
+    <value>启用抽奖</value>
+  </data>
+  <data name="S_LotteryEnabled_D" xml:space="preserve">
+    <value>关闭后隐藏抽奖入口，并拒绝抽奖快捷键和外部指令</value>
+  </data>
+  <data name="S_RollCallPanelPosition" xml:space="preserve">
+    <value>点名控制面板位置</value>
+  </data>
+  <data name="S_RollCallPanelPosition_D" xml:space="preserve">
+    <value>设置点名页控制面板显示在主内容左侧或右侧</value>
+  </data>
+  <data name="O_Right" xml:space="preserve">
+    <value>右侧</value>
+  </data>
+  <data name="O_Left" xml:space="preserve">
+    <value>左侧</value>
+  </data>
+  <data name="S_RollCallControls" xml:space="preserve">
+    <value>点名页面控件</value>
+  </data>
+  <data name="S_RollCallControls_D" xml:space="preserve">
+    <value>控制点名页侧边控制面板中的控件显示</value>
+  </data>
+  <data name="C_RollCallResetButton" xml:space="preserve">
+    <value>重置按钮</value>
+  </data>
+  <data name="C_RollCallQuantityControl" xml:space="preserve">
+    <value>人数调节</value>
+  </data>
+  <data name="C_RollCallStartButton" xml:space="preserve">
+    <value>开始按钮</value>
+  </data>
+  <data name="C_RollCallListSelector" xml:space="preserve">
+    <value>名单选择</value>
+  </data>
+  <data name="C_RollCallRangeSelector" xml:space="preserve">
+    <value>范围选择</value>
+  </data>
+  <data name="C_RollCallGenderSelector" xml:space="preserve">
+    <value>性别选择</value>
+  </data>
+  <data name="C_RollCallRemainingButton" xml:space="preserve">
+    <value>剩余名单按钮</value>
+  </data>
+  <data name="C_RollCallQuantityLabel" xml:space="preserve">
+    <value>人数统计</value>
+  </data>
+  <data name="S_LotteryPanelPosition" xml:space="preserve">
+    <value>抽奖控制面板位置</value>
+  </data>
+  <data name="S_LotteryPanelPosition_D" xml:space="preserve">
+    <value>设置抽奖页控制面板显示在主内容左侧或右侧</value>
+  </data>
+  <data name="S_LotteryControls" xml:space="preserve">
+    <value>抽奖页面控件</value>
+  </data>
+  <data name="S_LotteryControls_D" xml:space="preserve">
+    <value>控制抽奖页侧边控制面板中的控件显示</value>
+  </data>
+  <data name="C_LotteryResetButton" xml:space="preserve">
+    <value>重置按钮</value>
+  </data>
+  <data name="C_LotteryQuantityControl" xml:space="preserve">
+    <value>数量调节</value>
+  </data>
+  <data name="C_LotteryStartButton" xml:space="preserve">
+    <value>开始按钮</value>
+  </data>
+  <data name="C_LotteryListSelector" xml:space="preserve">
+    <value>奖池选择</value>
+  </data>
+  <data name="C_LotteryStudentListSelector" xml:space="preserve">
+    <value>成员名单选择</value>
+  </data>
+  <data name="C_LotteryRangeSelector" xml:space="preserve">
+    <value>范围选择</value>
+  </data>
+  <data name="C_LotteryGenderSelector" xml:space="preserve">
+    <value>性别选择</value>
+  </data>
+  <data name="C_LotteryRemainingButton" xml:space="preserve">
+    <value>剩余名单按钮</value>
+  </data>
+  <data name="C_LotteryQuantityLabel" xml:space="preserve">
+    <value>奖数统计</value>
+  </data>
+  <data name="S_Shortcut" xml:space="preserve">
+    <value>快捷键</value>
+  </data>
+  <data name="S_Shortcut_Enable" xml:space="preserve">
+    <value>启用快捷键</value>
+  </data>
+  <data name="S_Shortcut_Enable_D" xml:space="preserve">
+    <value>启用全局快捷键响应</value>
+  </data>
+  <data name="S_Shortcut_D" xml:space="preserve">
+    <value>展开后按下所需组合键；Esc 取消输入</value>
+  </data>
+  <data name="S_Shortcut_OpenRollCallPage" xml:space="preserve">
+    <value>打开点名页</value>
+  </data>
+  <data name="S_Shortcut_OpenRollCallPage_D" xml:space="preserve">
+    <value>设置打开点名页的快捷键</value>
+  </data>
+  <data name="S_Shortcut_QuickDraw" xml:space="preserve">
+    <value>执行闪抽</value>
+  </data>
+  <data name="S_Shortcut_QuickDraw_D" xml:space="preserve">
+    <value>设置执行快速抽取的快捷键</value>
+  </data>
+  <data name="S_Shortcut_OpenLotteryPage" xml:space="preserve">
+    <value>打开抽奖页</value>
+  </data>
+  <data name="S_Shortcut_OpenLotteryPage_D" xml:space="preserve">
+    <value>设置打开抽奖页的快捷键</value>
+  </data>
+  <data name="S_Shortcut_IncreaseRollCallCount" xml:space="preserve">
+    <value>增加点名人数</value>
+  </data>
+  <data name="S_Shortcut_DecreaseRollCallCount" xml:space="preserve">
+    <value>减少点名人数</value>
+  </data>
+  <data name="S_Shortcut_IncreaseLotteryCount" xml:space="preserve">
+    <value>增加抽奖数量</value>
+  </data>
+  <data name="S_Shortcut_DecreaseLotteryCount" xml:space="preserve">
+    <value>减少抽奖数量</value>
+  </data>
+  <data name="S_Shortcut_StartRollCall" xml:space="preserve">
+    <value>开始或停止点名</value>
+  </data>
+  <data name="S_Shortcut_StartLottery" xml:space="preserve">
+    <value>开始或停止抽奖</value>
+  </data>
+  <data name="C_ShortcutCapture" xml:space="preserve">
+    <value>按下快捷键</value>
+  </data>
+  <data name="C_ShortcutClear" xml:space="preserve">
+    <value>清空快捷键</value>
+  </data>
+  <data name="C_ShortcutConflict" xml:space="preserve">
+    <value>冲突</value>
+  </data>
+  <data name="M_ShortcutDuplicated" xml:space="preserve">
+    <value>该快捷键已分配给其他操作</value>
+  </data>
+  <data name="C_ShortcutExampleRollCall" xml:space="preserve">
+    <value>例如 Ctrl+Alt+R</value>
+  </data>
+  <data name="C_ShortcutExampleQuickDraw" xml:space="preserve">
+    <value>例如 Ctrl+Alt+Q</value>
+  </data>
+  <data name="C_ShortcutExampleLottery" xml:space="preserve">
+    <value>例如 Ctrl+Alt+L</value>
+  </data>
+</root>

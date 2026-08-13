@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root" xmlns="">
+    <xsd:element name="root" msdata:IsDataSet="true" />
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>1.3</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Page_Title" xml:space="preserve">
+    <value>历史记录管理</value>
+  </data>
+  <data name="S_History" xml:space="preserve">
+    <value>历史记录</value>
+  </data>
+  <data name="S_History_ShowRollCall" xml:space="preserve">
+    <value>显示点名历史</value>
+  </data>
+  <data name="S_History_ShowRollCall_D" xml:space="preserve">
+    <value>在历史页中显示点名记录</value>
+  </data>
+  <data name="S_History_ShowLottery" xml:space="preserve">
+    <value>显示抽奖历史</value>
+  </data>
+  <data name="S_History_ShowLottery_D" xml:space="preserve">
+    <value>在历史页中显示抽奖记录</value>
+  </data>
+  <data name="S_History_SelectWeight" xml:space="preserve">
+    <value>显示权重信息</value>
+  </data>
+  <data name="S_History_SelectWeight_D" xml:space="preserve">
+    <value>查看历史记录时显示参与抽取的权重信息</value>
+  </data>
+  <data name="S_Filter" xml:space="preserve">
+    <value>筛选</value>
+  </data>
+  <data name="S_Filter_SelectedClassName" xml:space="preserve">
+    <value>默认名单筛选</value>
+  </data>
+  <data name="S_Filter_SelectedClassName_D" xml:space="preserve">
+    <value>进入历史页时默认选择的名单</value>
+  </data>
+  <data name="S_Filter_SelectedPoolName" xml:space="preserve">
+    <value>默认奖池筛选</value>
+  </data>
+  <data name="S_Filter_SelectedPoolName_D" xml:space="preserve">
+    <value>进入历史页时默认选择的奖池</value>
+  </data>
+  <data name="S_ClearHistory" xml:space="preserve">
+    <value>清除历史记录</value>
+  </data>
+  <data name="S_ClearHistory_RollCall" xml:space="preserve">
+    <value>清除点名历史</value>
+  </data>
+  <data name="S_ClearHistory_RollCall_D" xml:space="preserve">
+    <value>删除选定名单的全部点名历史记录，此操作不可撤销</value>
+  </data>
+  <data name="S_ClearHistory_Lottery" xml:space="preserve">
+    <value>清除抽奖历史</value>
+  </data>
+  <data name="S_ClearHistory_Lottery_D" xml:space="preserve">
+    <value>删除选定奖池的全部抽奖历史记录，此操作不可撤销</value>
+  </data>
+  <data name="C_Clear" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="C_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="C_Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="M_ClearConfirm_Title" xml:space="preserve">
+    <value>确认清除历史记录</value>
+  </data>
+  <data name="M_ClearConfirm_Content" xml:space="preserve">
+    <value>确认清除“{0}”的全部历史记录？此操作不可撤销</value>
+  </data>
+  <data name="M_ClearSuccess" xml:space="preserve">
+    <value>已成功清除“{0}”的历史记录</value>
+  </data>
+  <data name="M_ClearFailed" xml:space="preserve">
+    <value>清除失败：{0}</value>
+  </data>
+  <data name="M_SelectFirst" xml:space="preserve">
+    <value>请先选择要清除历史记录的项目</value>
+  </data>
+</root>

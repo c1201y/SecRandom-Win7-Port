@@ -1,0 +1,14 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+         xmlns:lcr="clr-namespace:SecRandom.Langs.CrashRecovery"
+        mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="520"
+        x:Class="SecRandom.Views.CrashRecoveryWindow"
+        Icon="/Assets/AppLogo.ico"
+        Title="{x:Static lcr:Resources.Title}"
+        Width="720" Height="520"
+        MinWidth="520" MinHeight="420"
+        WindowStartupLocation="CenterScreen">
+    <ContentControl x:Name="ContentHost" />
+</Window>

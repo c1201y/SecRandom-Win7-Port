@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="S_App_UsefulLinks" xml:space="preserve">
+        <value>常用链接</value>
+    </data>
+    <data name="S_App" xml:space="preserve">
+        <value>应用信息</value>
+    </data>
+    <data name="C_ProjectHome" xml:space="preserve">
+        <value>文档站</value>
+    </data>
+    <data name="S_Author_R" xml:space="preserve">
+        <value>黎泽懿_Aionflux</value>
+    </data>
+    <data name="S_Author_D" xml:space="preserve">
+        <value>SecRandom 主开发者</value>
+    </data>
+    <data name="S_Author_Bilibili" xml:space="preserve">
+        <value>哔哩哔哩</value>
+    </data>
+    <data name="S_Author_BiliBili_D" xml:space="preserve">
+        <value>访问 黎泽懿_Aionflux 的哔哩哔哩账号</value>
+    </data>
+    <data name="S_Author_Donate" xml:space="preserve">
+        <value>捐赠支持</value>
+    </data>
+    <data name="S_Author_Donate_D" xml:space="preserve">
+        <value>访问 黎泽懿_Aionflux 的爱发电账号，支持项目发展，感谢您的捐赠</value>
+    </data>
+    <data name="S_Author_Org" xml:space="preserve">
+        <value>SECTL 思拓创联</value>
+    </data>
+    <data name="S_Author_Org_D" xml:space="preserve">
+        <value>SecRandom 所属组织</value>
+    </data>
+    <data name="S_App_License" xml:space="preserve">
+        <value>应用协议</value>
+    </data>
+    <data name="C_OrgHome" xml:space="preserve">
+        <value>组织主页</value>
+    </data>
+    <data name="S_Ack" xml:space="preserve">
+        <value>鸣谢</value>
+    </data>
+    <data name="S_Ack_OnlineUsers" xml:space="preserve">
+        <value>在线人数</value>
+    </data>
+    <data name="S_Ack_OnlineUsers_D" xml:space="preserve">
+        <value>感谢各位用户的支持，您的使用就是对我们最大的鼓励</value>
+    </data>
+    <data name="S_Ack_Contributors" xml:space="preserve">
+        <value>贡献人员</value>
+    </data>
+    <data name="S_Ack_Contributors_D" xml:space="preserve">
+        <value>查看为 SecRandom 提交代码的 GitHub 贡献者</value>
+    </data>
+    <data name="S_Ack_Contributors_ContributionCount" xml:space="preserve">
+        <value>{0} 次提交</value>
+    </data>
+    <data name="C_Refresh" xml:space="preserve">
+        <value>刷新</value>
+    </data>
+    <data name="M_ContributorsLoadFailed" xml:space="preserve">
+        <value>无法加载贡献者名单：{0}</value>
+    </data>
+    <data name="S_UserInformation" xml:space="preserve">
+        <value>用户信息</value>
+    </data>
+    <data name="C_CopyUserInformation" xml:space="preserve">
+        <value>复制用户信息</value>
+    </data>
+    <data name="S_Author" xml:space="preserve">
+        <value>应用作者</value>
+    </data>
+    <data name="C_InternalSettingsActivatedTitle" xml:space="preserve">
+        <value>内幕设置已显示</value>
+    </data>
+    <data name="C_Close" xml:space="preserve">
+        <value>关闭</value>
+    </data>
+    <data name="M_InternalSettingsActivated" xml:space="preserve">
+        <value>已在名单管理页面每位成员或奖品右侧的“附加设置”菜单中显示“内幕设置”；此显示仅对本次运行有效，重新启动软件后会自动隐藏；&#xA;&#xA;内幕设置会影响候选项权重，不适用于需要公平、公开或可审计的活动抽取；启用内幕设置的人员若被抽中，可验证文件上传至验证网站时会显示相应提醒；这可能使设置行为被发现；&#xA;&#xA;内幕设置的优先级低于公平抽取规则；已设置内幕的成员或奖品即使本次被抽中，也不代表下次一定会被抽中</value>
+    </data>
+</root>

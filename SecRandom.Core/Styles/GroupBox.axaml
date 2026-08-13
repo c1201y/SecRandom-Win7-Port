@@ -1,0 +1,23 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:SecRandom.Core.Controls">
+    <Style Selector="c|GroupBox">
+        <Setter Property="Padding" Value="12" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border BorderThickness="1"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        CornerRadius="6"
+                        Padding="{TemplateBinding Padding}">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="8">
+                        <ContentPresenter Content="{TemplateBinding Header}"
+                                          FontWeight="SemiBold" />
+                        <ContentPresenter Grid.Row="1"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

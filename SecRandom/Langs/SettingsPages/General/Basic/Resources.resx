@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="C_VersionNotice" xml:space="preserve">
+        <value>版本公告</value>
+    </data>
+    <data name="C_VersionNoticeText" xml:space="preserve">
+        <value>当前版本为 Alpha 版本，请勿在生产环境使用！
+当前版本可能存在未知Bug，仅供用户体验，
+使用中如遇问题，欢迎前往 GitHub Issues 反馈！</value>
+    </data>
+    <data name="C_VersionNoticeHide" xml:space="preserve">
+        <value>不再显示</value>
+    </data>
+    <data name="M_DesktopIntegrationFailed" xml:space="preserve">
+        <value>无法应用“{0}”设置：{1}</value>
+    </data>
+    <data name="S_Behavior" xml:space="preserve">
+        <value>行为</value>
+    </data>
+    <data name="S_Behavior_Autostart" xml:space="preserve">
+        <value>开机自启</value>
+    </data>
+    <data name="S_Behavior_Autostart_D" xml:space="preserve">
+        <value>设置软件是否随系统启动自动运行</value>
+    </data>
+    <data name="S_Behavior_ShowStartupWindow" xml:space="preserve">
+        <value>启动显示主窗口</value>
+    </data>
+    <data name="S_Behavior_ShowStartupWindow_D" xml:space="preserve">
+        <value>设置软件启动时是否自动显示主窗口</value>
+    </data>
+    <data name="S_Behavior_AutoSaveWindowSize" xml:space="preserve">
+        <value>自动保存窗口大小</value>
+    </data>
+    <data name="S_Behavior_AutoSaveWindowSize_D" xml:space="preserve">
+        <value>是否自动保存窗口大小</value>
+    </data>
+    <data name="S_Behavior_MainWindowTopmostMode" xml:space="preserve">
+        <value>主窗口置顶模式</value>
+    </data>
+    <data name="S_Behavior_MainWindowTopmostMode_D" xml:space="preserve">
+        <value>选择主窗口置顶方式（UIAccess 在重启时请求管理员权限以获取系统 UIAccess 令牌；取消或失败时本次启动回退为普通置顶）</value>
+    </data>
+    <data name="S_Behavior_MainWindowTopmostMode_NonWindows_D" xml:space="preserve">
+        <value>选择主窗口是否保持在其他窗口上方</value>
+    </data>
+    <data name="S_Behavior_BackgroundResident" xml:space="preserve">
+        <value>后台驻留</value>
+    </data>
+    <data name="S_Behavior_BackgroundResident_D" xml:space="preserve">
+        <value>关闭所有窗口后是否仍在后台常驻</value>
+    </data>
+    <data name="S_Behavior_UrlProtocol" xml:space="preserve">
+        <value>URL 协议注册 &amp; IPC 服务</value>
+    </data>
+    <data name="S_Behavior_UrlProtocol_D" xml:space="preserve">
+        <value>注册自定义 URL 协议 (secrandom://)，并启用 IPC 通信，支持链接启动与外部联动</value>
+    </data>
+    <data name="O_MainWindowTopmostMode_None" xml:space="preserve">
+        <value>关闭置顶</value>
+    </data>
+    <data name="O_MainWindowTopmostMode_Topmost" xml:space="preserve">
+        <value>置顶</value>
+    </data>
+    <data name="O_MainWindowTopmostMode_UiAccess" xml:space="preserve">
+        <value>UIAccess 置顶</value>
+    </data>
+    <data name="S_Behavior_Language" xml:space="preserve">
+        <value>显示语言</value>
+    </data>
+    <data name="S_Behavior_Language_D" xml:space="preserve">
+        <value>切换软件界面语言（重启软件后生效）</value>
+    </data>
+    <data name="S_Behavior_CrashRecovery" xml:space="preserve">
+        <value>崩溃恢复</value>
+    </data>
+    <data name="S_Behavior_CrashRecovery_D" xml:space="preserve">
+        <value>选择程序崩溃后的恢复方式</value>
+    </data>
+    <data name="O_CrashRecoveryMode_None" xml:space="preserve">
+        <value>关闭</value>
+    </data>
+    <data name="O_CrashRecoveryMode_RestartOnly" xml:space="preserve">
+        <value>仅自动重启</value>
+    </data>
+    <data name="O_CrashRecoveryMode_PromptThenRestart" xml:space="preserve">
+        <value>显示恢复页</value>
+    </data>
+    <data name="O_CrashRecoveryMode_PromptAndRestart" xml:space="preserve">
+        <value>显示恢复页并自动重启</value>
+    </data>
+</root>

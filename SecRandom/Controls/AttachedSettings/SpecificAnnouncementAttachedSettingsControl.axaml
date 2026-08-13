@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:sr="http://secrandom.sectl.cn/schemas/xaml/core"
+              xmlns:las="clr-namespace:SecRandom.Langs.AttachedSettings"
+             xmlns:local="clr-namespace:SecRandom.Controls.AttachedSettings"
+             mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="260"
+             x:Class="SecRandom.Controls.AttachedSettings.SpecificAnnouncementAttachedSettingsControl"
+             x:Name="RootControl">
+    <StackPanel Spacing="8"
+                DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:SpecificAnnouncementAttachedSettingsControl}}">
+        <sr:Field Label="{x:Static las:Resources.C_SpecificVoiceAlias}">
+            <TextBox Text="{Binding TtsAlias, Mode=TwoWay}"
+                      PlaceholderText="{x:Static las:Resources.C_SpecificVoiceAliasPlaceholder}" />
+        </sr:Field>
+
+        <sr:Field Label="{x:Static las:Resources.C_SpecificVoicePrefix}">
+            <TextBox Text="{Binding Prefix, Mode=TwoWay}"
+                      PlaceholderText="{x:Static las:Resources.C_SpecificVoiceOptional}" />
+        </sr:Field>
+
+        <sr:Field Label="{x:Static las:Resources.C_SpecificVoiceSuffix}">
+            <TextBox Text="{Binding Suffix, Mode=TwoWay}"
+                      PlaceholderText="{x:Static las:Resources.C_SpecificVoiceOptional}" />
+        </sr:Field>
+
+        <TextBlock Text="{x:Static las:Resources.C_SpecificVoiceDescription}"
+                   TextWrapping="Wrap"
+                   FontSize="12"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+    </StackPanel>
+</UserControl>

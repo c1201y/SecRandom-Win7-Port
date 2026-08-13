@@ -1,0 +1,437 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "v*"
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "发布版本（默认：最新的 tag）"
+        required: false
+        default: ""
+      create_release:
+        description: "创建 GitHub Release（true/false，默认：false）"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+jobs:
+  check-trigger:
+    name: 检查触发条件
+    runs-on: ubuntu-latest
+    outputs:
+      should_build: ${{ steps.check.outputs.should_build }}
+      should_publish: ${{ steps.check.outputs.should_publish }}
+    steps:
+      - name: 检查
+        id: check
+        shell: bash
+        run: |
+          set -euo pipefail
+          should_build="false"
+          should_publish="false"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            should_build="true"
+            should_publish="true"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            should_build="true"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+              should_build="true"
+              should_publish="true"
+            elif [ -n "${{ github.event.head_commit.message }}" ]; then
+              if echo "${{ github.event.head_commit.message }}" | grep -q "开始构建"; then
+                should_build="true"
+                should_publish="true"
+              fi
+            fi
+          fi
+          echo "should_build=${should_build}" >> "$GITHUB_OUTPUT"
+          echo "should_publish=${should_publish}" >> "$GITHUB_OUTPUT"
+
+  ci:
+    name: 持续集成（${{ matrix.os }}）
+    needs: [check-trigger]
+    if: needs.check-trigger.outputs.should_build == 'true'
+    runs-on: ${{ matrix.os }}
+    concurrency:
+      group: ci-${{ github.ref }}-${{ matrix.os }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.100
+
+      - name: 还原依赖
+        run: dotnet restore SecRandom.sln
+
+      - name: 构建
+        run: dotnet build SecRandom.sln -c Release --no-restore
+
+      - name: 检测测试项目
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find . -type f \( -name '*Test*.csproj' -o -name '*Tests*.csproj' \) | grep -q .; then
+            echo "HAS_TESTS=true" >> "$GITHUB_ENV"
+          else
+            echo "HAS_TESTS=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: 运行测试
+        if: env.HAS_TESTS == 'true'
+        run: dotnet test SecRandom.sln -c Release --no-build
+
+  version:
+    name: 解析版本
+    needs: [check-trigger]
+    if: needs.check-trigger.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      version_no_v: ${{ steps.v.outputs.version_no_v }}
+      changelog: ${{ steps.v.outputs.changelog }}
+      create_release: ${{ steps.v.outputs.create_release }}
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 解析
+        id: v
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          create_release_input="${{ inputs.create_release }}"
+          create_release="$(printf '%s' "${create_release_input:-false}" | tr '[:upper:]' '[:lower:]')"
+          if [ "${GITHUB_EVENT_NAME}" = "push" ] && [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            create_release=true
+          fi
+
+          version_input="${{ inputs.version }}"
+          if [ -n "${version_input}" ]; then
+            version="${version_input}"
+          elif [ -n "${GITHUB_REF_NAME:-}" ]; then
+            version="${GITHUB_REF_NAME}"
+          elif [ -f VERSION ]; then
+            version="$(git describe --tags --abbrev=0 | tr -d '\r\n\t ' )"
+          else
+            version="${GITHUB_SHA}"
+          fi
+
+          version_no_v="${version#v}"
+          major_version="v${version_no_v%%.*}"
+          changelog="CHANGELOG/v3/${version}/CHANGELOG.md"
+          if [ "${create_release}" = "true" ] && [ ! -f "${changelog}" ]; then
+            echo "Missing changelog: ${changelog}"
+            exit 1
+          fi
+
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "version_no_v=${version_no_v}" >> "$GITHUB_OUTPUT"
+          echo "changelog=${changelog}" >> "$GITHUB_OUTPUT"
+          echo "create_release=${create_release}" >> "$GITHUB_OUTPUT"
+
+  publish:
+    name: 发布构建（${{ matrix.rid }}）
+    needs: [version]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: windows-latest
+            rid: win-x86
+          - os: windows-latest
+            rid: win-arm64
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: ubuntu-latest
+            rid: linux-arm64
+          - os: macos-latest
+            rid: osx-x64
+          - os: macos-latest
+            rid: osx-arm64
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.311
+
+      - name: 还原NuGet包
+        run: dotnet restore
+
+      - name: 发布
+        run: >
+          dotnet publish SecRandom.Desktop/SecRandom.Desktop.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -o artifacts/SecRandom-${{ matrix.rid }}
+          /p:PublishSingleFile=true
+          /p:IncludeNativeLibrariesForSelfExtract=true
+
+      - name: 打包（Windows zip）
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $versionNoV = "${{ needs.version.outputs.version_no_v }}"
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          $outFile = "dist/SecRandom-${versionNoV}-${{ matrix.rid }}.zip"
+          Compress-Archive -Path "artifacts/SecRandom-${{ matrix.rid }}/*" -DestinationPath $outFile -Force
+
+      - name: 打包（Linux deb）
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version_no_v="${{ needs.version.outputs.version_no_v }}"
+          mkdir -p dist
+
+          deb_arch="amd64"
+          case "${{ matrix.rid }}" in
+            linux-x64) deb_arch="amd64" ;;
+            linux-arm64) deb_arch="arm64" ;;
+          esac
+
+          pkgroot="$(pwd)/pkgroot"
+          rm -rf "$pkgroot"
+          mkdir -p "$pkgroot/DEBIAN"
+          mkdir -p "$pkgroot/usr/lib/secrandom"
+          mkdir -p "$pkgroot/usr/bin"
+          mkdir -p "$pkgroot/usr/share/applications"
+          mkdir -p "$pkgroot/usr/share/icons/hicolor/256x256/apps"
+
+          cp -a "artifacts/SecRandom-${{ matrix.rid }}/." "$pkgroot/usr/lib/secrandom/"
+          chmod +x "$pkgroot/usr/lib/secrandom/SecRandom.Desktop" || true
+
+          cat > "$pkgroot/usr/bin/secrandom" << 'EOF'
+          #!/bin/sh
+          exec /usr/lib/secrandom/SecRandom.Desktop "$@"
+          EOF
+          chmod +x "$pkgroot/usr/bin/secrandom"
+
+          cat > "$pkgroot/usr/share/applications/secrandom.desktop" << 'EOF'
+          [Desktop Entry]
+          Type=Application
+          Name=SecRandom
+          Exec=secrandom
+          Icon=secrandom
+          Categories=Utility;
+          Terminal=false
+          EOF
+
+          if [ -f "resources/secrandom-icon-paper.png" ]; then
+            cp "resources/secrandom-icon-paper.png" "$pkgroot/usr/share/icons/hicolor/256x256/apps/secrandom.png"
+          fi
+
+          cat > "$pkgroot/DEBIAN/control" << EOF
+          Package: secrandom
+          Version: ${version_no_v}
+          Section: utils
+          Priority: optional
+          Architecture: ${deb_arch}
+          Maintainer: SECTL
+          Description: SecRandom
+          EOF
+
+          dpkg-deb --build "$pkgroot" "dist/SecRandom-${version_no_v}-${{ matrix.rid }}.deb"
+
+      - name: 打包（macOS pkg）
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version_no_v="${{ needs.version.outputs.version_no_v }}"
+          mkdir -p dist
+
+          work="$(pwd)/macpkg"
+          rm -rf "$work"
+          mkdir -p "$work/bundle/SecRandom.app/Contents/MacOS"
+          mkdir -p "$work/bundle/SecRandom.app/Contents/Resources"
+
+          cp -a "artifacts/SecRandom-${{ matrix.rid }}/." "$work/bundle/SecRandom.app/Contents/MacOS/"
+          chmod +x "$work/bundle/SecRandom.app/Contents/MacOS/SecRandom.Desktop" || true
+
+          cat > "$work/bundle/SecRandom.app/Contents/Info.plist" << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleName</key><string>SecRandom</string>
+            <key>CFBundleDisplayName</key><string>SecRandom</string>
+            <key>CFBundleIdentifier</key><string>top.sectl.secrandom</string>
+            <key>CFBundleVersion</key><string>${version_no_v}</string>
+            <key>CFBundleShortVersionString</key><string>${version_no_v}</string>
+            <key>CFBundleExecutable</key><string>SecRandom.Desktop</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
+            <key>LSMinimumSystemVersion</key><string>11.0</string>
+            <key>CFBundleIconFile</key><string>AppIcon</string>
+          </dict>
+          </plist>
+          EOF
+
+          icon_png="resources/secrandom-icon-paper.png"
+          if [ -f "$icon_png" ]; then
+            iconset="$work/AppIcon.iconset"
+            mkdir -p "$iconset"
+            for size in 16 32 64 128 256 512; do
+              sips -z "$size" "$size" "$icon_png" --out "$iconset/icon_${size}x${size}.png" >/dev/null
+            done
+            for size in 16 32 128 256 512; do
+              double=$((size*2))
+              sips -z "$double" "$double" "$icon_png" --out "$iconset/icon_${size}x${size}@2x.png" >/dev/null
+            done
+            iconutil -c icns "$iconset" -o "$work/bundle/SecRandom.app/Contents/Resources/AppIcon.icns"
+          fi
+
+          pkgroot="$work/pkgroot"
+          mkdir -p "$pkgroot/Applications"
+          cp -a "$work/bundle/SecRandom.app" "$pkgroot/Applications/"
+
+          pkgbuild \
+            --root "$pkgroot" \
+            --identifier "top.sectl.secrandom" \
+            --version "$version_no_v" \
+            --install-location "/" \
+            "dist/SecRandom-${version_no_v}-${{ matrix.rid }}.pkg"
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: SecRandom-${{ matrix.rid }}
+          path: dist/*
+
+  notes:
+    name: 生成发布说明
+    needs: [version, publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 下载产物
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: 收集文件
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          find dist -type f \( -name '*.zip' -o -name '*.deb' -o -name '*.pkg' \) -print -exec cp -f {} release/ \;
+          ls -la release
+
+      - name: 生成说明与 SHA512
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="${{ needs.version.outputs.version }}"
+          version_no_v="${{ needs.version.outputs.version_no_v }}"
+          create_release="${{ needs.version.outputs.create_release }}"
+          changelog_path="${{ needs.version.outputs.changelog }}"
+
+          if [ "${create_release}" = "true" ] && [ -f "$changelog_path" ]; then
+            cp "$changelog_path" release_notes.md
+          else
+            echo "# SecRandom ${version_no_v}" > release_notes.md
+            echo "" >> release_notes.md
+            echo "这是一次手动/测试构建，未创建 GitHub Release。" >> release_notes.md
+          fi
+
+          echo "" >> release_notes.md
+          echo "## SHA512 校验" >> release_notes.md
+          echo "" >> release_notes.md
+
+          (cd release && sha512sum * > SHA512SUMS.txt)
+          mv release/SHA512SUMS.txt SHA512SUMS.txt
+
+          echo "| 文件 | SHA512 |" >> release_notes.md
+          echo "| --- | --- |" >> release_notes.md
+          while read -r hash file; do
+            echo "| ${file} | ${hash} |" >> release_notes.md
+          done < SHA512SUMS.txt
+
+          mv SHA512SUMS.txt release/SHA512SUMS.txt
+
+          if [ "${create_release}" = "true" ]; then
+            echo "" >> release_notes.md
+            echo "## 下载" >> release_notes.md
+            echo "" >> release_notes.md
+            echo "| 文件 | GitHub | SECTL高速 |" >> release_notes.md
+            echo "| --- | --- | --- |" >> release_notes.md
+
+            for f in release/*; do
+              [ -f "$f" ] || continue
+              file="$(basename "$f")"
+              gh="https://github.com/${{ github.repository }}/releases/download/${version}/${file}"
+              stk="https://stk.sectl.top/SecRandom/${version}/${file}"
+              echo "| ${file} | [下载](${gh}) | [下载](${stk}) |" >> release_notes.md
+            done
+          fi
+
+      - name: 上传说明产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: |
+            release_notes.md
+            release/SHA512SUMS.txt
+
+  release:
+    name: 创建 GitHub Release
+    if: needs.version.outputs.create_release == 'true'
+    needs: [version, publish, notes]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 下载产物
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: 收集文件
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          find dist -type f \( -name '*.zip' -o -name '*.deb' -o -name '*.pkg' -o -name 'SHA512SUMS.txt' \) -print -exec cp -f {} release/ \;
+          ls -la release
+
+      - name: 下载发布说明
+        uses: actions/download-artifact@v4
+        with:
+          name: release-notes
+          path: notes
+
+      - name: 发布 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.version.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: SecRandom ${{ needs.version.outputs.version_no_v }}
+          body_path: notes/release_notes.md
+          files: release/*

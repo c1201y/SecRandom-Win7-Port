@@ -1,0 +1,93 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:SecRandom.Views.MainPages"
+             xmlns:sr="http://secrandom.sectl.cn/schemas/xaml/core"
+             xmlns:langs="using:SecRandom.Langs.MainPages.Lottery"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:vm="using:SecRandom.ViewModels.MainPages"
+             x:Class="SecRandom.Views.MainPages.LotteryPage"
+             x:DataType="vm:LotteryPageViewModel">
+    <UserControl.Resources>
+        <DataTemplate x:Key="LotteryControlPanelTemplate" DataType="vm:LotteryPageViewModel">
+            <Viewbox Width="234">
+                <StackPanel Width="180" Spacing="6">
+                    <StackPanel.Resources>
+                        <ResourceDictionary>
+                            <system:Double x:Key="SizeBase">36</system:Double>
+                        </ResourceDictionary>
+                    </StackPanel.Resources>
+                    <StackPanel.Styles>
+                        <Style Selector="StackPanel > Button">
+                            <Setter Property="Height" Value="{DynamicResource SizeBase}" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        </Style>
+                        <Style Selector="StackPanel > ComboBox">
+                            <Setter Property="Height" Value="{DynamicResource SizeBase}" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        </Style>
+                    </StackPanel.Styles>
+
+                    <Button Content="{x:Static langs:Resources.C_Reset}"
+                            IsVisible="{Binding MoreSettings.LotteryResetButton}"
+                            Command="{Binding ResetDisplayCommand}" />
+                    <Grid HorizontalAlignment="Stretch" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Grid.Styles>
+                            <Style Selector="Grid > Button">
+                                <Setter Property="Width" Value="{DynamicResource SizeBase}" />
+                                <Setter Property="Height" Value="{DynamicResource SizeBase}" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="FontSize" Value="24" />
+                            </Style>
+                        </Grid.Styles>
+                        <sr:AcceleratingRepeatButton Grid.Column="0" Content="-"
+                                                      IsEnabled="{Binding CanDecreaseCount}"
+                                                      Command="{Binding DecreaseCountCommand}" />
+                        <TextBlock Grid.Column="1" Text="{Binding DrawCount}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" FontWeight="SemiBold" />
+                        <sr:AcceleratingRepeatButton Grid.Column="2" Content="+"
+                                                      IsEnabled="{Binding CanIncreaseCount}"
+                                                      Command="{Binding IncreaseCountCommand}" />
+                    </Grid>
+                    <Button Classes="accent" Content="{Binding DrawButtonText}"
+                            IsVisible="{Binding MoreSettings.LotteryStartButton}"
+                            IsEnabled="{Binding CanStartDraw}" Command="{Binding StartDrawCommand}" />
+                    <ComboBox IsVisible="{Binding MoreSettings.LotteryListSelector}"
+                              ItemsSource="{Binding PrizeListNames}" SelectedItem="{Binding SelectedPrizeListName}">
+                        <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" /></DataTemplate></ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox IsVisible="{Binding MoreSettings.LotteryStudentListSelector}"
+                              ItemsSource="{Binding StudentListNames}" SelectedItem="{Binding SelectedStudentListName}">
+                        <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" /></DataTemplate></ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox IsVisible="{Binding IsGroupSelectorVisible}"
+                              ItemsSource="{Binding GroupOptions}" SelectedItem="{Binding SelectedGroup}">
+                        <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" /></DataTemplate></ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox IsVisible="{Binding IsGenderSelectorVisible}"
+                              ItemsSource="{Binding GenderOptions}" SelectedItem="{Binding SelectedGender}">
+                        <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" /></DataTemplate></ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Content="{x:Static langs:Resources.C_ShowRemainingList}"
+                            IsVisible="{Binding MoreSettings.LotteryRemainingButton}"
+                            Click="RemainingListButton_OnClick" />
+                    <Viewbox HorizontalAlignment="Stretch" StretchDirection="DownOnly">
+                        <TextBlock Text="{Binding CountSummary}" IsVisible="{Binding MoreSettings.LotteryQuantityLabel}"
+                                   HorizontalAlignment="Center" TextAlignment="Center" />
+                    </Viewbox>
+                </StackPanel>
+            </Viewbox>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="*" MinHeight="560">
+        <Border Grid.Column="0" Margin="0,0,24,24" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                IsVisible="{Binding IsControlPanelOnLeft}">
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource LotteryControlPanelTemplate}" />
+        </Border>
+        <local:LotteryResultPresenter Grid.Column="1" Margin="28,0,12,28" DataContext="{Binding}" />
+        <Border Grid.Column="2" Margin="0,0,24,24" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                IsVisible="{Binding IsControlPanelOnRight}">
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource LotteryControlPanelTemplate}" />
+        </Border>
+    </Grid>
+</UserControl>

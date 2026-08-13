@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="Page_Title" xml:space="preserve">
+        <value>抽奖名单</value>
+    </data>
+    <data name="C_InfoTitle" xml:space="preserve">
+        <value>抽奖奖池导入</value>
+    </data>
+    <data name="C_InfoMessage" xml:space="preserve">
+        <value>从 Excel 或 CSV 文件导入奖品编号、名称、权重、数量和标签，导入后会保存到当前选择的抽奖奖池</value>
+    </data>
+    <data name="C_CurrentList" xml:space="preserve">
+        <value>当前奖池</value>
+    </data>
+    <data name="C_CurrentList_D" xml:space="preserve">
+        <value>选择要查看或导入的抽奖奖池</value>
+    </data>
+    <data name="C_Refresh" xml:space="preserve">
+        <value>刷新</value>
+    </data>
+    <data name="C_ImportList" xml:space="preserve">
+        <value>导入奖池</value>
+    </data>
+    <data name="C_ExportList" xml:space="preserve">
+        <value>导出奖池</value>
+    </data>
+    <data name="C_AddPrize" xml:space="preserve">
+        <value>添加奖品</value>
+    </data>
+    <data name="C_AddList" xml:space="preserve">
+        <value>新增奖池</value>
+    </data>
+    <data name="C_RenameList" xml:space="preserve">
+        <value>重命名</value>
+    </data>
+    <data name="C_DeleteList" xml:space="preserve">
+        <value>删除奖池</value>
+    </data>
+    <data name="C_Operations" xml:space="preserve">
+        <value>操作</value>
+    </data>
+    <data name="C_DeletePrize" xml:space="preserve">
+        <value>删除奖品</value>
+    </data>
+    <data name="C_Exists" xml:space="preserve">
+        <value>存在</value>
+    </data>
+    <data name="C_PrizeId" xml:space="preserve">
+        <value>ID/编号</value>
+    </data>
+    <data name="C_Name" xml:space="preserve">
+        <value>奖品名称</value>
+    </data>
+    <data name="C_Weight" xml:space="preserve">
+        <value>权重</value>
+    </data>
+    <data name="C_Count" xml:space="preserve">
+        <value>数量</value>
+    </data>
+    <data name="C_Tags" xml:space="preserve">
+        <value>标签</value>
+    </data>
+    <data name="C_ImportTitle" xml:space="preserve">
+        <value>导入抽奖奖池</value>
+    </data>
+    <data name="C_TargetList" xml:space="preserve">
+        <value>目标奖池：{0}</value>
+    </data>
+    <data name="C_SelectFile" xml:space="preserve">
+        <value>选择文件</value>
+    </data>
+    <data name="C_NoFileSelected" xml:space="preserve">
+        <value>尚未选择文件</value>
+    </data>
+    <data name="C_SelectFileButton" xml:space="preserve">
+        <value>选择 Excel/CSV 文件</value>
+    </data>
+    <data name="C_SupportedFormats" xml:space="preserve">
+        <value>支持 .xlsx、.xls、.csv；第一行会作为列名</value>
+    </data>
+    <data name="C_ColumnMapping" xml:space="preserve">
+        <value>列映射</value>
+    </data>
+    <data name="C_ColumnMapping_D" xml:space="preserve">
+        <value>ID/编号和奖品名称至少选择一项；权重、数量、标签可留空；两项均为空的行不会导入</value>
+    </data>
+    <data name="C_PrizeIdColumn" xml:space="preserve">
+        <value>ID/编号列</value>
+    </data>
+    <data name="C_NameColumn" xml:space="preserve">
+        <value>奖品名称列</value>
+    </data>
+    <data name="C_WeightColumn" xml:space="preserve">
+        <value>权重列</value>
+    </data>
+    <data name="C_CountColumn" xml:space="preserve">
+        <value>数量列</value>
+    </data>
+    <data name="C_TagsColumn" xml:space="preserve">
+        <value>标签列</value>
+    </data>
+    <data name="C_NoneColumn" xml:space="preserve">
+        <value>无</value>
+    </data>
+    <data name="C_Cancel" xml:space="preserve">
+        <value>取消</value>
+    </data>
+    <data name="C_Edit" xml:space="preserve">
+        <value>编辑</value>
+    </data>
+    <data name="C_Import" xml:space="preserve">
+        <value>导入</value>
+    </data>
+    <data name="C_FilePickerTitle" xml:space="preserve">
+        <value>选择抽奖奖池文件</value>
+    </data>
+    <data name="C_FilePickerTypeName" xml:space="preserve">
+        <value>Excel 或 CSV</value>
+    </data>
+    <data name="C_DefaultListName" xml:space="preserve">
+        <value>默认奖池</value>
+    </data>
+    <data name="M_SelectFileFirst" xml:space="preserve">
+        <value>请选择文件后确认列映射</value>
+    </data>
+    <data name="M_LoadFailed" xml:space="preserve">
+        <value>加载失败：{0}</value>
+    </data>
+    <data name="M_FileLoaded" xml:space="preserve">
+        <value>已读取 {0} 行数据</value>
+    </data>
+    <data name="M_SelectRequiredColumns" xml:space="preserve">
+        <value>请至少选择 ID/编号列或奖品名称列</value>
+    </data>
+    <data name="M_DuplicateTitle" xml:space="preserve">
+        <value>发现重复奖品名称</value>
+    </data>
+    <data name="M_DuplicateContent" xml:space="preserve">
+        <value>以下 {0} 个奖品名称重复：
+{1}
+
+可以保留重名并继续导入，系统会用内部标识区分记录</value>
+    </data>
+    <data name="M_DuplicatePrimary" xml:space="preserve">
+        <value>保留重名导入</value>
+    </data>
+    <data name="M_DuplicateSecondary" xml:space="preserve">
+        <value>自动重命名</value>
+    </data>
+    <data name="M_DuplicateClose" xml:space="preserve">
+        <value>返回修改</value>
+    </data>
+    <data name="M_SelectListFirst" xml:space="preserve">
+        <value>请先选择一个奖池</value>
+    </data>
+    <data name="M_OverwriteTitle" xml:space="preserve">
+        <value>覆盖当前奖池？</value>
+    </data>
+    <data name="M_OverwriteContent" xml:space="preserve">
+        <value>当前奖池已有 {0} 个奖品，本次将导入 {1} 个奖品；继续后会覆盖当前奖池内容</value>
+    </data>
+    <data name="M_OverwritePrimary" xml:space="preserve">
+        <value>覆盖导入</value>
+    </data>
+    <data name="M_ImportSuccess" xml:space="preserve">
+        <value>已导入 {0} 个奖品到“{1}”</value>
+    </data>
+    <data name="M_AddPrizeTitle" xml:space="preserve">
+        <value>添加奖品</value>
+    </data>
+    <data name="M_AddPrizeRequired" xml:space="preserve">
+        <value>请至少填写 ID/编号或奖品名称</value>
+    </data>
+    <data name="M_AddPrizeInvalidValues" xml:space="preserve">
+        <value>权重和数量必须是大于 0 的有效数字</value>
+    </data>
+    <data name="M_AddPrizeSuccess" xml:space="preserve">
+        <value>已添加奖品</value>
+    </data>
+    <data name="M_ListNameDialogTitle_Add" xml:space="preserve">
+        <value>新增奖池</value>
+    </data>
+    <data name="M_ListNameDialogTitle_Rename" xml:space="preserve">
+        <value>重命名奖池</value>
+    </data>
+    <data name="M_ListNameDialogPrimary_Add" xml:space="preserve">
+        <value>新增</value>
+    </data>
+    <data name="M_ListNameDialogPrimary_Rename" xml:space="preserve">
+        <value>保存</value>
+    </data>
+    <data name="M_ListNamePlaceholder" xml:space="preserve">
+        <value>请输入奖池名称</value>
+    </data>
+    <data name="M_ListNameEmpty" xml:space="preserve">
+        <value>奖池名称不能为空</value>
+    </data>
+    <data name="M_ListNameExists" xml:space="preserve">
+        <value>奖池“{0}”已存在</value>
+    </data>
+    <data name="M_ListNameInvalid" xml:space="preserve">
+        <value>奖池名称不能包含文件名非法字符</value>
+    </data>
+    <data name="M_AddListSuccess" xml:space="preserve">
+        <value>已新增奖池“{0}”</value>
+    </data>
+    <data name="M_RenameListSuccess" xml:space="preserve">
+        <value>已重命名为“{0}”</value>
+    </data>
+    <data name="M_DeleteListTitle" xml:space="preserve">
+        <value>删除当前奖池？</value>
+    </data>
+    <data name="M_DeleteListContent" xml:space="preserve">
+        <value>将删除奖池“{0}”；此操作不可撤销</value>
+    </data>
+    <data name="M_DeleteListPrimary" xml:space="preserve">
+        <value>删除</value>
+    </data>
+    <data name="M_DeleteListSuccess" xml:space="preserve">
+        <value>已删除奖池“{0}”</value>
+    </data>
+    <data name="M_DeletePrizeTitle" xml:space="preserve">
+        <value>删除奖品？</value>
+    </data>
+    <data name="M_DeletePrizeContent" xml:space="preserve">
+        <value>将从奖池“{1}”中删除奖品“{0}”；此操作不可撤销</value>
+    </data>
+    <data name="M_DeletePrizePrimary" xml:space="preserve">
+        <value>删除</value>
+    </data>
+    <data name="M_DeletePrizeSuccess" xml:space="preserve">
+        <value>已删除奖品“{0}”</value>
+    </data>
+    <data name="M_DeletePrizeNotFound" xml:space="preserve">
+        <value>该奖品已不存在，奖池已刷新</value>
+    </data>
+    <data name="M_KeepOneList" xml:space="preserve">
+        <value>至少需要保留一个奖池</value>
+    </data>
+    <data name="K_IdColumns" xml:space="preserve">
+        <value>ID|id|编号|序号|奖品ID|prize id|prize_id|no</value>
+    </data>
+    <data name="K_NameColumns" xml:space="preserve">
+        <value>奖品名称|奖品|名称|名字|prize name|prize_name|name</value>
+    </data>
+    <data name="K_WeightColumns" xml:space="preserve">
+        <value>权重|概率|weight|probability</value>
+    </data>
+    <data name="K_CountColumns" xml:space="preserve">
+        <value>数量|库存|份数|count|quantity|amount</value>
+    </data>
+    <data name="K_TagsColumns" xml:space="preserve">
+        <value>标签|tag|tags|类别|分类|category</value>
+    </data>
+    <data name="C_ExportTitle" xml:space="preserve"><value>导出抽奖奖池</value></data>
+    <data name="C_FileExport" xml:space="preserve"><value>导出为文件</value></data>
+    <data name="C_ExportToFile" xml:space="preserve"><value>导出为文件</value></data>
+    <data name="C_ExportSupportedFormats" xml:space="preserve"><value>支持 .xlsx 和 .csv 文件</value></data>
+    <data name="C_QrExport" xml:space="preserve"><value>二维码导出</value></data>
+    <data name="C_ExportToDevices" xml:space="preserve"><value>导出至其它设备</value></data>
+    <data name="C_StopQrExport" xml:space="preserve"><value>停止导出</value></data>
+    <data name="C_QrIdleHint" xml:space="preserve"><value>开始导出后，将显示可由其它设备扫描的二维码</value></data>
+    <data name="C_QrIdle" xml:space="preserve"><value>等待开始二维码传输</value></data>
+    <data name="C_QrGenerating" xml:space="preserve"><value>正在预生成全部二维码</value></data>
+    <data name="C_QrExporting" xml:space="preserve"><value>正在向其它设备发送</value></data>
+    <data name="C_QrStopped" xml:space="preserve"><value>二维码导出已停止</value></data>
+    <data name="C_FileExported" xml:space="preserve"><value>奖池已导出为文件</value></data>
+    <data name="M_QrTransferFailed" xml:space="preserve"><value>二维码传输失败：{0}</value></data>
+    <data name="C_TransferFrames" xml:space="preserve"><value>传输帧</value></data>
+    <data name="C_TransferSpeed" xml:space="preserve"><value>切换速度</value></data>
+    <data name="C_TransferSize" xml:space="preserve"><value>数据大小</value></data>
+    <data name="C_TransferRecords" xml:space="preserve"><value>记录数</value></data>
+    <data name="C_TransferSession" xml:space="preserve"><value>会话</value></data>
+    <data name="C_TransferStatus" xml:space="preserve"><value>状态</value></data>
+    <data name="C_ImportSource" xml:space="preserve"><value>导入方式</value></data>
+    <data name="C_ImportFromFile" xml:space="preserve"><value>从 Excel/CSV 文件导入</value></data>
+    <data name="C_ImportFromQr" xml:space="preserve"><value>从二维码导入</value></data>
+    <data name="C_QrImport" xml:space="preserve"><value>二维码导入</value></data>
+    <data name="C_ScanQrCode" xml:space="preserve"><value>扫描二维码</value></data>
+    <data name="C_QrImportReady" xml:space="preserve"><value>等待扫描二维码</value></data>
+    <data name="C_QrImporting" xml:space="preserve"><value>正在接收二维码数据</value></data>
+    <data name="C_TransferProgress" xml:space="preserve"><value>传输进度</value></data>
+    <data name="C_TransferReceived" xml:space="preserve"><value>已传输/总大小</value></data>
+    <data name="C_TransferFramesDetail" xml:space="preserve"><value>新帧/重复/无效</value></data>
+    <data name="C_TransferElapsed" xml:space="preserve"><value>已用时间</value></data>
+    <data name="M_QrNotFound" xml:space="preserve"><value>没有识别到名单二维码</value></data>
+    <data name="M_QrWrongType" xml:space="preserve"><value>该二维码不是抽奖奖池</value></data>
+</root>

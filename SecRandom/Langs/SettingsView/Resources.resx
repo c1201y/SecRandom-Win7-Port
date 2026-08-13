@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="M_NeedsRestarting" xml:space="preserve">
+        <value>需要重启</value>
+    </data>
+    <data name="M_NeedsRestarting_D" xml:space="preserve">
+        <value>部分设置需要重启以应用更改</value>
+    </data>
+    <data name="M_NeedsRestarting_Primary" xml:space="preserve">
+        <value>重启</value>
+    </data>
+    <data name="M_NeedsRestarting_Close" xml:space="preserve">
+        <value>取消</value>
+    </data>
+    <data name="M_NeedsRestarting_Tooltip" xml:space="preserve">
+        <value>部分设置需要重启才能生效，点击以重启应用</value>
+    </data>
+    <data name="C_SearchBox_Watermark" xml:space="preserve">
+        <value>搜索设置...</value>
+    </data>
+    <data name="C_MoreOptions" xml:space="preserve">
+        <value>更多选项...</value>
+    </data>
+    <data name="C_MoreOptions_LogViewer" xml:space="preserve">
+        <value>查看日志</value>
+    </data>
+    <data name="C_MoreOptions_LogViewer_D" xml:space="preserve">
+        <value>查看和管理程序日志文件</value>
+    </data>
+    <data name="C_MoreOptions_ExportDiagnosticData" xml:space="preserve">
+        <value>导出诊断数据</value>
+    </data>
+    <data name="C_MoreOptions_ExportDiagnosticData_D" xml:space="preserve">
+        <value>立即导出脱敏的运行时信息和受限日志，用于排查问题</value>
+    </data>
+    <data name="C_MoreOptions_ExportSettings" xml:space="preserve">
+        <value>导出设置</value>
+    </data>
+    <data name="C_MoreOptions_ExportSettings_D" xml:space="preserve">
+        <value>将当前设置导出为 SecRandom v3 配置文件，用于备份和迁移</value>
+    </data>
+    <data name="C_MoreOptions_ImportSettings" xml:space="preserve">
+        <value>导入设置</value>
+    </data>
+    <data name="C_MoreOptions_ImportSettings_D" xml:space="preserve">
+        <value>仅从 SecRandom v3 配置文件导入设置，覆盖当前配置信息</value>
+    </data>
+    <data name="C_MoreOptions_ExportAllData" xml:space="preserve">
+        <value>导出所有数据</value>
+    </data>
+    <data name="C_MoreOptions_ExportAllData_D" xml:space="preserve">
+        <value>立即导出 SecRandom v3 全部非凭据数据和设置</value>
+    </data>
+    <data name="C_MoreOptions_ImportAllData" xml:space="preserve">
+        <value>导入所有数据</value>
+    </data>
+    <data name="C_MoreOptions_ImportAllData_D" xml:space="preserve">
+        <value>仅从 SecRandom v3 备份导入全部数据，导入前自动创建恢复快照</value>
+    </data>
+    <data name="C_MoreOptions_OpenLogDirectory" xml:space="preserve">
+        <value>打开日志目录</value>
+    </data>
+    <data name="C_MoreOptions_OpenDataDirectory" xml:space="preserve">
+        <value>打开数据目录</value>
+    </data>
+    <data name="C_MoreOptions_OpenAppDirectory" xml:space="preserve">
+        <value>打开应用目录</value>
+    </data>
+    <data name="C_ExportSettingsFileTitle" xml:space="preserve">
+        <value>导出设置</value>
+    </data>
+    <data name="C_ExportDiagnosticDataFileTitle" xml:space="preserve">
+        <value>导出诊断数据</value>
+    </data>
+    <data name="C_ImportSettingsFileTitle" xml:space="preserve">
+        <value>导入设置</value>
+    </data>
+    <data name="C_ExportAllDataFileTitle" xml:space="preserve">
+        <value>导出全部数据</value>
+    </data>
+    <data name="C_ImportAllDataFileTitle" xml:space="preserve">
+        <value>导入全部数据</value>
+    </data>
+    <data name="C_JsonFileType" xml:space="preserve">
+        <value>JSON 文件</value>
+    </data>
+    <data name="C_ZipFileType" xml:space="preserve">
+        <value>ZIP 文件</value>
+    </data>
+    <data name="C_Import" xml:space="preserve">
+        <value>导入</value>
+    </data>
+    <data name="C_Cancel" xml:space="preserve">
+        <value>取消</value>
+    </data>
+  <data name="C_Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="C_CopySessionCode" xml:space="preserve">
+    <value>复制会话码</value>
+  </data>
+    <data name="C_DiagnosticStandard" xml:space="preserve">
+        <value>标准诊断包</value>
+    </data>
+    <data name="C_DiagnosticExtended" xml:space="preserve">
+        <value>扩展诊断包</value>
+    </data>
+    <data name="M_DiagnosticExportTitle" xml:space="preserve">
+        <value>导出诊断数据</value>
+    </data>
+    <data name="M_DiagnosticExportContent" xml:space="preserve">
+        <value>标准诊断包包含全部经过脱敏处理的日志和运行时信息；扩展诊断包还包含脱敏设置快照、档案数量摘要及脱敏崩溃报告；两种诊断包均不包含名单、历史原文或安全凭据</value>
+    </data>
+    <data name="M_ImportTitle" xml:space="preserve">
+        <value>确认导入</value>
+    </data>
+    <data name="M_ImportSettingsContent" xml:space="preserve">
+        <value>将替换当前所有非凭据设置，包括窗口、启动、主题、抽取和系统集成；确认后会先自动创建设置恢复快照；快照失败时不会导入；密码、TOTP、USB 绑定和锁定状态不会导入</value>
+    </data>
+    <data name="M_ImportAllDataContent" xml:space="preserve">
+        <value>将替换现有非凭据数据、设置、名单、历史和资源；确认后会先自动创建完整恢复快照；快照失败时不会导入；安全凭据不会导入</value>
+    </data>
+    <data name="M_ImportUnsupportedTitle" xml:space="preserve">
+        <value>不支持的导入文件</value>
+    </data>
+    <data name="M_ImportUnsupportedContent" xml:space="preserve">
+        <value>该文件不是受支持的 SecRandom v3 导出文件</value>
+    </data>
+    <data name="M_ImportUnsupportedUnknownVersion" xml:space="preserve">
+        <value>未识别</value>
+    </data>
+    <data name="M_ImportUnsupportedVersion" xml:space="preserve">
+        <value>检测到的导出版本：{0}&#xA;&#xA;{1}&#xA;&#xA;未创建恢复快照，也未修改任何数据</value>
+    </data>
+    <data name="M_ExportSuccess" xml:space="preserve">
+        <value>已导出：{0}</value>
+    </data>
+    <data name="M_ImportSuccess" xml:space="preserve">
+        <value>导入完成，恢复备份：{0}</value>
+    </data>
+    <data name="M_ExportFailed" xml:space="preserve">
+        <value>导出失败</value>
+    </data>
+    <data name="M_ImportFailed" xml:space="preserve">
+        <value>导入失败，未完成覆盖</value>
+    </data>
+    <data name="M_OpenDirectoryFailed" xml:space="preserve">
+        <value>无法打开目录</value>
+    </data>
+    <data name="M_PageNotFound" xml:space="preserve">
+        <value>页面 {0} 未找到</value>
+    </data>
+    <data name="M_NavigateFailed" xml:space="preserve">
+        <value>导航时出现错误</value>
+    </data>
+    <data name="C_MoreOptions_Feedback" xml:space="preserve">
+        <value>反馈</value>
+    </data>
+    <data name="C_Feedback_Title" xml:space="preserve">
+        <value>反馈</value>
+    </data>
+    <data name="C_Feedback_CloseTemporary" xml:space="preserve">
+        <value>暂时关闭</value>
+    </data>
+    <data name="C_Feedback_Bug" xml:space="preserve">
+        <value>Bug</value>
+    </data>
+    <data name="C_Feedback_Feature" xml:space="preserve">
+        <value>新功能 / 优化体验</value>
+    </data>
+    <data name="C_Feedback_Summary" xml:space="preserve">
+        <value>简要标题</value>
+    </data>
+    <data name="C_Feedback_SummaryPlaceholder" xml:space="preserve">
+        <value>用一句话概括问题或建议</value>
+    </data>
+    <data name="C_Feedback_ContactEmail" xml:space="preserve">
+        <value>联系邮箱（可选）</value>
+    </data>
+    <data name="C_Feedback_ContactEmailPlaceholder" xml:space="preserve">
+        <value>用于在需要时回复你</value>
+    </data>
+    <data name="C_Feedback_CrashReport" xml:space="preserve">
+        <value>崩溃报告</value>
+    </data>
+    <data name="C_Feedback_Expected" xml:space="preserve">
+        <value>期望行为</value>
+    </data>
+    <data name="C_Feedback_ExpectedPlaceholder" xml:space="preserve">
+        <value>描述你期望发生的行为</value>
+    </data>
+    <data name="C_Feedback_Actual" xml:space="preserve">
+        <value>实际结果</value>
+    </data>
+    <data name="C_Feedback_ActualPlaceholder" xml:space="preserve">
+        <value>描述实际发生的行为</value>
+    </data>
+    <data name="C_Feedback_Reproduce" xml:space="preserve">
+        <value>重现步骤</value>
+    </data>
+    <data name="C_Feedback_ReproducePlaceholder" xml:space="preserve">
+        <value>1. 首先……&#10;2. 然后……&#10;3. ……</value>
+    </data>
+    <data name="C_Feedback_Motivation" xml:space="preserve">
+        <value>背景与动机</value>
+    </data>
+    <data name="C_Feedback_MotivationPlaceholder" xml:space="preserve">
+        <value>为什么需要这个功能？它解决了什么场景？</value>
+    </data>
+    <data name="C_Feedback_Request" xml:space="preserve">
+        <value>想要实现或优化的功能</value>
+    </data>
+    <data name="C_Feedback_RequestPlaceholder" xml:space="preserve">
+        <value>尽量具体地说明期望的功能、流程或体验改进</value>
+    </data>
+    <data name="C_Feedback_DiagnosticNotice" xml:space="preserve">
+        <value>提交时自动生成并上传与“导出诊断数据”相同的脱敏 ZIP 附件，用于问题定位</value>
+    </data>
+    <data name="C_Feedback_Cancel" xml:space="preserve">
+        <value>取消反馈</value>
+    </data>
+    <data name="C_Feedback_Submit" xml:space="preserve">
+        <value>提交反馈</value>
+    </data>
+    <data name="M_Feedback_Required" xml:space="preserve">
+        <value>请填写所有必填项后再提交反馈</value>
+    </data>
+    <data name="M_Feedback_InvalidEmail" xml:space="preserve">
+        <value>请填写有效的联系邮箱，或将其留空</value>
+    </data>
+    <data name="M_Feedback_Success" xml:space="preserve">
+        <value>反馈已提交，感谢你的帮助</value>
+    </data>
+    <data name="M_Feedback_DiagnosticTooLarge" xml:space="preserve">
+        <value>诊断 ZIP 超过上传限制，未提交反馈；请清理日志后重试，或使用 GitHub</value>
+    </data>
+    <data name="M_Feedback_Failed" xml:space="preserve">
+        <value>反馈提交失败，请稍后重试或使用 GitHub</value>
+    </data>
+  <data name="C_TransferFileExport" xml:space="preserve"><value>文件导出</value></data>
+  <data name="C_TransferFileImport" xml:space="preserve"><value>从文件导入</value></data>
+  <data name="C_TransferQuickQrExport" xml:space="preserve"><value>扫码快速导出至其它设备</value></data>
+  <data name="C_TransferOfflineQrExport" xml:space="preserve"><value>无网导出至其它设备</value></data>
+  <data name="C_TransferSessionCodeExport" xml:space="preserve"><value>会话码导出至其它设备</value></data>
+  <data name="C_TransferQuickQrImport" xml:space="preserve"><value>扫码快速导入</value></data>
+  <data name="C_TransferOfflineQrImport" xml:space="preserve"><value>无网扫码导入</value></data>
+  <data name="C_TransferSessionCodeImport" xml:space="preserve"><value>会话码导入</value></data>
+  <data name="C_TransferQuickQrTitle" xml:space="preserve"><value>扫码快速传输</value></data>
+  <data name="C_TransferOfflineQrTitle" xml:space="preserve"><value>无网二维码传输</value></data>
+  <data name="C_TransferSessionCodeTitle" xml:space="preserve"><value>会话码传输</value></data>
+  <data name="C_TransferPortalHint" xml:space="preserve"><value>在其它设备中扫码，或打开 SecRandom Sync 接收传输</value></data>
+  <data name="C_TransferStatusFrames" xml:space="preserve"><value>第 {0} / {1} 帧</value></data>
+  <data name="C_TransferStatusReady" xml:space="preserve"><value>准备接收传输</value></data>
+  <data name="C_TransferStatusReceiving" xml:space="preserve"><value>正在接收传输</value></data>
+  <data name="C_TransferStatusWaitingForQr" xml:space="preserve"><value>等待摄像头扫描二维码</value></data>
+  <data name="C_TransferStatusReceivingQr" xml:space="preserve"><value>正在接收二维码数据</value></data>
+  <data name="C_TransferStatusSending" xml:space="preserve"><value>正在向其它设备发送</value></data>
+  <data name="C_TransferStatusCompleted" xml:space="preserve"><value>二维码数据接收完成</value></data>
+  <data name="C_TransferScanHint" xml:space="preserve"><value>使用相机扫描其它设备显示的二维码</value></data>
+  <data name="C_TransferOpenCamera" xml:space="preserve"><value>打开相机</value></data>
+  <data name="C_TransferStopCamera" xml:space="preserve"><value>停止相机</value></data>
+  <data name="M_TransferFailed" xml:space="preserve"><value>传输失败：{0}</value></data>
+  <data name="M_TransferWrongContent" xml:space="preserve"><value>收到的传输类型与当前操作不匹配。</value></data>
+  <data name="C_TransferCopyAddress" xml:space="preserve"><value>复制地址</value></data>
+  <data name="C_TransferSessionCodeLabel" xml:space="preserve"><value>会话码</value></data>
+  <data name="C_TransferFrames" xml:space="preserve"><value>传输帧</value></data>
+  <data name="C_TransferSpeed" xml:space="preserve"><value>传输速度</value></data>
+  <data name="C_TransferSize" xml:space="preserve"><value>数据大小</value></data>
+  <data name="C_TransferSession" xml:space="preserve"><value>会话</value></data>
+  <data name="C_TransferStatus" xml:space="preserve"><value>状态</value></data>
+  <data name="C_TransferFramesPerSecond" xml:space="preserve"><value>{0:F1} 帧/秒</value></data>
+  <data name="C_TransferLocal" xml:space="preserve"><value>本地</value></data>
+  <data name="C_TransferProgress" xml:space="preserve"><value>传输进度</value></data>
+  <data name="C_TransferReceived" xml:space="preserve"><value>已接收/总大小</value></data>
+  <data name="C_TransferFramesDetail" xml:space="preserve"><value>新帧/重复/无效</value></data>
+  <data name="C_TransferElapsed" xml:space="preserve"><value>已用时间</value></data>
+  <data name="C_TransferExportHint" xml:space="preserve"><value>在另一台设备上扫描显示的二维码以接收传输</value></data>
+  <data name="C_TransferCameraOne" xml:space="preserve"><value>摄像头 1</value></data>
+  <data name="C_TransferCameraTwo" xml:space="preserve"><value>摄像头 2</value></data>
+</root>
