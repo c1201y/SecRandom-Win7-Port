@@ -28,4 +28,8 @@ public sealed class PlatformServiceRootStub : IPlatformServiceRoot, IWindowFeatu
 
     public WindowFeatureApplyResult Apply(PlatformWindowHandle window, WindowFeatureRequest request) =>
         WindowFeatureApplyResult.Unsupported(request.Features, "The active platform does not support window features.");
+
+    public WindowFeatureApplyResult ApplyOpacity(PlatformWindowHandle window, double opacity) =>
+        WindowFeatureApplyResult.Unsupported(global::SecRandom.Platforms.Abstractions.WindowFeatures.None,
+            "The active platform does not support window opacity.");
 }

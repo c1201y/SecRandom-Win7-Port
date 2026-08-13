@@ -17,6 +17,12 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
         ? WindowFeatures.Topmost | WindowFeatures.ToolWindow | WindowFeatures.SkipTaskSwitcher
         : WindowFeatures.None;
 
+    public WindowFeatureApplyResult ApplyOpacity(PlatformWindowHandle window, double opacity)
+    {
+        return WindowFeatureApplyResult.Unsupported(WindowFeatures.None,
+            "Whole-window opacity is not implemented for the X11 window service.");
+    }
+
     public WindowFeatureApplyResult Apply(PlatformWindowHandle window, WindowFeatureRequest request)
     {
         if (!window.IsValid)

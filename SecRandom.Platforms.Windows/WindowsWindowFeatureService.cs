@@ -24,7 +24,69 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
                                                 WindowFeatures.ClickThrough;
     private static readonly nint HwndTopmost = new(-1);
     private static readonly nint HwndNotopmost = new(-2);
+    private const uint LwaAlpha = 0x00000002;
     private readonly ConcurrentDictionary<nint, WindowFeatures> _enabledFeatures = [];
+
+    public WindowFeatureApplyResult ApplyOpacity(PlatformWindowHandle window, double opacity)
+    {
+        if (!window.IsValid)
+            return WindowFeatureApplyResult.Failed(WindowFeatures.None, "The native window handle is not available.");
+
+        if (!string.IsNullOrWhiteSpace(window.Descriptor)
+            && !string.Equals(window.Descriptor, "HWND", StringComparison.OrdinalIgnoreCase))
+        {
+            return WindowFeatureApplyResult.Unsupported(WindowFeatures.None,
+                $"The '{window.Descriptor}' native handle is not a Windows HWND.");
+        }
+
+        if (TrySetLayeredAlpha(window.Value, opacity, out var failure))
+            return WindowFeatureApplyResult.Applied(WindowFeatures.None);
+
+        return WindowFeatureApplyResult.Failed(WindowFeatures.None, failure);
+    }
+
+    private static bool TrySetLayeredAlpha(nint window, double opacity, out string? failure)
+    {
+        try
+        {
+            Marshal.SetLastPInvokeError(0);
+            var style = GetWindowLongPtr(window, GwlExStyle).ToInt64();
+            if (style == 0 && Marshal.GetLastWin32Error() != 0)
+            {
+                failure = $"GetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            if ((style & WsExLayered) == 0)
+            {
+                Marshal.SetLastPInvokeError(0);
+                var previous = SetWindowLongPtr(window, GwlExStyle, new IntPtr(style | WsExLayered));
+                if (previous == nint.Zero && Marshal.GetLastWin32Error() != 0)
+                {
+                    failure = $"SetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
+                    return false;
+                }
+
+                SetWindowPos(window, nint.Zero, 0, 0, 0, 0,
+                    SwpNoMove | SwpNoSize | SwpNoActivate | SwpFrameChanged);
+            }
+
+            var alpha = (byte)Math.Clamp((int)Math.Round(opacity * 255), 0, 255);
+            if (SetLayeredWindowAttributes(window, 0, alpha, LwaAlpha))
+            {
+                failure = null;
+                return true;
+            }
+
+            failure = $"SetLayeredWindowAttributes failed with Win32 error {Marshal.GetLastWin32Error()}.";
+            return false;
+        }
+        catch (Exception exception)
+        {
+            failure = exception.Message;
+            return false;
+        }
+    }
 
     public WindowFeatures SupportedFeatures => WindowFeatures.Topmost |
                                                 WindowFeatures.ToolWindow |
@@ -215,4 +277,8 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool SetWindowDisplayAffinity(nint hWnd, uint affinity);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool SetLayeredWindowAttributes(nint hWnd, uint crKey, byte bAlpha, uint dwFlags);
 }

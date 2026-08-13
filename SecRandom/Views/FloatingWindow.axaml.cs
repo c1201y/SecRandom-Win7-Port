@@ -107,7 +107,7 @@ public partial class FloatingWindow : Window
 
     private void ApplyWindowSettings(FloatingWindowSettingsConfig settings)
     {
-        WindowBorder.Opacity = System.Math.Clamp(settings.FloatingWindowOpacity, 20, 100) / 100.0;
+        ApplyWindowOpacity(settings);
         var topmost = settings.FloatingWindowTopmostMode is TopmostMode.Topmost or TopmostMode.UiAccess;
         Topmost = topmost;
         if (IsLoaded)
@@ -124,6 +124,17 @@ public partial class FloatingWindow : Window
             UpdateDockButton();
             Dispatcher.UIThread.Post(() => RepositionDockedWindow(), DispatcherPriority.Render);
         }
+    }
+
+    private void ApplyWindowOpacity(FloatingWindowSettingsConfig settings)
+    {
+        var opacity = System.Math.Clamp(settings.FloatingWindowOpacity, 20, 100) / 100.0;
+
+        // Whole-window opacity through the native layered window style is the primary path:
+        // the plain Window.Opacity pass only tints the rendered surface where the platform
+        // transparency level is unavailable, so prefer the platform result when it applies.
+        var platformResult = this.ApplyPlatformOpacity(opacity);
+        Opacity = platformResult.Status == WindowFeatureApplyStatus.Applied ? 1 : opacity;
     }
 
     private static int GetButtonSize(int value)
@@ -344,6 +355,10 @@ public partial class FloatingWindow : Window
     private void OnOpened(object? sender, EventArgs e)
     {
         this.ApplyPlatformFeatures(WindowFeatures.SkipTaskSwitcher, enabled: true);
+
+        // The platform handle only exists after the window is opened; reapply the
+        // configured opacity so the layered-window value is not left at its default.
+        ApplyWindowOpacity(ViewModel.Config.FloatingWindowSettings);
     }
 
     private async void RestoreStartupPositionAndScheduleDock()
@@ -367,14 +382,14 @@ public partial class FloatingWindow : Window
             Position.Y + height / 2,
             workingArea.Value.Y + height / 2,
             Math.Max(workingArea.Value.Y + height / 2, workingArea.Value.Bottom - height / 2));
-        Opacity = 0;
+        RootGrid.Opacity = 0;
         _isDocked = true;
         ExpandedContent.IsVisible = false;
         DockButton.Opacity = 1;
         UpdateDockButton();
         await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render).GetTask();
         RepositionDockedWindow();
-        Opacity = 1;
+        RootGrid.Opacity = 1;
         SavePosition();
     }
 
@@ -634,13 +649,13 @@ public partial class FloatingWindow : Window
             if (transitionRevision != _dockTransitionRevision)
                 return;
 
-            Opacity = 0;
+            RootGrid.Opacity = 0;
             ExpandedContent.IsVisible = false;
             DockButton.Opacity = 0;
             UpdateDockButton();
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render).GetTask();
             RepositionDockedWindow();
-            Opacity = 1;
+            RootGrid.Opacity = 1;
             await AnimateControlAsync(
                 DockButton,
                 0,
@@ -735,13 +750,13 @@ public partial class FloatingWindow : Window
                 return;
 
             DockButton.IsVisible = false;
-            Opacity = 0;
+            RootGrid.Opacity = 0;
             PositionExpandedWindowAtDockAnchor();
             ExpandedContent.Opacity = 0;
             ExpandedContent.IsVisible = true;
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render).GetTask();
             PositionExpandedWindowAtDockAnchor(useCurrentSize: true);
-            Opacity = 1;
+            RootGrid.Opacity = 1;
             await AnimateControlAsync(
                 ExpandedContent,
                 0,

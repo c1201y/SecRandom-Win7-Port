@@ -79,4 +79,9 @@ public sealed class MobilePlatformServiceRoot : IPlatformServiceRoot, IWindowFea
     public WindowFeatureApplyResult Apply(PlatformWindowHandle window, WindowFeatureRequest request) =>
         WindowFeatureApplyResult.Unsupported(request.Features,
             "Mobile platforms do not expose desktop window features.");
+
+    public WindowFeatureApplyResult ApplyOpacity(PlatformWindowHandle window, double opacity) =>
+        WindowFeatureApplyResult.Unsupported(
+            global::SecRandom.Platforms.Abstractions.WindowFeatures.None,
+            "Mobile platforms do not expose desktop window features.");
 }

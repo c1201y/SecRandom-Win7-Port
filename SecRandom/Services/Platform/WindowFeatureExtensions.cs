@@ -24,6 +24,39 @@ internal static class WindowFeatureExtensions
         return Apply(window.TryGetPlatformHandle(), features, enabled);
     }
 
+    public static WindowFeatureApplyResult ApplyPlatformOpacity(
+        this TopLevel topLevel,
+        double opacity)
+    {
+        return ApplyOpacity(topLevel.TryGetPlatformHandle(), opacity);
+    }
+
+    public static WindowFeatureApplyResult ApplyPlatformOpacity(
+        this AppWindow window,
+        double opacity)
+    {
+        return ApplyOpacity(window.TryGetPlatformHandle(), opacity);
+    }
+
+    private static WindowFeatureApplyResult ApplyOpacity(IPlatformHandle? handle, double opacity)
+    {
+        var service = IAppHost.TryGetService<IWindowFeatureService>();
+        if (service is null)
+        {
+            return WindowFeatureApplyResult.Unsupported(WindowFeatures.None,
+                "The application host has not registered platform window services.");
+        }
+
+        if (handle is null)
+        {
+            return WindowFeatureApplyResult.Failed(WindowFeatures.None,
+                "The native window handle is not available.");
+        }
+
+        return service.ApplyOpacity(
+            new PlatformWindowHandle(handle.Handle, handle.HandleDescriptor), opacity);
+    }
+
     private static WindowFeatureApplyResult Apply(
         IPlatformHandle? handle,
         WindowFeatures features,

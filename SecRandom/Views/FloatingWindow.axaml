@@ -19,10 +19,9 @@
         ShowInTaskbar="False"
         SizeToContent="WidthAndHeight"
         Loaded="OnLoaded">
-    <Grid>
+    <Grid x:Name="RootGrid">
         <Border x:Name="WindowBorder"
                 Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}"
-                Opacity="0.8"
                 BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}"
                 BorderThickness="2"
                 CornerRadius="8" ClipToBounds="True" />
