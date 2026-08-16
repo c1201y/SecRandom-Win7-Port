@@ -1746,11 +1746,20 @@ public partial class App : Application
                 return;
             }
 
+            // A user-triggered quick draw always has a visible result window. Notification
+            // settings only control the optional notification animation and delivery path.
+            if (!quickDraw.IsDrawing)
+            {
+                var window = GetOrCreateQuickDrawWindow();
+                if (!window.IsVisible)
+                    window.Show();
+                window.Activate();
+            }
+
             var showBuiltInNotificationAnimation = IAppHost.GetService<NotificationService>()
                 .UsesBuiltInNotificationService(NotificationSettingsType.QuickDraw);
             if (!showBuiltInNotificationAnimation)
             {
-                HideQuickDrawNotificationWindow();
                 if (!quickDraw.IsDrawing)
                     await quickDraw.StartAuthorizedTriggeredDrawAsync();
                 transaction?.Finish(SpanStatus.Ok);

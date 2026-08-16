@@ -276,6 +276,13 @@ public class SettingsMarkupTests
         string viewModelSource = File.ReadAllText(GetRepositoryPath(
             "SecRandom/ViewModels/MainPages/QuickDrawPageViewModel.cs"));
 
+        int userWindowPresentation = appSource.IndexOf(
+            "// A user-triggered quick draw always has a visible result window.",
+            StringComparison.Ordinal);
+        int notificationBranch = appSource.IndexOf(
+            "UsesBuiltInNotificationService(NotificationSettingsType.QuickDraw)",
+            StringComparison.Ordinal);
+        Assert.True(userWindowPresentation >= 0 && userWindowPresentation < notificationBranch);
         Assert.Contains("UsesBuiltInNotificationService(NotificationSettingsType.QuickDraw)", appSource, StringComparison.Ordinal);
         Assert.Contains("StartAuthorizedTriggeredDrawAsync()", appSource, StringComparison.Ordinal);
         Assert.Contains("BeginBuiltInNotificationPresentationAsync(", viewModelSource, StringComparison.Ordinal);
