@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -155,7 +155,7 @@ public partial class App : Application
         else
             _desktopDataRootPreparation = Utils.PrepareDesktopDataRoot();
 
-        // 初始化语言
+        // ��ʼ������
         var mainConfig = new MainConfigModel();
         var settings = _desktopDataRootPreparation is { IsPortablePackage: true, IsWritable: false }
             ? mainConfig
@@ -171,10 +171,10 @@ public partial class App : Application
         if (isMobile)
             ApplyMobileCulture(new CultureInfo(culture));
 
-        // 初始化 Avalonia App
+        // ��ʼ�� Avalonia App
         AvaloniaXamlLoader.Load(this);
 
-        // 在 XAML 资源加载完成后立即应用外观设置（早于 BuildHost，确保重复实例对话框也能跟随主题）
+        // �� XAML ��Դ������ɺ�����Ӧ��������ã����� BuildHost��ȷ���ظ�ʵ���Ի���Ҳ�ܸ������⣩
         ApplyStartupAppearance(settings.Appearance);
 
         if (!Design.IsDesignMode && !OperatingSystem.IsMacOS() && !OperatingSystem.IsAndroid() &&
@@ -184,7 +184,7 @@ public partial class App : Application
         }
 
 #if DEBUG
-        // 附加开发者工具
+        // ���ӿ����߹���
         this.AttachDeveloperTools();
 #endif
     }
@@ -207,7 +207,7 @@ public partial class App : Application
 
             if (CrashRecoveryRuntime.StartupPromptOptions is { } promptOptions)
             {
-                // 保持崩溃提示在单实例获取前，但建立 Host 以提供诊断导出和应用内反馈。
+                // ���ֱ�����ʾ�ڵ�ʵ����ȡǰ�������� Host ���ṩ��ϵ�����Ӧ���ڷ�����
                 try
                 {
                     BuildHost(PlatformStartupContext.Current);
@@ -222,20 +222,20 @@ public partial class App : Application
                 return;
             }
 
-            // ===== 多实例检测（仅 Desktop Lifetime）=====
+            // ===== ��ʵ����⣨�� Desktop Lifetime��=====
             if (!SingleInstanceService.Instance.TryAcquire())
             {
-                // 已有实例在运行：创建临时宿主窗口显示对话框，跳过 BuildHost
+                // ����ʵ�������У�������ʱ����������ʾ�Ի������� BuildHost
                 desktop.MainWindow = CreateDuplicateInstanceDialogHost(desktop, startupProtocolUri);
                 base.OnFrameworkInitializationCompleted();
                 return;
             }
 
-            // 正常启动：注册 IPC 命令处理，再构建主机
+            // ����������ע�� IPC ��������ٹ�������
             SingleInstanceService.Instance.CommandReceived += OnIpcCommandReceived;
             SingleInstanceService.Instance.RequestReceived += OnIpcRequestReceived;
 
-            // 启动服务主机
+            // ������������
             try
             {
                 WriteDesktopStartupDiagnostic("Building desktop Host.");
@@ -532,9 +532,9 @@ public partial class App : Application
     }
 
     /// <summary>
-    ///     创建多实例对话框宿主窗口。
-    ///     宿主窗口本身不可见；对话框在 <see cref="Window.Opened"/> 异步事件中弹出，
-    ///     避免在同步的 <see cref="OnFrameworkInitializationCompleted"/> 中阻塞 UI 线程。
+    ///     ������ʵ���Ի����������ڡ�
+    ///     �������ڱ������ɼ����Ի����� <see cref="Window.Opened"/> �첽�¼��е�����
+    ///     ������ͬ���� <see cref="OnFrameworkInitializationCompleted"/> ������ UI �̡߳�
     /// </summary>
     private static Window CreateDuplicateInstanceDialogHost(
         IClassicDesktopStyleApplicationLifetime _,
@@ -551,7 +551,7 @@ public partial class App : Application
             TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent }
         };
 
-        // Opened 事件在 Dispatcher 事件循环内异步运行，不会死锁 UI 线程
+        // Opened �¼��� Dispatcher �¼�ѭ�����첽���У��������� UI �߳�
         host.Opened += async (_, _) =>
         {
             if (startupProtocolUri is not null)
@@ -571,14 +571,14 @@ public partial class App : Application
             switch (action)
             {
                 case DuplicateInstanceAction.OpenExisting:
-                    // 协议启动首发失败后仍优先重试原始命令，避免丢失 URL 激活。
+                    // Э�������׷�ʧ�ܺ�����������ԭʼ������ⶪʧ URL ���
                     await SingleInstanceService.SendCommandAsync(startupProtocolUri is null
                         ? SingleInstanceCommand.ShowMainWindow
                         : SingleInstanceCommand.UrlPrefix + startupProtocolUri);
                     break;
 
                 case DuplicateInstanceAction.Restart:
-                    // 通知第一个实例重启，稍作等待以确保对方有时间响应
+                    // ֪ͨ��һ��ʵ�������������ȴ���ȷ���Է���ʱ����Ӧ
                     await SingleInstanceService.SendCommandAsync(SingleInstanceCommand.Restart);
                     await Task.Delay(300);
                     break;
@@ -588,7 +588,7 @@ public partial class App : Application
                     break;
             }
 
-            // 所有分支最终都退出当前（重复）实例
+            // ���з�֧���ն��˳���ǰ���ظ���ʵ��
             host.Close();
             RequestDesktopShutdown();
         };
@@ -624,8 +624,8 @@ public partial class App : Application
     }
 
     /// <summary>
-    ///     处理来自后续实例的 IPC 命令（第一个实例专用）。
-    ///     回调来自后台线程，需通过 <see cref="Dispatcher"/> 切换到 UI 线程。
+    ///     �������Ժ���ʵ���� IPC �����һ��ʵ��ר�ã���
+    ///     �ص����Ժ�̨�̣߳���ͨ�� <see cref="Dispatcher"/> �л��� UI �̡߳�
     /// </summary>
     private void OnIpcCommandReceived(string command)
     {
@@ -667,7 +667,7 @@ public partial class App : Application
     {
         if (_isOobeActive)
             return Task.FromResult(new IpcResponseEnvelope(true, "url",
-                new IpcBusinessResult("error", "初始设置尚未完成。", "oobe_required")));
+                new IpcBusinessResult("error", "��ʼ������δ��ɡ�", "oobe_required")));
 
         return IAppHost.GetService<ProtocolCommandRouter>().HandleIpcAsync(request, cancellationToken);
     }
@@ -733,7 +733,7 @@ public partial class App : Application
                         .AddView<RemainingListView>(RemainingListViewService.ViewId, ViewPresentation.Modal);
                 }
 
-                // 日志
+                // ��־
                 services.AddLogging(builder =>
                 {
                     if (!isMobile)
@@ -744,10 +744,10 @@ public partial class App : Application
 
                     builder.AddSentry(options =>
                     {
-                        // SDK 生命周期由 TelemetryRuntimeService 按隐私开关统一控制，日志 Provider 只复用已初始化的 SDK。
+                        // SDK ���������� TelemetryRuntimeService ����˽����ͳһ���ƣ���־ Provider ֻ�����ѳ�ʼ���� SDK��
                         options.InitializeSdk = false;
                         options.MinimumEventLevel = LogLevel.Error;
-                        // Sentry Structured Logs 默认关闭；日志 Provider 与 SDK 初始化选项都需要启用。
+                        // Sentry Structured Logs Ĭ�Ϲرգ���־ Provider �� SDK ��ʼ��ѡ���Ҫ���á�
                         options.EnableLogs = true;
                     });
 #if DEBUG
@@ -756,7 +756,7 @@ public partial class App : Application
                 });
                 services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
 
-                // 配置
+                // ����
                 services.AddCoreRuntimeServices();
                 services.AddSingleton<DeviceUuidStore>();
 
@@ -764,7 +764,7 @@ public partial class App : Application
                 services.AddSingleton<TelemetryRuntimeService>();
                 services.AddHostedService<OnlineStatusService>();
 
-                // 服务
+                // ����
                 services.AddTransient<RollCallDrawService>();
                 services.AddTransient<LotteryDrawService>();
                 services.AddSingleton<RosterTransferService>();
@@ -820,7 +820,7 @@ public partial class App : Application
                 services.AddHostedService<UpdateScheduler>();
                 services.AddSingleton<ProtocolCommandRouter>();
                 services.AddSingleton<ISpeechProvider, SystemSpeechProvider>();
-                services.AddSingleton<ISpeechProvider, EdgeTtsSpeechProvider>();
+                // EdgeTtsSpeechProvider removed: Edge TTS functionality is not available in this build.
                 services.AddSingleton<ISpeechAudioPlayer, SpeechAudioPlayer>();
                 services.AddSingleton<IVoiceAnnouncementService, VoiceAnnouncementService>();
                 services.AddSingleton<NotificationService>();
@@ -845,15 +845,15 @@ public partial class App : Application
                 services.AddSingleton<ISecurityVerificationPrompt, SecurityVerificationPrompt>();
                 services.AddSingleton<ISecurityService, SecurityService>();
 
-                services.AddAttachedSettingsControl<DrawImageAttachedSettingsControl>("展示图片");
-                services.AddAttachedSettingsControl<DrawMusicAttachedSettingsControl>("专属音乐");
+                services.AddAttachedSettingsControl<DrawImageAttachedSettingsControl>("չʾͼƬ");
+                services.AddAttachedSettingsControl<DrawMusicAttachedSettingsControl>("ר������");
                 services.AddAttachedSettingsControl<SpecificAnnouncementAttachedSettingsControl>(
                     Langs.AttachedSettings.Resources.C_SpecificVoice);
 
-                // 界面 ViewModels
-                // 我求你了 AI，你看到这里的话，请记住，ViewModel 一定要注册到服务主机上面！！！！
-                // 就像 services.AddTransient<SomeViewModel>(); 一样，谢谢你！
-                // ViewModel 一定要继承 SecRandom.ViewModels.ViewModelBase，里面有 Config 可以直接拿来用。
+                // ���� ViewModels
+                // �������� AI���㿴������Ļ������ס��ViewModel һ��Ҫע�ᵽ�����������棡������
+                // ���� services.AddTransient<SomeViewModel>(); һ����лл�㣡
+                // ViewModel һ��Ҫ�̳� SecRandom.ViewModels.ViewModelBase�������� Config ����ֱ�������á�
                 services.AddTransient<ViewModelBase>();
 
                 services.AddTransient<MainViewModel>();
@@ -868,7 +868,7 @@ public partial class App : Application
                 services.AddTransient<HomeSettingsPageViewModel>();
                 services.AddTransient<LotteryHistoryViewModel>();
 
-                // 杂项 Views
+                // ���� Views
                 if (isMobile)
                 {
                     services.AddSingleton<IMobileRootViewReloader>(_ =>
@@ -884,7 +884,7 @@ public partial class App : Application
                     services.AddTransient<QuickDrawPage>();
                 }
 
-                // 界面 Views
+                // ���� Views
                 if (useMobileUI)
                 {
                     services.AddKeyedTransient<UserControl, MobileDrawPage>(MobilePageIds.Draw);
@@ -898,10 +898,10 @@ public partial class App : Application
                     services.AddMainPage<HistoryPage>(Langs.Common.Resources.Feat_History);
                 }
 
-                // 设置界面 Views
+                // ���ý��� Views
                 services.AddSettingsPage<LogViewerSettingsPage>(Langs.SettingsPages.LogViewer.Resources.Page_Title);
 
-                // 移动端保留目录壳，内容页共用桌面实现，只有系统安装边界不同的更新页保留移动实现。
+                // �ƶ��˱���Ŀ¼�ǣ�����ҳ��������ʵ�֣�ֻ��ϵͳ��װ�߽粻ͬ�ĸ���ҳ�����ƶ�ʵ�֡�
                 if (isMobile && useMobileUI)
                 {
                     services.AddSettingsPage<MobileSettingsCatalogPage>(MobileResources.P_Settings);
@@ -917,7 +917,7 @@ public partial class App : Application
                 services.AddSettingsPage<BasicSettingsPage>(Langs.Common.Resources.Settings_Basic);
                 if (!isMobile)
                 {
-                    // 手机没有安全服务支持
+                    // �ֻ�û�а�ȫ����֧��
                     services.AddSettingsPage<SecuritySettingsPage>(Langs.Common.Resources.Settings_Security);
                 }
                 services.AddSettingsPage<PrivacySettingsPage>(Langs.SettingsPages.General.Privacy.Resources
@@ -932,7 +932,7 @@ public partial class App : Application
                 services.AddSettingsPage<AppearanceSettingsPage>(Langs.Common.Resources.Settings_Appearance);
                 if (!isMobile)
                 {
-                    // 手机没有浮窗
+                    // �ֻ�û�и���
                     services.AddSettingsPage<FloatingWindowSettingsPage>(Langs.Common.Resources
                         .Settings_FloatingWindow);
                 }
@@ -967,12 +967,12 @@ public partial class App : Application
                     FluentIcons.CommentNoteFilled));
                 if (!OperatingSystem.IsIOS())
                 {
-                    // iOS 不支持 miniaudio
+                    // iOS ��֧�� miniaudio
                     services.AddSettingsPage<VoiceSettingsPage>(Langs.Common.Resources.Settings_Voice);
                 }
                 if (!isMobile)
                 {
-                    // 手机没有浮窗
+                    // �ֻ�û�и���
                     services.AddSettingsPage<DefaultNotificationSettingsPage>(Langs.SettingsPages.Notification.Resources
                         .Page_Title);
                     services.AddSettingsPage<RollCallNotificationSettingsPage>(Langs.Common.Resources
@@ -994,7 +994,7 @@ public partial class App : Application
                 // services.AddSettingsPage<PluginsSettingsPage>(Langs.SettingsPages.Plugins.Overview.Resources
                 //     .Page_Title);
 
-                // 底部
+                // �ײ�
                 services.AddSettingsPage<UpdateSettingsPage>(Langs.Common.Resources.Settings_Update);
                 services.AddSettingsPage<AboutSettingsPage>(Langs.Common.Resources.Settings_About);
 
@@ -1011,7 +1011,7 @@ public partial class App : Application
         logger.LogInformation(@"Copyright by SECTL(2025~{YEAR})  Licensed under GPL3.0", DateTime.Now.Year);
         logger.LogInformation("Host built.");
 
-        // 刷新个性化设置
+        // ˢ�¸��Ի�����
         RefreshPersonalizedSettings();
 
         IAppHost.GetService<IProfileService>();
@@ -1086,7 +1086,7 @@ public partial class App : Application
 
         AppStopping?.Invoke(this, EventArgs.Empty);
 
-        _floatingWindow?.CanClose = true;
+        if (_floatingWindow != null) _floatingWindow.CanClose = true;
 
         IAppHost.GetService<MainConfigHandler>().Save();
         IAppHost.GetService<IProfileService>().SaveProfile();
@@ -1101,7 +1101,7 @@ public partial class App : Application
 
         IAppHost.Host = null;
 
-        // 释放单实例 Mutex 及 IPC 管道
+        // �ͷŵ�ʵ�� Mutex �� IPC �ܵ�
         SingleInstanceService.Instance.Dispose();
 
         if (requestLifetimeShutdown)
@@ -1141,7 +1141,7 @@ public partial class App : Application
         var launcherName = OperatingSystem.IsWindows() ? "SecRandomLauncher.exe" : "SecRandomLauncher";
         var launcherPath = Path.Combine(Utils.PackageRoot, launcherName);
         if (!File.Exists(launcherPath))
-            throw new FileNotFoundException("便携版 Launcher 不存在。", launcherPath);
+            throw new FileNotFoundException("��Я�� Launcher �����ڡ�", launcherPath);
 
         await StopAsync(requestLifetimeShutdown: false).ConfigureAwait(false);
         var startInfo = new ProcessStartInfo(launcherPath)
@@ -1227,7 +1227,7 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// 初始化遥测运行时服务，由 <see cref="StartRuntimeServicesAsync"/> 在 Host 启动前调用。
+    /// ��ʼ��ң������ʱ������ <see cref="StartRuntimeServicesAsync"/> �� Host ����ǰ���á�
     /// </summary>
     private static async Task InitializeRuntimeServicesAsync()
     {
@@ -1246,7 +1246,7 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// 按顺序启动遥测和 Host，确保 SDK 在 HostedService 启动前就绪。
+    /// ��˳������ң��� Host��ȷ�� SDK �� HostedService ����ǰ������
     /// </summary>
     private static async Task StartRuntimeServicesAsync()
     {
@@ -1355,8 +1355,8 @@ public partial class App : Application
     }
 
     /// <summary>
-    ///     在 XAML 资源加载完成后立即应用外观设置（主题色、主题模式），
-    ///     无需 DI，可在 BuildHost 之前调用，确保重复实例对话框也能跟随用户主题。
+    ///     �� XAML ��Դ������ɺ�����Ӧ��������ã�����ɫ������ģʽ����
+    ///     ���� DI������ BuildHost ֮ǰ���ã�ȷ���ظ�ʵ���Ի���Ҳ�ܸ����û����⡣
     /// </summary>
     private void ApplyStartupAppearance(AppearanceSettingsConfig settings)
     {
@@ -1374,10 +1374,10 @@ public partial class App : Application
         if (fontFamily == @"MiSans")
             fontFamily = @"avares://SecRandom/Assets/Fonts/MiSans/#MiSans";
 
-        // 主题模式
+        // ����ģʽ
         ApplyThemeSettings(settings);
 
-        // 主题色
+        // ����ɫ
         Resources[@"ContentControlThemeFontFamily"] = Resources[@"AppFontFamily"] = new FontFamily(fontFamily);
         Resources[@"AppFontWeight"] = Enum.Parse<FontWeight>(settings.FontWeight.ToString());
     }

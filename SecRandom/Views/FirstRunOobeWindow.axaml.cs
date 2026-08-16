@@ -39,7 +39,7 @@ public partial class FirstRunOobeWindow : AppWindow
         TitleBar.Height = 32;
         TitleBar.ExtendsContentIntoTitleBar = true;
         
-        // 覆盖标题栏按钮颜色
+        // 覆盖标题栏按钮颜�?
         TitleBar.ButtonHoverBackgroundColor = Color.FromArgb(23, 0, 0, 0);
         TitleBar.ButtonPressedBackgroundColor = Color.FromArgb(52, 0, 0, 0);
         TitleBar.ButtonInactiveForegroundColor = Colors.Gray;

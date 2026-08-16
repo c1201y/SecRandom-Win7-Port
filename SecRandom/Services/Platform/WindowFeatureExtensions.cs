@@ -70,7 +70,7 @@ internal static class WindowFeatureExtensions
         }
 
         return service.Apply(
-            new PlatformWindowHandle(handle?.Handle ?? nint.Zero, handle?.HandleDescriptor),
+            new PlatformWindowHandle(handle?.Handle ?? (nint)0, handle?.HandleDescriptor),
             new WindowFeatureRequest(features, enabled));
     }
 }

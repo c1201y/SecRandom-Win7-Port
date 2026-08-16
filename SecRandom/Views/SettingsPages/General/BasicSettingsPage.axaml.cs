@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using Avalonia.Controls;
@@ -67,7 +67,7 @@ public partial class BasicSettingsPage : UserControl
 
         if (e.PropertyName == nameof(Settings.Language))
         {
-            // 先设置语言，省的 Needs Restarting 显示中文等情况发生
+            // ���������ԣ�ʡ�� Needs Restarting ��ʾ���ĵ��������
             var culture = Settings.Language switch
             {
                 LanguageMode.ChineseSimplified => @"zh-Hans",

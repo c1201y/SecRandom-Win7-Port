@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <OutputType Condition="'$(RuntimeIdentifier)' == 'win-x86' Or '$(RuntimeIdentifier)' == 'win-x64' Or '$(RuntimeIdentifier)' == 'win-arm64'">WinExe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>SecRandomLauncher</AssemblyName>
     <ApplicationIcon>..\SecRandom\Assets\AppLogo.ico</ApplicationIcon>
     <ImplicitUsings>enable</ImplicitUsings>

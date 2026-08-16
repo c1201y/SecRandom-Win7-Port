@@ -6,7 +6,7 @@ public sealed class ViewSession
 
     public ViewSession(string viewId, ViewBase view, IViewHost host, ViewPresentation presentation)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(viewId);
+        PolyfillArgumentException.ThrowIfNullOrWhiteSpace(viewId, nameof(viewId));
         ArgumentNullException.ThrowIfNull(view);
         ArgumentNullException.ThrowIfNull(host);
 

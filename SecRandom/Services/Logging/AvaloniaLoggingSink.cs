@@ -10,16 +10,18 @@ public class AvaloniaLoggingSink(LogEventLevel level) : ILogSink
 {
     private LogEventLevel Level { get; } = level;
 
+    private ILogger<AvaloniaLoggingSink>? _logger;
+
     private ILogger<AvaloniaLoggingSink>? Logger
     {
         get
         {
-            if (field != null)
+            if (_logger != null)
             {
-                return field;
+                return _logger;
             }
 
-            return field = IAppHost.TryGetService<ILogger<AvaloniaLoggingSink>>();
+            return _logger = IAppHost.TryGetService<ILogger<AvaloniaLoggingSink>>();
         }
     }
 

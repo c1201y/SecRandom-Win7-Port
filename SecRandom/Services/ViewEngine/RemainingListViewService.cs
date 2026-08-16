@@ -31,9 +31,9 @@ public sealed class RemainingListViewService(
         string emptyText,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(title);
+        PolyfillArgumentException.ThrowIfNullOrWhiteSpace(title, nameof(title));
         ArgumentNullException.ThrowIfNull(items);
-        ArgumentException.ThrowIfNullOrWhiteSpace(emptyText);
+        PolyfillArgumentException.ThrowIfNullOrWhiteSpace(emptyText, nameof(emptyText));
 
         await _gate.WaitAsync(cancellationToken).ConfigureAwait(true);
         try

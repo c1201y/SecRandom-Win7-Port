@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -52,7 +52,7 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
         _navigationFrame = this.FindControl<ViewFrame>("NavigationFrame");
         _navigationView = this.FindControl<NavigationView>("NavigationView");
 
-        _navigationFrame?.NavigationPageFactory = this;
+        if (_navigationFrame != null) _navigationFrame.NavigationPageFactory = this;
         BuildNavigationMenuItems();
         SelectNavigationItemById(DefaultMainPageId);
         Closed += (_, _) =>
@@ -105,8 +105,8 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
 
         var page = IAppHost.Host!.Services.GetKeyedService<UserControl>(info.Id);
         if (page == null)
-            // 如果页面未注册，返回一个占位符控件
-            return new TextBlock { Text = $"页面 {info.Id} 未找到" };
+            // ���ҳ��δע�ᣬ����һ��ռλ���ؼ�
+            return new TextBlock { Text = $"ҳ�� {info.Id} δ�ҵ�" };
 
         return page;
     }
@@ -202,7 +202,7 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
         }
         else
         {
-            _navigationView?.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
+            if (_navigationView != null) _navigationView.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
             ViewModel.IsNavPaneToggleButtonVisible = true;
         }
     }
@@ -277,7 +277,7 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
 
     private void TogglePaneButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        _navigationView?.IsPaneOpen = !_navigationView.IsPaneOpen;
+        if (_navigationView != null) _navigationView.IsPaneOpen = !_navigationView.IsPaneOpen;
     }
 
     private void InitializeComponent()

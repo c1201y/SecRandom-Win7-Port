@@ -53,9 +53,13 @@ public static class WindowsTouchKeyboardIntegration
         if (e.Pointer.Type != PointerType.Touch)
             return;
 
-        var handle = TopLevel.GetTopLevel(textBox)?.TryGetPlatformHandle()?.Handle ?? nint.Zero;
-        if (handle != nint.Zero)
-            Toggle(handle);
+        var platformHandle = TopLevel.GetTopLevel(textBox)?.TryGetPlatformHandle();
+        if (platformHandle != null)
+        {
+            var handle = platformHandle.Handle;
+            if (handle != IntPtr.Zero)
+                Toggle(handle);
+        }
     }
 
     private static void InputPane_OnStateChanged(object? sender, InputPaneStateEventArgs e)

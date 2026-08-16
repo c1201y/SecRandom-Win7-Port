@@ -680,10 +680,10 @@ public partial class FloatingWindow : Window
         var glyph = _isDockedOnLeft ? ">" : "<";
         DockButton.Content = style switch
         {
-            0 => new FluentIcon(FluentIcons.PeopleFilled, size * 0.62),
+            0 => new FluentIcon("", size * 0.62),
             1 => new TextBlock
             {
-                Text = "抽",
+                Text = glyph,
                 FontSize = Math.Max(12, size * 0.42),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center

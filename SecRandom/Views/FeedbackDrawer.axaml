@@ -20,7 +20,7 @@
                     ToolTip.Tip="{x:Static ls:Resources.C_Feedback_CloseTemporary}"
                     Click="CloseTemporarily_OnClick">
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <sr:FluentIcon Glyph="{sr:Fi DismissFilled}" />
+                    <sr:FluentIcon Glyph="&#xE670;" />
                     <TextBlock Text="{x:Static ls:Resources.C_Feedback_CloseTemporary}" />
                 </StackPanel>
             </Button>

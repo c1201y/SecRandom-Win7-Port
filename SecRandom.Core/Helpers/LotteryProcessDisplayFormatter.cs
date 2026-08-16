@@ -3,12 +3,11 @@ using SecRandom.Core.Enums.Configs;
 
 namespace SecRandom.Core.Helpers;
 
-public static partial class LotteryProcessDisplayFormatter
+public static class LotteryProcessDisplayFormatter
 {
     public const string DefaultTemplate = "{id} {prize}{/}{group}-{member}";
 
-    [GeneratedRegex(" {2,}")]
-    private static partial Regex ConsecutiveSpaces();
+    private static readonly Regex ConsecutiveSpacesRegex = new Regex(" {2,}", RegexOptions.Compiled);
 
     public static string NormalizeTemplate(string? template)
     {
@@ -18,7 +17,7 @@ public static partial class LotteryProcessDisplayFormatter
             .Replace("\n", "{/}", StringComparison.Ordinal)
             .Replace("\t", " ", StringComparison.Ordinal);
 
-        return ConsecutiveSpaces().Replace(normalized, " ");
+        return ConsecutiveSpacesRegex.Replace(normalized, " ");
     }
 
     public static string ResolveTemplate(LotteryShowRandomMode mode, string? customTemplate)

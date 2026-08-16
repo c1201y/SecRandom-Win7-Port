@@ -19,8 +19,9 @@ public sealed class OpenCvRosterQrCameraCapture : IRosterQrCameraCapture
 
     public OpenCvRosterQrCameraCapture(VideoCaptureAPIs captureApi, string cameraApiName, int cameraIndex)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(cameraApiName);
-        ArgumentOutOfRangeException.ThrowIfNegative(cameraIndex);
+        PolyfillArgumentException.ThrowIfNullOrWhiteSpace(cameraApiName, nameof(cameraApiName));
+        if (cameraIndex < 0)
+            throw new ArgumentOutOfRangeException(nameof(cameraIndex), cameraIndex, "Camera index must not be negative.");
         _cameraApiName = cameraApiName;
         _cameraIndex = cameraIndex;
         _capture = new VideoCapture(cameraIndex, captureApi);

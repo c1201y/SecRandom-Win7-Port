@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -150,7 +150,7 @@ public partial class LogViewerSettingsPage : UserControl, INotifyPropertyChanged
     private void OpenFolderButton_OnClick(object? sender, RoutedEventArgs e)
     {
         OpenPath(FileLoggerProvider.LogDirectory);
-        _logger.LogInformation("已请求打开日志目录：路径={Path}。", FileLoggerProvider.LogDirectory);
+        _logger.LogInformation("���������־Ŀ¼��·��={Path}��", FileLoggerProvider.LogDirectory);
     }
 
     private async void CopyButton_OnClick(object? sender, RoutedEventArgs e)
@@ -164,7 +164,7 @@ public partial class LogViewerSettingsPage : UserControl, INotifyPropertyChanged
 
         await clipboard.SetTextAsync(SelectedEntry.FullText);
         this.ShowSuccessToast(LR.M_Copied);
-        _logger.LogInformation("已复制日志条目。");
+        _logger.LogInformation("�Ѹ�����־��Ŀ��");
     }
 
     private async void DeleteButton_OnClick(object? sender, RoutedEventArgs e)
@@ -178,13 +178,13 @@ public partial class LogViewerSettingsPage : UserControl, INotifyPropertyChanged
         try
         {
             File.Delete(file.FilePath);
-            _logger.LogInformation("已删除日志文件：文件={FileName}。", file.FileName);
+            _logger.LogInformation("��ɾ����־�ļ����ļ�={FileName}��", file.FileName);
             this.ShowSuccessToast(string.Format(CultureInfo.CurrentCulture, LR.M_DeleteSuccess, file.FileName));
             RefreshLogFiles();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "删除日志文件失败：文件={FileName}。", file.FileName);
+            _logger.LogError(ex, "ɾ����־�ļ�ʧ�ܣ��ļ�={FileName}��", file.FileName);
             this.ShowErrorToast(string.Format(CultureInfo.CurrentCulture, LR.M_DeleteFailed, ex.Message));
         }
     }
@@ -213,7 +213,7 @@ public partial class LogViewerSettingsPage : UserControl, INotifyPropertyChanged
             ApplyFilter();
         }
 
-        _logger.LogInformation("已刷新日志文件列表：文件数量={Count}。", LogFiles.Count);
+        _logger.LogInformation("��ˢ����־�ļ��б����ļ�����={Count}��", LogFiles.Count);
     }
 
     private async Task LoadSelectedLogFileAsync()
@@ -239,12 +239,12 @@ public partial class LogViewerSettingsPage : UserControl, INotifyPropertyChanged
                 LR.C_FileInfo,
                 file.SizeText,
                 file.LastWriteTime.ToString("G", CultureInfo.CurrentCulture));
-            _logger.LogInformation("已加载日志文件：文件={FileName}，读取行数={LineCount}，解析条目={EntryCount}。",
+            _logger.LogInformation("�Ѽ�����־�ļ����ļ�={FileName}����ȡ����={LineCount}��������Ŀ={EntryCount}��",
                 file.FileName, lines.Count, _entries.Count);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "加载日志文件失败：文件={FileName}。", file.FileName);
+            _logger.LogError(ex, "������־�ļ�ʧ�ܣ��ļ�={FileName}��", file.FileName);
             this.ShowErrorToast(string.Format(CultureInfo.CurrentCulture, LR.M_LoadFailed, ex.Message));
         }
 
@@ -335,7 +335,7 @@ public partial class LogViewerSettingsPage : UserControl, INotifyPropertyChanged
     {
         entry = default!;
         var parts = line.Split('|', 4);
-        if (parts.Length < 4 || !DateTime.TryParse(parts[0], CultureInfo.CurrentCulture, out var time))
+        if (parts.Length < 4 || !DateTime.TryParse(parts[0], CultureInfo.CurrentCulture, DateTimeStyles.None, out var time))
             return false;
 
         entry = new LogEntryBuilder(time, parts[1], parts[2], parts[3]);

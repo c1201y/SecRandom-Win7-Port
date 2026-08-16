@@ -9,8 +9,10 @@ namespace SecRandom.Core.Behaviors;
 
 public class ToggleTabStripBehavior : Behavior<TabStrip>
 {
-    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "get_PseudoClasses")]
-    private static extern IPseudoClasses GetPseudoClasses(StyledElement element);
+    private static IPseudoClasses GetPseudoClasses(StyledElement element)
+    {
+        return element.GetType().GetProperty("PseudoClasses")?.GetValue(element) as IPseudoClasses;
+    }
 
     protected override void OnAttached()
     {

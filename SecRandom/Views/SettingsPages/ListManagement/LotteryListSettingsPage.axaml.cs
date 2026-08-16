@@ -193,7 +193,7 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
 
         SaveSelectedPrizeList();
         OnPropertyChanged(nameof(SelectedPrizeList));
-        _logger.LogInformation("已删除奖品池条目：奖品池={ListName}，记录={RecordId}。", SelectedPrizeListName, prize.RecordId);
+        _logger.LogInformation("已删除奖品池条目：奖品池={ListName}，记录={RecordId}", SelectedPrizeListName, prize.RecordId);
         this.ShowSuccessToast(string.Format(LR.M_DeletePrizeSuccess, displayName));
     }
 
@@ -214,7 +214,7 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
         SaveSelectedPrizeList();
         _catalogManager.CreatePrizeList(listName);
         RefreshPrizeLists(listName);
-        _logger.LogInformation("已创建奖品池：奖品池={ListName}。", listName);
+        _logger.LogInformation("已创建奖品池：奖品池={ListName}", listName);
         this.ShowSuccessToast(string.Format(LR.M_AddListSuccess, listName));
     }
 
@@ -242,7 +242,7 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
         var nextName = PrizeListNames.FirstOrDefault(name => name != deleteName) ?? string.Empty;
         RefreshPrizeLists(nextName);
 
-        _logger.LogInformation("已删除奖品池：奖品池={ListName}。", deleteName);
+        _logger.LogInformation("已删除奖品池：奖品池={ListName}", deleteName);
         this.ShowSuccessToast(string.Format(LR.M_DeleteListSuccess, deleteName));
     }
 
@@ -265,7 +265,7 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
 
         SelectedPrizeList = null;
         RefreshPrizeLists(newName);
-        _logger.LogInformation("已重命名奖品池：旧奖品池={OldListName}，新奖品池={NewListName}。", oldName, newName);
+        _logger.LogInformation("已重命名奖品池：旧奖品池={OldListName}，新奖品池={NewListName}", oldName, newName);
         this.ShowSuccessToast(string.Format(LR.M_RenameListSuccess, newName));
     }
 
@@ -279,7 +279,7 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
 
         var view = new LotteryListImportView(SelectedPrizeListName, OnPrizesImported);
         SettingsView.Current?.OpenDrawer(view);
-        _logger.LogInformation("打开奖品池导入面板：目标奖品池={ListName}。", SelectedPrizeListName);
+        _logger.LogInformation("打开奖品池导入面板：目标奖品池={ListName}", SelectedPrizeListName);
     }
 
     private void ExportButton_OnClick(object? sender, RoutedEventArgs e)
@@ -292,7 +292,7 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
 
         SettingsView.Current?.OpenDrawer(new LotteryListExportView(SelectedPrizeListName,
             SelectedPrizeList.Prizes.ToList()));
-        _logger.LogInformation("打开奖品池导出面板：奖品池={ListName}，奖品数={Count}。", SelectedPrizeListName,
+        _logger.LogInformation("打开奖品池导出面板：奖品池={ListName}，奖品数={Count}", SelectedPrizeListName,
             SelectedPrizeList.Prizes.Count);
     }
 
@@ -359,7 +359,7 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
         });
         SaveSelectedPrizeList();
         OnPropertyChanged(nameof(SelectedPrizeList));
-        _logger.LogInformation("已向奖品池新增奖品：奖品池={ListName}，当前奖品数={Count}。", SelectedPrizeListName,
+        _logger.LogInformation("已向奖品池新增奖品：奖品池={ListName}，当前奖品数={Count}", SelectedPrizeListName,
             SelectedPrizeList.Prizes.Count);
         this.ShowSuccessToast(LR.M_AddPrizeSuccess);
     }
@@ -489,7 +489,7 @@ public partial class LotteryListSettingsPage : UserControl, INotifyPropertyChang
         SelectedPrizeList = _catalogManager.LoadPrizeList(SelectedPrizeListName);
         OnPropertyChanged(nameof(SelectedPrizeList));
         SettingsView.Current?.CloseDrawer();
-        _logger.LogInformation("已导入奖品池：目标奖品池={ListName}，导入数量={Count}。", SelectedPrizeListName, prizes.Count);
+        _logger.LogInformation("已导入奖品池：目标奖品池={ListName}，导入数={Count}", SelectedPrizeListName, prizes.Count);
         this.ShowSuccessToast(string.Format(LR.M_ImportSuccess, prizes.Count, SelectedPrizeListName));
     }
 

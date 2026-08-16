@@ -5,9 +5,9 @@ namespace SecRandom.Core.Enums.Configs;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ThemeMode
 {
-    [JsonStringEnumMemberName("LIGHT")] Light,
+    [JsonPropertyName("LIGHT")] Light,
 
-    [JsonStringEnumMemberName("DARK")] Dark,
+    [JsonPropertyName("DARK")] Dark,
 
-    [JsonStringEnumMemberName("AUTO")] Auto
+    [JsonPropertyName("AUTO")] Auto
 }

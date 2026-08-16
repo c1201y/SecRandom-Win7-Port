@@ -15,6 +15,8 @@ public class FluentIconSource : FontIconSource
     public FluentIconSource(string glyph) : this()
     {
         Glyph = glyph;
+        FontFamily = GlobalConstants.FluentIconsFontFamily;
+        FontSize = 16;
     }
 
     public FluentIconSource ProvideValue()

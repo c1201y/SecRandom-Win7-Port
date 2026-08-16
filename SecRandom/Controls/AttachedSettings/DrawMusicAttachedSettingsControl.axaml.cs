@@ -12,7 +12,7 @@ using SecRandom.Services.Music;
 namespace SecRandom.Controls.AttachedSettings;
 
 [AttachedSettingsUsage(AttachedSettingsTargets.Student | AttachedSettingsTargets.Prize)]
-[AttachedSettingsControlInfo(GlobalConstants.DrawMusicAttachedSettings, FluentIcons.Speaker2Filled)]
+[AttachedSettingsControlInfo(GlobalConstants.DrawMusicAttachedSettings, "")]
 public partial class DrawMusicAttachedSettingsControl :
     AttachedSettingsControlBase<DrawMusicAttachedSettings>,
     INotifyPropertyChanged

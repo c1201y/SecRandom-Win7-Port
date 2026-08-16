@@ -159,7 +159,7 @@ public abstract class NotificationChannelSettingsPageBase : UserControl, INotify
     {
         if (e.PropertyName is nameof(NotificationChannelSettings.Enabled)
             or nameof(NotificationChannelSettings.Animation))
-            OverrideSettings?.OverrideBasicSettings = true;
+            if (OverrideSettings != null) OverrideSettings.OverrideBasicSettings = true;
 
         if (e.PropertyName == nameof(NotificationChannelSettings.EnabledMonitor))
             NotifyPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedMonitor)));

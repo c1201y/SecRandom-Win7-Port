@@ -22,8 +22,8 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
                                                 WindowFeatures.SkipTaskSwitcher |
                                                 WindowFeatures.NoActivate |
                                                 WindowFeatures.ClickThrough;
-    private static readonly nint HwndTopmost = new(-1);
-    private static readonly nint HwndNotopmost = new(-2);
+    private static readonly nint HwndTopmost = -1;
+    private static readonly nint HwndNotopmost = -2;
     private const uint LwaAlpha = 0x00000002;
     private readonly ConcurrentDictionary<nint, WindowFeatures> _enabledFeatures = [];
 
@@ -50,7 +50,7 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
         try
         {
             Marshal.SetLastPInvokeError(0);
-            var style = GetWindowLongPtr(window, GwlExStyle).ToInt64();
+            var style = (long)GetWindowLongPtr(window, GwlExStyle);
             if (style == 0 && Marshal.GetLastWin32Error() != 0)
             {
                 failure = $"GetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
@@ -61,13 +61,13 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
             {
                 Marshal.SetLastPInvokeError(0);
                 var previous = SetWindowLongPtr(window, GwlExStyle, new IntPtr(style | WsExLayered));
-                if (previous == nint.Zero && Marshal.GetLastWin32Error() != 0)
+                if (previous == 0 && Marshal.GetLastWin32Error() != 0)
                 {
                     failure = $"SetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
                     return false;
                 }
 
-                SetWindowPos(window, nint.Zero, 0, 0, 0, 0,
+                SetWindowPos(window, 0, 0, 0, 0, 0,
                     SwpNoMove | SwpNoSize | SwpNoActivate | SwpFrameChanged);
             }
 
@@ -214,7 +214,7 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
         try
         {
             Marshal.SetLastPInvokeError(0);
-            var style = GetWindowLongPtr(window, GwlExStyle).ToInt64();
+            var style = (long)GetWindowLongPtr(window, GwlExStyle);
             if (style == 0 && Marshal.GetLastWin32Error() != 0)
             {
                 failure = $"GetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
@@ -237,14 +237,14 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
             {
                 Marshal.SetLastPInvokeError(0);
                 var previous = SetWindowLongPtr(window, GwlExStyle, new IntPtr(updated));
-                if (previous == nint.Zero && Marshal.GetLastWin32Error() != 0)
+                if (previous == 0 && Marshal.GetLastWin32Error() != 0)
                 {
                     failure = $"SetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
                     return false;
                 }
             }
 
-            if (SetWindowPos(window, nint.Zero, 0, 0, 0, 0,
+            if (SetWindowPos(window, 0, 0, 0, 0, 0,
                     SwpNoMove | SwpNoSize | SwpNoActivate | SwpFrameChanged))
             {
                 failure = null;

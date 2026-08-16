@@ -309,7 +309,7 @@ public sealed class GlobalShortcutService : IHostedService
 
     private static bool TryMapVirtualKey(string key, out uint virtualKey)
     {
-        if (key.Length == 1 && char.IsAsciiLetterOrDigit(key[0]))
+        if (key.Length == 1 && char.IsLetterOrDigit(key[0]))
         {
             virtualKey = char.ToUpperInvariant(key[0]);
             return true;

@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sr="http://secrandom.sectl.cn/schemas/xaml/core"
                     xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia">
@@ -160,7 +160,7 @@
                                                         CornerRadius="0"
                                                         Command="{Binding $parent[sr:MultiComboBox].RemoveCommand}"
                                                         CommandParameter="{Binding}">
-                                                        <sr:FluentIcon Glyph="{sr:Fi DismissFilled}" FontSize="12" />
+                                                        <sr:FluentIcon Glyph="&#xE670;" FontSize="12" />
                                                     </Button>
                                                 </Grid>
                                             </Border>
@@ -329,7 +329,7 @@
                                 BorderBrush="{DynamicResource CheckBoxCheckBackgroundStrokeUnchecked}"
                                 BorderThickness="1">
                             <sr:FluentIcon x:Name="CheckGlyph"
-                                           Glyph="{sr:Fi CheckmarkFilled}"
+                                           Glyph="&#xE423;"
                                            FontSize="10"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"

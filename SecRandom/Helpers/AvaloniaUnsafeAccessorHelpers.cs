@@ -18,12 +18,53 @@ internal static class AvaloniaUnsafeAccessorHelpers
 
     private static IAvaloniaDependencyResolver? AvaloniaLocator { get; } = GetCurrentAvaloniaLocator(null);
 
-    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "get_Current")]
-    private static extern IAvaloniaDependencyResolver? GetCurrentAvaloniaLocator(AvaloniaLocator? nullLocator);
+    private static IAvaloniaDependencyResolver? GetCurrentAvaloniaLocator(AvaloniaLocator? nullLocator)
+    {
+        try
+        {
+            var type = Type.GetType("Avalonia.Threading.Dispatcher, Avalonia");
+            if (type != null)
+            {
+                var method = type.GetMethod("Current", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+                if (method != null)
+                {
+                    var dispatcher = method.Invoke(null, null);
+                    if (dispatcher != null)
+                    {
+                        var locatorProperty = dispatcher.GetType().GetProperty("Locator", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                        if (locatorProperty != null)
+                        {
+                            return locatorProperty.GetValue(dispatcher) as IAvaloniaDependencyResolver;
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+        }
+        return null;
+    }
 
-    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "GetService")]
-    private static extern object? GetAvaloniaDependencyService(IAvaloniaDependencyResolver? avaloniaLocator,
-        Type serviceType);
+    private static object? GetAvaloniaDependencyService(IAvaloniaDependencyResolver? avaloniaLocator,
+        Type serviceType)
+    {
+        try
+        {
+            if (avaloniaLocator != null)
+            {
+                var method = avaloniaLocator.GetType().GetMethod("GetService", new[] { typeof(Type) });
+                if (method != null)
+                {
+                    return method.Invoke(avaloniaLocator, new object[] { serviceType });
+                }
+            }
+        }
+        catch
+        {
+        }
+        return null;
+    }
 
     internal static T? GetAvaloniaLocatorService<T>()
         where T : class

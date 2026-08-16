@@ -9,7 +9,7 @@ using SecRandom.Core.Models.AttachedSettings;
 namespace SecRandom.Controls.AttachedSettings;
 
 [AttachedSettingsUsage(AttachedSettingsTargets.Student | AttachedSettingsTargets.Prize)]
-[AttachedSettingsControlInfo(GlobalConstants.SpecificAnnouncementAttachedSettings, FluentIcons.IotFilled)]
+[AttachedSettingsControlInfo(GlobalConstants.SpecificAnnouncementAttachedSettings, "")]
 public partial class SpecificAnnouncementAttachedSettingsControl :
     AttachedSettingsControlBase<SpecificAnnouncementAttachedSettings>,
     INotifyPropertyChanged

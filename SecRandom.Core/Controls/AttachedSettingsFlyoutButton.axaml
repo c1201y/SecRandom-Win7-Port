@@ -22,7 +22,7 @@
         </ControlTheme>
     </Button.Resources>
 
-    <sr:FluentIcon Glyph="{sr:Fi SettingsCogMultipleFilled}" />
+    <sr:FluentIcon Glyph="&#xEF2A;" />
 
     <Button.Flyout>
         <Flyout FlyoutPresenterTheme="{StaticResource AttachedSettingsFlyoutPresenterTheme}">
@@ -31,7 +31,7 @@
                     CornerRadius="6"
                     Padding="12">
                 <StackPanel Spacing="8">
-                    <sr:IconText Glyph="{sr:Fi SettingsCogMultipleFilled}"
+                    <sr:IconText Glyph="&#xEF2A;"
                                  Text="{x:Static lr:Resources.C_AttachedSettings}" />
 
                     <ItemsControl x:Name="AttachedSettingsItemsControl" />

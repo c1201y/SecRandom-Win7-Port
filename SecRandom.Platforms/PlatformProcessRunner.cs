@@ -14,7 +14,7 @@ internal static class PlatformProcessRunner
                 return false;
 
             using var timeoutCts = new CancellationTokenSource(timeout);
-            var outputTask = process.StandardOutput.ReadToEndAsync(timeoutCts.Token);
+            var outputTask = process.StandardOutput.ReadToEndAsync();
             try
             {
                 process.WaitForExitAsync(timeoutCts.Token).GetAwaiter().GetResult();

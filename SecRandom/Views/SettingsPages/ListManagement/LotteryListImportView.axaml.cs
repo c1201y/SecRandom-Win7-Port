@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -287,7 +287,7 @@ public partial class LotteryListImportView : UserControl, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "加载奖品池导入文件失败：文件={FileName}。", file.Name);
+            _logger.LogWarning(ex, "���ؽ�Ʒ�ص����ļ�ʧ�ܣ��ļ�={FileName}��", file.Name);
             StatusText = string.Format(LR.M_LoadFailed, ex.Message);
             CanImport = false;
         }
@@ -323,7 +323,6 @@ public partial class LotteryListImportView : UserControl, INotifyPropertyChanged
         RebuildColumnOptions(rows.FirstOrDefault()?.Keys ?? Enumerable.Empty<string>());
         AutoMapColumns();
         RefreshPreview();
-        _logger.LogInformation("已加载奖品池导入文件：文件={FileName}，行数={RowCount}。", file.Name, rows.Count);
     }
 
     private static async Task<string> CopyToTemporaryFileAsync(IStorageFile file)
@@ -422,20 +421,14 @@ public partial class LotteryListImportView : UserControl, INotifyPropertyChanged
 
         if (duplicatedNames.Count > 0)
         {
-            _logger.LogWarning("奖品池导入发现重复名称：重复名称数量={DuplicateNameCount}，有效行数={Count}。",
+            _logger.LogWarning("��Ʒ�ص��뷢���ظ����ƣ��ظ���������={DuplicateNameCount}����Ч����={Count}��",
                 duplicatedNames.Count, prizes.Count);
             _ = ConfirmDuplicateNamesAsync(prizes, duplicatedNames);
         }
         else
         {
-            _logger.LogInformation("提交奖品池导入：有效行数={Count}。", prizes.Count);
             _importHandler(prizes);
         }
-    }
-
-    private async void FileImportButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        await OpenFileImportAsync();
     }
 
     private async Task SelectImportModeAsync(RosterImportMode mode)
@@ -851,15 +844,6 @@ public partial class LotteryListImportView : UserControl, INotifyPropertyChanged
 
         if (result == ContentDialogResult.Primary)
         {
-            _logger.LogInformation("奖品池导入保留重复名称：有效行数={Count}。", prizes.Count);
-            _importHandler(prizes);
-            return;
-        }
-
-        if (result == ContentDialogResult.Secondary)
-        {
-            RosterImportParser.RenameDuplicatedPrizes(prizes);
-            _logger.LogInformation("奖品池导入已自动处理重复名称：有效行数={Count}。", prizes.Count);
             _importHandler(prizes);
         }
     }

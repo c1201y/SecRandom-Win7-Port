@@ -265,16 +265,25 @@ public sealed class DesktopIntegrationService(
         File.WriteAllText(Path.Combine(contentsPath, "Info.plist"), CreateMacProtocolInfoPlist());
         var launcherPath = Path.Combine(macOsPath, "SecRandomUrlHandler");
         File.WriteAllText(launcherPath, CreateMacProtocolLauncher());
-        File.SetUnixFileMode(launcherPath,
-            UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
-            UnixFileMode.GroupRead | UnixFileMode.GroupExecute |
-            UnixFileMode.OtherRead | UnixFileMode.OtherExecute);
+        SetUnixFileMode(launcherPath, "755");
 
         if (!RunCommand(GetMacLsRegisterPath(), ["-f", bundlePath], allowFailure: true))
         {
             DeleteDirectoryIfExists(bundlePath);
             throw new InvalidOperationException("LaunchServices could not register the secrandom URL handler.");
         }
+    }
+
+    private static void SetUnixFileMode(string filePath, string mode)
+    {
+        var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("chmod", $"{mode} \"{filePath}\"")
+        {
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        });
+        process?.WaitForExit();
     }
 
     private static IReadOnlyList<string> GetLaunchArguments(IEnumerable<string> arguments)

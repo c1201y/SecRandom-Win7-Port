@@ -4,12 +4,20 @@ using SecRandom.Shared.Interfaces;
 
 namespace SecRandom.Shared.Extensions;
 
+internal sealed class SnakeCaseNamingPolicy : JsonNamingPolicy
+{
+    public override string ConvertName(string name)
+    {
+        return string.Concat(name.Select((c, i) => i > 0 && char.IsUpper(c) ? "_" + c : c.ToString())).ToLower();
+    }
+}
+
 public static class AttachableSettingsObjectExtensions
 {
     private static readonly JsonSerializerOptions AttachedSettingsJsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+        PropertyNamingPolicy = new SnakeCaseNamingPolicy()
     };
 
     [UnconditionalSuppressMessage(

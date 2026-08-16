@@ -184,7 +184,7 @@ internal sealed class SecurityCredentialStore
         var associatedData = CreateAssociatedData(metadata);
         try
         {
-            using var aes = new AesGcm(context.EncryptionKey, TagLength);
+            using var aes = new AesGcm(context.EncryptionKey);
             aes.Encrypt(nonce, payload, ciphertext, tag, associatedData);
         }
         finally
@@ -229,7 +229,7 @@ internal sealed class SecurityCredentialStore
         var plaintext = new byte[ciphertext.Length];
         try
         {
-            using var aes = new AesGcm(encryptionKey, TagLength);
+            using var aes = new AesGcm(encryptionKey);
             aes.Decrypt(nonce, ciphertext, tag, plaintext, CreateAssociatedData(metadata));
             var secrets = JsonSerializer.Deserialize<SecurityCredentialSecrets>(plaintext, _jsonOptions) ??
                           throw new CryptographicException("Security credential payload is invalid.");

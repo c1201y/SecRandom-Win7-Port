@@ -36,7 +36,7 @@
 
             <StackPanel x:Name="UnsupportedUpdateSurface"
                         Spacing="8" IsVisible="False">
-                <sr:FluentIcon Glyph="{sr:Fi InfoFilled}"
+                <sr:FluentIcon Glyph="&#xE9E3;"
                                FontSize="48"
                                HorizontalAlignment="Center" />
                 <TextBlock Text="{x:Static langs:Resources.M_InAppUpdateUnsupported}"

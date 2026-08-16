@@ -34,7 +34,7 @@ internal static class UiAccessStartup
     private const int SecurityImpersonation = 2;
     private const int TokenPrimary = 1;
     private const int TokenImpersonation = 2;
-    private static readonly nint InvalidHandleValue = new(-1);
+    private static readonly nint InvalidHandleValue = (nint)(-1);
     private static readonly string DiagnosticPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "SecRandom",
@@ -229,7 +229,7 @@ internal static class UiAccessStartup
             }
 
             using var winlogonToken = TryDuplicateWinlogonToken(sessionId);
-            if (winlogonToken is null || !SetThreadToken(nint.Zero, winlogonToken))
+            if (winlogonToken is null || !SetThreadToken((nint)0, winlogonToken))
             {
                 WriteDiagnostic($"Unable to impersonate same-session winlogon: {Marshal.GetLastWin32Error()}.");
                 return false;
@@ -240,7 +240,7 @@ internal static class UiAccessStartup
                 if (!DuplicateTokenEx(
                         currentToken,
                         TokenQuery | TokenDuplicate | TokenAssignPrimary | TokenAdjustDefault,
-                        nint.Zero,
+                        (nint)0,
                         SecurityAnonymous,
                         TokenPrimary,
                         out var token))
@@ -273,7 +273,7 @@ internal static class UiAccessStartup
             return null;
 
         var snapshot = CreateToolhelp32Snapshot(0x00000002, 0);
-        if (snapshot == nint.Zero || snapshot == InvalidHandleValue)
+        if (snapshot == (nint)0 || snapshot == InvalidHandleValue)
             return null;
 
         try
@@ -288,7 +288,7 @@ internal static class UiAccessStartup
                     continue;
 
                 var process = OpenProcess(ProcessQueryLimitedInformation, false, entry.ProcessId);
-                if (process == nint.Zero)
+                if (process == (nint)0)
                     continue;
 
                 try
@@ -313,7 +313,7 @@ internal static class UiAccessStartup
                         if (DuplicateTokenEx(
                                 processToken,
                                 TokenImpersonate,
-                                nint.Zero,
+                                (nint)0,
                                 SecurityImpersonation,
                                 TokenImpersonation,
                                 out var duplicatedToken))
@@ -352,11 +352,11 @@ internal static class UiAccessStartup
                 token,
                 null,
                 commandLine,
-                nint.Zero,
-                nint.Zero,
+                (nint)0,
+                (nint)0,
                 false,
                 0,
-                nint.Zero,
+                (nint)0,
                 null,
                 ref startupInfo,
                 out var processInformation))

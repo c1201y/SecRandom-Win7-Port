@@ -136,10 +136,10 @@ public sealed class SingleInstanceService : IDisposable
             await using var writer = new StreamWriter(client, StrictUtf8, leaveOpen: true);
             using var reader = new StreamReader(client, StrictUtf8, detectEncodingFromByteOrderMarks: false, leaveOpen: true);
             await writer.WriteLineAsync(JsonSerializer.Serialize(request, IpcJsonOptions)).ConfigureAwait(false);
-            await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
+            await writer.FlushAsync().ConfigureAwait(false);
             using var responseCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             responseCts.CancelAfter(ResponseReadTimeout);
-            var responseLine = await reader.ReadLineAsync(responseCts.Token).ConfigureAwait(false);
+            var responseLine = await reader.ReadLineAsync().ConfigureAwait(false);
             var response = string.IsNullOrWhiteSpace(responseLine)
                 ? null
                 : JsonSerializer.Deserialize<IpcResponseEnvelope>(responseLine, IpcJsonOptions);

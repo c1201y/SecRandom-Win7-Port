@@ -83,7 +83,7 @@ public sealed partial class CrashRecoveryView : ViewBase, INotifyPropertyChanged
             _isFeedbackDrawerOpen = value;
             OnPropertyChanged();
 
-            // 反馈抽屉打开时暂停自动重启倒计时，关闭后从剩余秒数继续。
+            // 反馈抽屉打开时暂停自动重启倒计时，关闭后从剩余秒数继续�?
             if (value)
             {
                 if (_restartTimer?.IsEnabled == true)

@@ -3,7 +3,8 @@
         <OutputType>Exe</OutputType>
         <!--If you are willing to use platform-specific APIs, use conditional compilation.
         See https://docs.avaloniaui.net/docs/guides/platforms/platform-specific-code/dotnet for more details.-->
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <EnableGitInfoGenerator>true</EnableGitInfoGenerator>
@@ -14,7 +15,7 @@
 
     <!-- CameraView ships the Windows provider only for the Windows TFM. -->
     <PropertyGroup Condition="'$(SecRandomPlatform)' == 'Windows'">
-        <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+        <TargetFramework>net6.0-windows7.0</TargetFramework>
     </PropertyGroup>
     
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">

@@ -10,7 +10,7 @@ using SecRandom.Core.Models.AttachedSettings;
 namespace SecRandom.Controls.AttachedSettings;
 
 [AttachedSettingsUsage(AttachedSettingsTargets.Student | AttachedSettingsTargets.Prize)]
-[AttachedSettingsControlInfo(GlobalConstants.BehindSceneAttachedSettings, FluentIcons.BookNumberFilled)]
+[AttachedSettingsControlInfo(GlobalConstants.BehindSceneAttachedSettings, "")]
 public partial class BehindSceneAttachedSettingsControl : AttachedSettingsControlBase<BehindSceneAttachedSettings>,
     INotifyPropertyChanged
 {

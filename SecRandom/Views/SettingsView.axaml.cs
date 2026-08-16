@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -131,7 +131,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
 
         if (metadata.ToString().StartsWith(search, mode)) return true;
 
-        // 按名称搜素
+        // ����������
         return metadata.PageName.Contains(search, mode) ||
                metadata.CategoryName.Contains(search, mode) ||
                metadata.Name.Contains(search, mode) ||
@@ -172,7 +172,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
     {
         if (settings == null) return;
 
-        _logger?.LogInformation("跳转到设置 [{PageId}] {Id}", settings.PageId, settings.Id);
+        _logger?.LogInformation("��ת������ [{PageId}] {Id}", settings.PageId, settings.Id);
         SelectNavigationItemById(settings.PageId);
         ClearSearch();
 
@@ -181,13 +181,13 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
         Control? pageRoot = NavigationFrame.Content as Control;
 
         var settingsControl = FindSettingsControl(pageRoot, settings.ControlId);
-            _logger?.LogInformation("设置控件: {Control}", settingsControl);
+            _logger?.LogInformation("���ÿؼ�: {Control}", settingsControl);
 
         Control? categoryControl = null;
         if (!settings.IsCategory)
         {
             categoryControl = FindSettingsControl(pageRoot, settings.CategoryControlId);
-            _logger?.LogInformation("分类控件: {Control}", categoryControl);
+            _logger?.LogInformation("����ؼ�: {Control}", categoryControl);
 
             if (categoryControl is SettingsExpander settingsExpander) settingsExpander.IsExpanded = true;
         }
@@ -484,7 +484,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "导出诊断数据失败。");
+            _logger?.LogError(ex, "�����������ʧ�ܡ�");
             this.ShowErrorToast(GetResource("M_ExportFailed"));
         }
     }
@@ -508,7 +508,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "导出设置失败。");
+            _logger?.LogError(ex, "��������ʧ�ܡ�");
             this.ShowErrorToast(GetResource("M_ExportFailed"));
         }
     }
@@ -681,7 +681,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "导入设置失败。");
+            _logger?.LogError(ex, "��������ʧ�ܡ�");
             await ShowImportFailureAsync(ex);
         }
     }
@@ -705,7 +705,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "导出全部数据失败。");
+            _logger?.LogError(ex, "����ȫ������ʧ�ܡ�");
             this.ShowErrorToast(GetResource("M_ExportFailed"));
         }
     }
@@ -737,7 +737,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "导入全部数据失败。");
+            _logger?.LogError(ex, "����ȫ������ʧ�ܡ�");
             await ShowImportFailureAsync(ex);
         }
     }
@@ -837,7 +837,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
     private static string BuildImportConfirmation(string content, ImportInspection inspection)
     {
         var warningText = inspection.Warnings.Count == 0 ? string.Empty : $"\n\n{string.Join(Environment.NewLine, inspection.Warnings)}";
-        return $"{content}\n\n来源版本：{inspection.ProducerVersion}\n将处理 {inspection.FileCount} 个文件。导入前会自动创建恢复快照，快照失败将取消导入。安全凭据不会导入。{warningText}";
+        return $"{content}\n\n��Դ�汾��{inspection.ProducerVersion}\n������ {inspection.FileCount} ���ļ�������ǰ���Զ������ָ����գ�����ʧ�ܽ�ȡ�����롣��ȫƾ�ݲ��ᵼ�롣{warningText}";
     }
 
     private bool CanTransferData()
@@ -1073,7 +1073,7 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
 
         var page = IAppHost.Host!.Services.GetKeyedService<UserControl>(info.Id);
         if (page == null)
-            // 如果页面未注册，返回一个占位符控件
+            // ���ҳ��δע�ᣬ����һ��ռλ���ؼ�
             return new TextBlock { Text = string.Format(Langs.SettingsView.Resources.M_PageNotFound, info.Id) };
 
         return page;

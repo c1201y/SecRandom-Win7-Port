@@ -5,9 +5,9 @@ namespace SecRandom.Core.Enums.Configs;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum LanguageMode
 {
-    [JsonStringEnumMemberName("简体中文")] ChineseSimplified,
+    [JsonPropertyName("简体中文")] ChineseSimplified,
 
-    [JsonStringEnumMemberName("English")] English,
+    [JsonPropertyName("English")] English,
 
-    [JsonStringEnumMemberName("日本語")] Japanese
+    [JsonPropertyName("日本語")] Japanese
 }

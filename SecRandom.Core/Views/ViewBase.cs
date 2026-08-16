@@ -27,7 +27,7 @@ public abstract class ViewBase : ContentPage
 
     internal void Attach(string viewId, Func<ViewCloseRequest, CancellationToken, Task<ViewCloseResult>> closeHandler)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(viewId);
+        PolyfillArgumentException.ThrowIfNullOrWhiteSpace(viewId, nameof(viewId));
         ArgumentNullException.ThrowIfNull(closeHandler);
 
         if (_closeHandler is not null)

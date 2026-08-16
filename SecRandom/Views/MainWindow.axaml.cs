@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
@@ -39,7 +39,7 @@ public partial class MainWindow : AppWindow
         TitleBar.Height = 48;
         TitleBar.ExtendsContentIntoTitleBar = true;
 
-        // è¦†ç›–æ ‡é¢˜æ æŒ‰é’®é¢œè‰²
+        // ¸²¸Ç±êÌâÀ¸°´Å¥ÑÕÉ«
         TitleBar.ButtonHoverBackgroundColor = Color.FromArgb(23, 0, 0, 0);
         TitleBar.ButtonPressedBackgroundColor = Color.FromArgb(52, 0, 0, 0);
         TitleBar.ButtonInactiveForegroundColor = Colors.Gray;

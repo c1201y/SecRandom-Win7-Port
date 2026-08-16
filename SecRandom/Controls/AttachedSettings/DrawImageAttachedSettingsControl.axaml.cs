@@ -15,7 +15,7 @@ using SecRandom.Shared;
 namespace SecRandom.Controls.AttachedSettings;
 
 [AttachedSettingsUsage(AttachedSettingsTargets.Student | AttachedSettingsTargets.Prize)]
-[AttachedSettingsControlInfo(GlobalConstants.DrawImageAttachedSettings, FluentIcons.GlobeSearchFilled)]
+[AttachedSettingsControlInfo(GlobalConstants.DrawImageAttachedSettings, "")]
 public partial class DrawImageAttachedSettingsControl : AttachedSettingsControlBase<DrawImageAttachedSettings>,
     INotifyPropertyChanged
 {

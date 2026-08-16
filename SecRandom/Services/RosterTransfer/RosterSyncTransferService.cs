@@ -99,7 +99,7 @@ public sealed class RosterSyncTransferService(HttpClient httpClient)
             : Rfc2898DeriveBytes.Pbkdf2(keyMaterial, salt, Pbkdf2Iterations, HashAlgorithmName.SHA256, 32);
         var ciphertext = new byte[archive.Length];
         var tag = new byte[16];
-        using (var aes = new AesGcm(key, tag.Length))
+        using (var aes = new AesGcm(key))
             aes.Encrypt(nonce, archive, ciphertext, tag);
 
         var envelope = new RosterSyncEnvelope(
@@ -376,7 +376,7 @@ public sealed class RosterSyncTransferService(HttpClient httpClient)
         var ciphertext = FromBase64Url(envelope.Ciphertext);
         SyncTransferLimits.EnsurePayloadSize(ciphertext.LongLength, "encrypted transfer");
         var plaintext = new byte[ciphertext.Length];
-        using (var aes = new AesGcm(key, 16))
+        using (var aes = new AesGcm(key))
             aes.Decrypt(FromBase64Url(envelope.Nonce), ciphertext, FromBase64Url(envelope.Tag), plaintext);
         SyncTransferLimits.EnsurePayloadSize(plaintext.LongLength, "decrypted transfer");
         return plaintext;

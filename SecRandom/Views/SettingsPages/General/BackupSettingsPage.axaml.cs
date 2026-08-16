@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
@@ -206,12 +206,12 @@ public partial class BackupSettingsPage : UserControl, INotifyPropertyChanged
         {
             var path = _importExportService.CreateManualBackup(GetSelectedDataRoots().ToList());
             RefreshBackups();
-            _logger.LogInformation("已创建手动备份：文件={FileName}。", Path.GetFileName(path));
+            _logger.LogInformation("�Ѵ����ֶ����ݣ��ļ�={FileName}��", Path.GetFileName(path));
             this.ShowSuccessToast(string.Format(LR.M_BackupCreated, Path.GetFileName(path)));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "创建手动备份失败。");
+            _logger.LogError(ex, "�����ֶ�����ʧ�ܡ�");
             await ShowErrorDialogAsync(LR.M_BackupFailed, ex.Message);
         }
     }
@@ -220,8 +220,8 @@ public partial class BackupSettingsPage : UserControl, INotifyPropertyChanged
     {
         var directory = GetBackupDirectory();
         if (!ExternalLauncher.TryOpenPath(directory))
-            this.ShowErrorToast("无法打开备份目录。");
-        _logger.LogInformation("已请求打开备份目录：路径={Path}。", directory);
+            this.ShowErrorToast("�޷��򿪱���Ŀ¼��");
+        _logger.LogInformation("������򿪱���Ŀ¼��·��={Path}��", directory);
     }
 
     private async void RestoreBackup_OnClick(object? sender, RoutedEventArgs e)
@@ -241,9 +241,9 @@ public partial class BackupSettingsPage : UserControl, INotifyPropertyChanged
             var inspection = await _importExportService.InspectAllDataAsync(backup.FilePath);
             if (!inspection.IsSupportedV3)
             {
-                var version = string.IsNullOrWhiteSpace(inspection.ProducerVersion) ? "未识别" : inspection.ProducerVersion;
-                var detail = inspection.Warnings.FirstOrDefault() ?? "该文件不是受支持的 SecRandom v3 数据归档。";
-                await ShowErrorDialogAsync(LR.M_RestoreFailed, $"仅支持 SecRandom v3 数据归档。检测到的版本：{version}。\n{detail}");
+                var version = string.IsNullOrWhiteSpace(inspection.ProducerVersion) ? "δʶ��" : inspection.ProducerVersion;
+                var detail = inspection.Warnings.FirstOrDefault() ?? "���ļ�������֧�ֵ� SecRandom v3 ���ݹ鵵��";
+                await ShowErrorDialogAsync(LR.M_RestoreFailed, $"��֧�� SecRandom v3 ���ݹ鵵����⵽�İ汾��{version}��\n{detail}");
                 return;
             }
         }
@@ -261,12 +261,12 @@ public partial class BackupSettingsPage : UserControl, INotifyPropertyChanged
             await _importExportService.RestoreBackupAsync(backup.FilePath);
             RefreshBackups();
             SettingsView.Current?.RequestRestartApp();
-            _logger.LogInformation("已恢复备份：文件={FileName}。", backup.FileName);
+            _logger.LogInformation("�ѻָ����ݣ��ļ�={FileName}��", backup.FileName);
             this.ShowSuccessToast(LR.M_RestoreSuccess);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "恢复备份失败：文件={FileName}。", backup.FileName);
+            _logger.LogError(ex, "�ָ�����ʧ�ܣ��ļ�={FileName}��", backup.FileName);
             await ShowErrorDialogAsync(LR.M_RestoreFailed, ex.Message);
         }
     }
@@ -285,12 +285,12 @@ public partial class BackupSettingsPage : UserControl, INotifyPropertyChanged
                 File.Delete(backup.FilePath);
 
             RefreshBackups();
-            _logger.LogInformation("已删除备份：文件={FileName}。", backup.FileName);
+            _logger.LogInformation("��ɾ�����ݣ��ļ�={FileName}��", backup.FileName);
             this.ShowSuccessToast(LR.M_DeleteSuccess);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "删除备份失败：文件={FileName}。", backup.FileName);
+            _logger.LogError(ex, "ɾ������ʧ�ܣ��ļ�={FileName}��", backup.FileName);
             await ShowErrorDialogAsync(LR.M_DeleteFailed, ex.Message);
         }
     }

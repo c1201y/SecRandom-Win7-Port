@@ -72,14 +72,14 @@
 <!-- -->
 <!--                                 <Button.Flyout> -->
 <!--                                     <MenuFlyout> -->
-<!--                                         <MenuItem Icon="{sr:FluentIcon {sr:Fi AppsSettingsFilled}}" -->
+<!--                                         <MenuItem Icon="{sr:FluentIcon &#xE078;}" -->
 <!--                                                   Header="{x:Static lp:Resources.C_ManagePluginSources}" -->
 <!--                                                   Click="OpenCatalogSourcesButton_OnClick" /> -->
 <!--                                         <Separator /> -->
-<!--                                         <MenuItem Icon="{sr:FluentIcon {sr:Fi AddFilled}}" -->
+<!--                                         <MenuItem Icon="{sr:FluentIcon &#xE00C;}" -->
 <!--                                                   Header="{x:Static lp:Resources.C_ImportPlugin}" -->
 <!--                                                   Click="ImportPluginButton_OnClick" /> -->
-<!--                                         <MenuItem Icon="{sr:FluentIcon {sr:Fi FolderOpenFilled}}" -->
+<!--                                         <MenuItem Icon="{sr:FluentIcon &#xE88C;}" -->
 <!--                                                   Header="{x:Static lp:Resources.C_OpenPluginsFolder}" -->
 <!--                                                   Click="OpenPluginsFolderButton_OnClick" /> -->
 <!--                                     </MenuFlyout> -->

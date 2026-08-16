@@ -189,7 +189,7 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
 
         SaveSelectedStudentList();
         OnPropertyChanged(nameof(SelectedStudentList));
-        _logger.LogInformation("已删除点名名单成员：名单={ListName}，记录={RecordId}。", SelectedStudentListName, student.RecordId);
+        _logger.LogInformation("已删除点名名单成员：名单={ListName}，记录={RecordId}", SelectedStudentListName, student.RecordId);
         this.ShowSuccessToast(string.Format(LR.M_DeleteMemberSuccess, displayName));
     }
 
@@ -213,7 +213,7 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
         SaveSelectedStudentList();
         _catalogManager.CreateStudentList(listName);
         RefreshStudentLists(listName);
-        _logger.LogInformation("已创建点名名单：名单={ListName}。", listName);
+        _logger.LogInformation("已创建点名名单：名单={ListName}", listName);
         this.ShowSuccessToast(string.Format(LR.M_AddListSuccess, listName));
     }
 
@@ -241,7 +241,7 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
         var nextName = StudentListNames.FirstOrDefault(name => name != deleteName) ?? string.Empty;
         RefreshStudentLists(nextName);
 
-        _logger.LogInformation("已删除点名名单：名单={ListName}。", deleteName);
+        _logger.LogInformation("已删除点名名单：名单={ListName}", deleteName);
         this.ShowSuccessToast(string.Format(LR.M_DeleteListSuccess, deleteName));
     }
 
@@ -264,7 +264,7 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
 
         SelectedStudentList = null;
         RefreshStudentLists(newName);
-        _logger.LogInformation("已重命名点名名单：旧名单={OldListName}，新名单={NewListName}。", oldName, newName);
+        _logger.LogInformation("已重命名点名名单：旧名单={OldListName}，新名单={NewListName}", oldName, newName);
         this.ShowSuccessToast(string.Format(LR.M_RenameListSuccess, newName));
     }
 
@@ -278,7 +278,7 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
 
         var view = new RollCallListImportView(SelectedStudentListName, OnStudentsImported);
         SettingsView.Current?.OpenDrawer(view);
-        _logger.LogInformation("打开点名名单导入面板：目标名单={ListName}。", SelectedStudentListName);
+        _logger.LogInformation($"打开点名名单导入面板：名单={SelectedStudentListName}");
     }
 
     private void ExportButton_OnClick(object? sender, RoutedEventArgs e)
@@ -291,8 +291,7 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
 
         SettingsView.Current?.OpenDrawer(new RollCallListExportView(SelectedStudentListName,
             SelectedStudentList.Students.ToList()));
-        _logger.LogInformation("打开点名名单导出面板：名单={ListName}，成员数={Count}。", SelectedStudentListName,
-            SelectedStudentList.Students.Count);
+        _logger.LogInformation($"打开点名名单导出面板：名单={SelectedStudentListName}，成员数={SelectedStudentList.Students.Count}");
     }
 
     private async void AddMemberButton_OnClick(object? sender, RoutedEventArgs e)
@@ -354,8 +353,7 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
         OnPropertyChanged(nameof(SelectedStudentList));
         if (shouldOfferHistoryClear && await ConfirmClearStudentHistoryAsync(SelectedStudentListName))
             _catalogManager.ClearStudentHistory(SelectedStudentListName);
-        _logger.LogInformation("已向点名名单新增成员：名单={ListName}，当前成员数={Count}。", SelectedStudentListName,
-            SelectedStudentList.Students.Count);
+        _logger.LogInformation($"已向点名名单新增成员：名单={SelectedStudentListName}，当前成员数={SelectedStudentList.Students.Count}");
         this.ShowSuccessToast(LR.M_AddMemberSuccess);
     }
 
@@ -512,7 +510,7 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
         SelectedStudentList = _catalogManager.LoadStudentList(SelectedStudentListName);
         OnPropertyChanged(nameof(SelectedStudentList));
         SettingsView.Current?.CloseDrawer();
-        _logger.LogInformation("已导入点名名单：目标名单={ListName}，导入数量={Count}。", SelectedStudentListName, students.Count);
+        _logger.LogInformation("已导入点名名单：目标名单={ListName}，导入数={Count}", SelectedStudentListName, students.Count);
         this.ShowSuccessToast(string.Format(LR.M_ImportSuccess, students.Count, SelectedStudentListName));
     }
 

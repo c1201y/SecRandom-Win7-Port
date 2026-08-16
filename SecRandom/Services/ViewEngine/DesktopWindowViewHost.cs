@@ -22,7 +22,7 @@ internal sealed class DesktopWindowViewHost : IViewHost
     public DesktopWindowViewHost(Window window, string hostId)
     {
         ArgumentNullException.ThrowIfNull(window);
-        ArgumentException.ThrowIfNullOrWhiteSpace(hostId);
+        PolyfillArgumentException.ThrowIfNullOrWhiteSpace(hostId, nameof(hostId));
 
         _window = window;
         _contentHost = new ViewHostControl(hostId);

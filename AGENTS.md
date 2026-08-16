@@ -10,12 +10,43 @@ Maintenance contract:
 - `docs/project_rules.md` is the source of truth when a convention conflicts with this summary.
 -->
 
-**Last Update:** 2026-08-13
+**Last Update:** 2026-08-16
 **Last Submit:** 51f7f7fd
 **Last modified model:** MiMoCode
 
 ## OVERVIEW
-SecRandom is a GPLv3 C#/.NET desktop app for fair random drawing in education scenarios. Stack: .NET solution, Avalonia + FluentAvalonia UI, Microsoft.Extensions.Hosting DI, xUnit v3 tests.
+SecRandom is a GPLv3 C#/.NET desktop app for fair random drawing in education scenarios. Stack: .NET 6 solution (ported from net10.0 for Windows 7 compatibility), Avalonia + FluentAvalonia UI, Microsoft.Extensions.Hosting DI, xUnit v3 tests.
+
+## WIN7 PORTING NOTES (2026-08-16)
+This checkout has been ported from .NET 10 to .NET 6 for Windows 7 SP1 support. Key changes:
+
+- **Target Framework:** All projects now target `net6.0` (or `net6.0-windows7.0` for Desktop)
+- **SDK:** Uses .NET SDK 8.0.424 to build net6.0 targets
+- **EdgeTtsSharp:** Source files removed; stub class created. Edge TTS functionality is not available.
+- **FluentIconKind:** Source generator (IconsMappingGenerator) doesn't run on net6.0. Icon references in AXAML replaced with Unicode literals (`&#xE713;` etc.). A manual `FluentIconKind` enum exists in `SecRandom.Core/Icons/` but is not used by AXAML.
+- **Polyfills added:**
+  - `UnsafeAccessorAttribute` in `CompilerPolyfills.cs`
+  - `RequiredMemberAttribute` / `CompilerFeatureRequiredAttribute` in `CompilerPolyfills.cs`
+  - `PolyfillArgumentException.ThrowIfNullOrWhiteSpace` in `CompilerPolyfills.cs`
+- **API replacements:**
+  - `nint.Zero` → `(nint)0`
+  - `new nint(x)` → `(nint)x`
+  - `TimeProvider` → `DateTime.UtcNow` (removed dependency)
+  - `GeneratedRegex` → `Regex` with `RegexOptions.Compiled`
+  - `ArgumentException.ThrowIfNullOrWhiteSpace` → `PolyfillArgumentException.ThrowIfNullOrWhiteSpace`
+  - `char.IsAsciiLetterOrDigit` → `char.IsLetterOrDigit`
+  - `AesGcm(key, 256)` → `AesGcm(key)`
+  - `?.` on left side of assignment → explicit null check
+  - `UnixFileMode` → `chmod` via Process.Start
+  - `StreamWriter.FlushAsync(CancellationToken)` → `FlushAsync()`
+  - `StreamReader.ReadLineAsync(CancellationToken)` → `ReadLineAsync()`
+  - `Process.StandardOutput.ReadToEndAsync(CancellationToken)` → `ReadToEndAsync()`
+  - `UnsafeAccessorKind.StaticMethod` → reflection
+- **Warnings to expect:**
+  - `NU1701`: Package compatibility warnings (Pastel, ClassIsland.Shared, etc.)
+  - `NETSDK1138`: net6.0 target framework is out of support
+  - `CS9057`: Analyzer assembly references newer compiler version
+  - `CS1998`: Async methods without await
 
 ## STRUCTURE
 ```

@@ -5,10 +5,10 @@ namespace SecRandom.Core.Enums.Configs;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum TelemetryMode
 {
-    [JsonStringEnumMemberName("full")] Full,
+    [JsonPropertyName("full")] Full,
 
-    [JsonStringEnumMemberName("anonymous")]
+    [JsonPropertyName("anonymous")]
     Anonymous,
 
-    [JsonStringEnumMemberName("off")] Off
+    [JsonPropertyName("off")] Off
 }

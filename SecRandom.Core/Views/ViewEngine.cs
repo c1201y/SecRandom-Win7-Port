@@ -13,7 +13,7 @@ internal sealed class ViewEngine(IServiceProvider services, IViewRegistry regist
 
     public async Task<IViewHandle> ShowAsync(string viewId, ViewShowOptions? options = null, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(viewId);
+        PolyfillArgumentException.ThrowIfNullOrWhiteSpace(viewId, nameof(viewId));
         options ??= new ViewShowOptions();
 
         await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -102,7 +102,7 @@ internal sealed class ViewEngine(IServiceProvider services, IViewRegistry regist
         object? result = null,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(viewId);
+        PolyfillArgumentException.ThrowIfNullOrWhiteSpace(viewId, nameof(viewId));
         return CloseByIdAsync(viewId, reason, result, cancellationToken);
     }
 

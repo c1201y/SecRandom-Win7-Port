@@ -21,12 +21,11 @@ internal sealed class SecurityService(
     ISecurityVerificationPrompt prompt,
     IUsbDeviceCatalog usbDeviceCatalog,
     ILogger<SecurityService> logger,
-    IRemovableStorageBindingMarker? bindingMarker = null,
-    TimeProvider? timeProvider = null) : ISecurityService
+    IRemovableStorageBindingMarker? bindingMarker = null) : ISecurityService
 {
     private const int LockoutFailureLimit = 5;
     private static readonly TimeSpan LockoutDuration = TimeSpan.FromSeconds(30);
-    private readonly TimeProvider _timeProvider = timeProvider ?? TimeProvider.System;
+
     private readonly IRemovableStorageBindingMarker _bindingMarker =
         bindingMarker ?? PortableRemovableStorageBindingMarker.Instance;
     private readonly object _gate = new();
@@ -284,7 +283,7 @@ internal sealed class SecurityService(
 
                 credentials.FailedAttempts++;
                 if (credentials.FailedAttempts >= LockoutFailureLimit)
-                    credentials.LockedUntilUtc = _timeProvider.GetUtcNow().Add(LockoutDuration);
+                    credentials.LockedUntilUtc = DateTime.UtcNow.Add(LockoutDuration);
                 if (!TrySaveCredentials(context))
                     return Task.FromResult(new SecurityVerificationResult(false, SecurityVerificationFailure.FactorUnavailable));
                 remaining = GetLockoutRemaining(credentials.LockedUntilUtc);
@@ -487,7 +486,7 @@ internal sealed class SecurityService(
             if (!string.Equals(_pendingTotpSecret, secret, StringComparison.Ordinal) || _pendingTotpContext is null)
                 return Task.FromResult(false);
 
-            if (!TotpService.Verify(secret, code, _timeProvider.GetUtcNow()))
+            if (!TotpService.Verify(secret, code, DateTime.UtcNow))
                 return Task.FromResult(false);
 
             var context = _pendingTotpContext;
@@ -749,7 +748,7 @@ internal sealed class SecurityService(
     {
         return factor switch
         {
-            SecurityFactor.Totp => credentials.TotpSecret is not null && TotpService.Verify(credentials.TotpSecret, response.TotpCode, _timeProvider.GetUtcNow()),
+            SecurityFactor.Totp => credentials.TotpSecret is not null && TotpService.Verify(credentials.TotpSecret, response.TotpCode, DateTime.UtcNow),
             SecurityFactor.Usb => response.UsbPresent && credentials.UsbBindings.Any(IsBindingPresent),
             _ => false
         };
@@ -759,7 +758,7 @@ internal sealed class SecurityService(
     {
         if (lockedUntilUtc is not { } lockedUntil)
             return null;
-        var remaining = lockedUntil - _timeProvider.GetUtcNow();
+        var remaining = lockedUntil - DateTime.UtcNow;
         return remaining > TimeSpan.Zero ? remaining : null;
     }
 
@@ -772,7 +771,7 @@ internal sealed class SecurityService(
 
         metadata.FailedAttempts++;
         if (metadata.FailedAttempts >= LockoutFailureLimit)
-            metadata.LockedUntilUtc = _timeProvider.GetUtcNow().Add(LockoutDuration);
+            metadata.LockedUntilUtc = DateTime.UtcNow.Add(LockoutDuration);
         if (!TrySaveMetadata(metadata))
             return new SecurityVerificationResult(false, SecurityVerificationFailure.FactorUnavailable);
         return new SecurityVerificationResult(false, SecurityVerificationFailure.InvalidCredentials,

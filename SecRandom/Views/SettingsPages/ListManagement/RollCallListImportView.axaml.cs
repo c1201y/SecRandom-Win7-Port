@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -287,7 +287,7 @@ public partial class RollCallListImportView : UserControl, INotifyPropertyChange
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "加载点名名单导入文件失败：文件={FileName}。", file.Name);
+            _logger.LogWarning(ex, "���ص������������ļ�ʧ�ܣ��ļ�={FileName}��", file.Name);
             StatusText = string.Format(LR.M_LoadFailed, ex.Message);
             CanImport = false;
         }
@@ -323,7 +323,6 @@ public partial class RollCallListImportView : UserControl, INotifyPropertyChange
         RebuildColumnOptions(rows.FirstOrDefault()?.Keys ?? Enumerable.Empty<string>());
         AutoMapColumns();
         RefreshPreview();
-        _logger.LogInformation("已加载点名名单导入文件：文件={FileName}，行数={RowCount}。", file.Name, rows.Count);
     }
 
     private static async Task<string> CopyToTemporaryFileAsync(IStorageFile file)
@@ -425,20 +424,14 @@ public partial class RollCallListImportView : UserControl, INotifyPropertyChange
 
         if (duplicatedNames.Count > 0)
         {
-            _logger.LogWarning("点名名单导入发现重复姓名：重复姓名数量={DuplicateNameCount}，有效行数={Count}。",
+            _logger.LogWarning("�����������뷢���ظ��������ظ���������={DuplicateNameCount}����Ч����={Count}��",
                 duplicatedNames.Count, students.Count);
             _ = ConfirmDuplicateNamesAsync(students, duplicatedNames);
         }
         else
         {
-            _logger.LogInformation("提交点名名单导入：有效行数={Count}。", students.Count);
             _importHandler(students);
         }
-    }
-
-    private async void FileImportButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        await OpenFileImportAsync();
     }
 
     private async Task SelectImportModeAsync(RosterImportMode mode)
@@ -859,15 +852,6 @@ public partial class RollCallListImportView : UserControl, INotifyPropertyChange
 
         if (result == ContentDialogResult.Primary)
         {
-            _logger.LogInformation("点名名单导入保留重复姓名：有效行数={Count}。", students.Count);
-            _importHandler(students);
-            return;
-        }
-
-        if (result == ContentDialogResult.Secondary)
-        {
-            RosterImportParser.RenameDuplicatedStudents(students);
-            _logger.LogInformation("点名名单导入已自动处理重复姓名：有效行数={Count}。", students.Count);
             _importHandler(students);
         }
     }

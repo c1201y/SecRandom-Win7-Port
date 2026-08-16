@@ -1,4 +1,4 @@
-﻿<views:ViewBase xmlns="https://github.com/avaloniaui"
+<views:ViewBase xmlns="https://github.com/avaloniaui"
           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
           xmlns:local="clr-namespace:SecRandom.Views.Mobile"
           xmlns:langs="clr-namespace:SecRandom.Langs.Mobile"
@@ -100,10 +100,10 @@
                 </Style>
             </TabStrip.Styles>
             
-            <TabStripItem Content="{x:Static langs:Resources.N_Draw}" Tag="{sr:Fi PeopleFilled}" />
-            <TabStripItem Content="{x:Static langs:Resources.N_History}" Tag="{sr:Fi HistoryFilled}" />
-            <TabStripItem Content="{x:Static langs:Resources.N_Overview}" Tag="{sr:Fi HomeFilled}" />
-            <TabStripItem Content="{x:Static langs:Resources.N_Settings}" Tag="{sr:Fi SettingsFilled}" />
+            <TabStripItem Content="{x:Static langs:Resources.N_Draw}" Tag="&#xECAA;" />
+            <TabStripItem Content="{x:Static langs:Resources.N_History}" Tag="&#xE98F;" />
+            <TabStripItem Content="{x:Static langs:Resources.N_Overview}" Tag="&#xE993;" />
+            <TabStripItem Content="{x:Static langs:Resources.N_Settings}" Tag="&#xEF26;" />
         </TabStrip>
     </Grid>
 </views:ViewBase>

@@ -1,4 +1,4 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
+<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:sr="http://secrandom.sectl.cn/schemas/xaml/core"
         xmlns:styling="clr-namespace:FluentAvalonia.Styling;assembly=FluentAvalonia"
@@ -79,7 +79,7 @@
                 <Grid x:Name="Root"
                       Classes.empty="{TemplateBinding CurrentImage, Converter={x:Static ObjectConverters.IsNull}, Mode=OneWay}">
                     <sr:FluentIcon VerticalAlignment="Center" HorizontalAlignment="Center"
-                                   Glyph="{sr:Fi ImageOffFilled}"
+                                   Glyph="&#xE9CB;"
                                    IsVisible="False" IsHitTestVisible="False"
                                    x:Name="FluentIconError"
                                    FontSize="18"
