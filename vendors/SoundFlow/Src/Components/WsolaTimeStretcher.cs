@@ -14,14 +14,14 @@ public class WsolaTimeStretcher
     private const int SearchRadiusFrames = (NominalAnalysisHopFrames * 3) / 8;
 
     private int _windowSizeSamples;
-    private float[] _inputBufferInternal;
+    private float[] _inputBufferInternal = null!;
     private int _inputBufferValidSamples;
     private int _inputBufferReadPos;
-    private float[] _analysisWindow;
-    private float[] _prevOutputTail;
+    private float[] _analysisWindow = null!;
+    private float[] _prevOutputTail = null!;
     private int _actualPrevTailLength;
-    private float[] _currentAnalysisFrame;
-    private float[] _outputOverlapBuffer;
+    private float[] _currentAnalysisFrame = null!;
+    private float[] _outputOverlapBuffer = null!;
     private int _nominalHopSynthesisFrames;
     private bool _isFirstFrame = true;
     private bool _isFlushing;

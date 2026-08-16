@@ -11,7 +11,8 @@ public class ToggleTabStripBehavior : Behavior<TabStrip>
 {
     private static IPseudoClasses GetPseudoClasses(StyledElement element)
     {
-        return element.GetType().GetProperty("PseudoClasses")?.GetValue(element) as IPseudoClasses;
+        return element.GetType().GetProperty("PseudoClasses")?.GetValue(element) as IPseudoClasses
+               ?? throw new InvalidOperationException("The attached control does not expose PseudoClasses.");
     }
 
     protected override void OnAttached()

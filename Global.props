@@ -9,6 +9,9 @@
         <NullabilityInfoContextSupport>True</NullabilityInfoContextSupport>
         <ErrorOnDuplicatePublishOutputFiles>False</ErrorOnDuplicatePublishOutputFiles>
         <CheckEolWorkloads>false</CheckEolWorkloads>
+        <!-- The net6 Windows 7 target is intentional for legacy OS support. -->
+        <NoWarn>$(NoWarn);NETSDK1138;NU1701;CS9057</NoWarn>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     </PropertyGroup>
 
     <ItemGroup>
