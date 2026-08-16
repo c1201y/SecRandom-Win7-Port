@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,12 @@ namespace SecRandom.Services.Draw;
 
 public sealed class DrawAudioService(MusicLibraryService musicLibrary, ILogger<DrawAudioService> logger) : IDisposable
 {
+    // The bundled miniaudio backend can raise an unmanaged access violation while
+    // opening the WASAPI device on Windows 7. Do not enter native audio code there.
+    private static readonly bool IsNativeAudioSupported = !OperatingSystem.IsWindows()
+        || (RuntimeInformation.ProcessArchitecture == Architecture.X64
+            && Environment.OSVersion.Version >= new Version(6, 2));
+
     private readonly object _gate = new();
     private readonly IPlaybackBackend _backend = new SoundFlowPlaybackBackend();
     private PlaybackSession? _activeSession;
@@ -143,6 +150,9 @@ public sealed class DrawAudioService(MusicLibraryService musicLibrary, ILogger<D
 
     private bool StartSession(PlaybackKind kind, string selection, int volume, int fadeIn, int fadeOut, bool loop)
     {
+        if (!IsNativeAudioSupported)
+            return false;
+
         var path = selection == MusicLibraryService.RandomTrackId
             ? musicLibrary.ResolveRandomPath()
             : musicLibrary.ResolvePath(selection);

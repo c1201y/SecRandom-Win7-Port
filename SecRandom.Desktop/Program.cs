@@ -83,7 +83,7 @@ internal sealed class Program
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
     {
-        return AppBuilder.Configure<App>()
+        var builder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .With(new FontManagerOptions
             {
@@ -92,6 +92,20 @@ internal sealed class Program
             .AfterPlatformServicesSetup(_ => BindAssetLoader())
             .LogToTrace()
             .LogToHostSink();
+
+        // Win7's legacy DirectX/driver stack is not reliable with Avalonia's
+        // hardware compositor. Software rendering keeps startup and transparent
+        // floating windows out of the native GPU path on that OS.
+        if (OperatingSystem.IsWindows() && Environment.OSVersion.Version < new Version(6, 2))
+        {
+            builder = builder.With(new Win32PlatformOptions
+            {
+                RenderingMode = [Win32RenderingMode.Software],
+                CompositionMode = [Win32CompositionMode.RedirectionSurface]
+            });
+        }
+
+        return builder;
     }
 
     private static void BindAssetLoader()

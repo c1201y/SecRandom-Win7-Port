@@ -371,8 +371,18 @@ public sealed partial class QuickDrawPageViewModel : ViewModelBase, IDisposable
         var defaultClass = Config.QuickDrawSettings.DefaultClass.Trim();
         if (string.IsNullOrWhiteSpace(defaultClass))
         {
-            StatusText = QuickDrawResources.M_DefaultListRequired;
-            return false;
+            var rollCallDefault = Config.RollCallSettings.DefaultClass.Trim();
+            defaultClass = StudentListNames.Contains(rollCallDefault)
+                ? rollCallDefault
+                : StudentListNames.FirstOrDefault() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(defaultClass))
+            {
+                StatusText = QuickDrawResources.M_DefaultListRequired;
+                return false;
+            }
+
+            Config.QuickDrawSettings.DefaultClass = defaultClass;
+            _configHandler.Save();
         }
 
         if (!StudentListNames.Contains(defaultClass))
