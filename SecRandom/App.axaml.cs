@@ -57,6 +57,7 @@ using SecRandom.Services.Feedback;
 using SecRandom.Services.Linkage;
 using SecRandom.Services.Music;
 using SecRandom.Services.Settings;
+using SecRandom.Services.Platform;
 using SecRandom.Services.Security;
 using SecRandom.Services.SecAgent;
 using SecRandom.Services.Telemetry;
@@ -1808,13 +1809,21 @@ public partial class App : Application
         _quickDrawWindow.Opened += (_, _) =>
         {
             ApplyQuickDrawWindowBounds(_quickDrawWindow);
+            _quickDrawWindow.ApplyPlatformFeatures(WindowFeatures.RoundedCorners, enabled: true);
+            if (_quickDrawWindow.Content is QuickDrawPage page)
+                page.RefreshFloatingWindowPresentation();
             Dispatcher.UIThread.Post(
                 () => PositionOrCenterQuickDrawWindow(_quickDrawWindow),
                 DispatcherPriority.Render);
         };
-        _quickDrawWindow.SizeChanged += (_, _) => Dispatcher.UIThread.Post(
-            () => PositionOrCenterQuickDrawWindow(_quickDrawWindow),
-            DispatcherPriority.Render);
+        _quickDrawWindow.SizeChanged += (_, _) =>
+        {
+            if (_quickDrawWindow.IsVisible)
+                _quickDrawWindow.ApplyPlatformFeatures(WindowFeatures.RoundedCorners, enabled: true);
+            Dispatcher.UIThread.Post(
+                () => PositionOrCenterQuickDrawWindow(_quickDrawWindow),
+                DispatcherPriority.Render);
+        };
         _quickDrawWindow.PositionChanged += (_, _) => ApplyQuickDrawWindowBounds(_quickDrawWindow);
         _quickDrawWindow.ScalingChanged += (_, _) => ApplyQuickDrawWindowBounds(_quickDrawWindow);
         _quickDrawWindow.Closed += (_, _) =>

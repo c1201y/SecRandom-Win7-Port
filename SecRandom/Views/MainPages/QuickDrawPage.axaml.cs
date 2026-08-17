@@ -10,6 +10,8 @@ using Avalonia.Threading;
 using SecRandom.Core.Abstraction;
 using SecRandom.Core.Models.SubConfigs;
 using SecRandom.Helpers;
+using SecRandom.Platforms.Abstractions;
+using SecRandom.Services.Platform;
 using SecRandom.ViewModels.MainPages;
 using CommonResources = SecRandom.Langs.Common.Resources;
 
@@ -48,6 +50,11 @@ public partial class QuickDrawPage : UserControl
             ViewModel.StartDrawCommand.Execute(null);
     }
 
+    public void RefreshFloatingWindowPresentation()
+    {
+        UpdateFloatingWindowOpacity();
+    }
+
     private void OnUnloaded(object? sender, RoutedEventArgs e)
     {
         _isUnloaded = true;
@@ -65,10 +72,26 @@ public partial class QuickDrawPage : UserControl
 
     private void UpdateFloatingWindowOpacity()
     {
-        RootBorder.Opacity = System.Math.Clamp(
+        var opacity = System.Math.Clamp(
             ViewModel.NotificationOpacity ?? ViewModel.Config.FloatingWindowSettings.FloatingWindowOpacity,
             20,
             100) / 100.0;
+
+        // Whole-window opacity through the native layered window style is the primary path:
+        // Win7 software rendering does not honor the transparent composition level, so the
+        // native region plus layered alpha keep the quick-draw card rounded and translucent.
+        // The plain Opacity pass only tints the rendered surface where the platform level is
+        // unavailable, so prefer the platform result when it applies.
+        var nativeApplied = false;
+        if (TopLevel.GetTopLevel(this) is Window window)
+        {
+            var platformResult = window.ApplyPlatformOpacity(opacity);
+            nativeApplied = platformResult.Status == WindowFeatureApplyStatus.Applied;
+            if (nativeApplied)
+                window.Opacity = 1;
+        }
+
+        RootBorder.Opacity = nativeApplied ? 1 : opacity;
     }
 
     private void RootBorder_OnPointerPressed(object? sender, PointerPressedEventArgs e)
