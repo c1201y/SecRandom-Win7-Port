@@ -135,6 +135,24 @@ namespace SecRandom.Langs.SettingsPages.About {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to 调试.
+        /// </summary>
+        public static string S_Debug {
+            get {
+                return ResourceManager.GetString("S_Debug", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 在设置侧边栏显示调试页面.
+        /// </summary>
+        public static string S_Debug_D {
+            get {
+                return ResourceManager.GetString("S_Debug_D", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to 查看为 SecRandom 提交代码的 GitHub 贡献者.
         /// </summary>
         public static string S_Ack_Contributors_D {

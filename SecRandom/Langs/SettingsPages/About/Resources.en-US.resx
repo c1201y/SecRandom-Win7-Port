@@ -78,6 +78,12 @@
     <data name="S_Ack_Contributors_ContributionCount" xml:space="preserve">
         <value>{0} commits</value>
     </data>
+    <data name="S_Debug" xml:space="preserve">
+        <value>Debug</value>
+    </data>
+    <data name="S_Debug_D" xml:space="preserve">
+        <value>Show the debug page in the settings sidebar</value>
+    </data>
     <data name="C_Refresh" xml:space="preserve">
         <value>Refresh</value>
     </data>
