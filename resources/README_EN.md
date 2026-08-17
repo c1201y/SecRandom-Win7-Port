@@ -76,7 +76,7 @@ dotnet publish SecRandom.Desktop/SecRandom.Desktop.csproj -c Release -r win-x64 
 
 ## Debug page
 
-The debug page is hidden by default. To open it: **Settings → About → "SECTL" row in the author section**, tap it **20 times** within about 1 second, and the debug entry appears at the bottom of the settings sidebar.
+The debug page is hidden by default. To open it: **Settings → About → Acknowledgment** section, tap the **"Debug"** row, and the debug entry appears at the bottom of the settings sidebar.
 
 ## License and Third-Party Notices
 

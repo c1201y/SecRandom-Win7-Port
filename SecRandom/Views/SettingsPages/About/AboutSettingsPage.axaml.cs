@@ -34,11 +34,7 @@ namespace SecRandom.Views.SettingsPages.About;
 public partial class AboutSettingsPage : UserControl, INotifyPropertyChanged
 {
     private const string ContributorsEndpoint = "https://api.github.com/repos/SECTL/SecRandom/contributors?per_page=30";
-    private const int InternalSettingsActivationClickCount = 20;
-    private static readonly TimeSpan InternalSettingsActivationClickInterval = TimeSpan.FromMilliseconds(1000);
     private bool _isRefreshingContributors;
-    private int _bannerClickCount;
-    private DateTimeOffset _lastBannerClickAt;
 
     private OnlineStatusService OnlineStatusService { get; } = IAppHost.Host!.Services
         .GetServices<IHostedService>().OfType<OnlineStatusService>().First();
@@ -82,20 +78,8 @@ public partial class AboutSettingsPage : UserControl, INotifyPropertyChanged
         InitializeComponent();
     }
 
-    private void OrganizationIcon_OnTapped(object? sender, TappedEventArgs e)
+    private void Debug_OnClick(object? sender, RoutedEventArgs e)
     {
-        e.Handled = true;
-        var now = DateTimeOffset.UtcNow;
-        _bannerClickCount = now - _lastBannerClickAt <= InternalSettingsActivationClickInterval
-            ? _bannerClickCount + 1
-            : 1;
-        _lastBannerClickAt = now;
-
-        if (_bannerClickCount < InternalSettingsActivationClickCount)
-            return;
-
-        _bannerClickCount = 0;
-        _lastBannerClickAt = default;
         SettingsView.Current?.ShowDebugNavigationItem();
         this.ShowToast(DebugResources.Get("M_DebugShown"));
     }
