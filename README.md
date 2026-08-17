@@ -49,8 +49,7 @@ SecRandom 是面向课堂、团队、活动、决策等场景的公平抽取应�
 
 ### ClassIsland 1.x 联动
 
-- 可与 ClassIsland 1.x 版本联动，通过命名管道接收来自 **[ConvenientText](https://github.com/c1201y/ConvenientText) 插件** 的联动指令
-- 支持在 ClassIsland 中触发点名重置、抽奖重置等操作（如 `secrandom://roll_call/reset`、`secrandom://lottery/reset`）
+- 可与 ClassIsland 1.x 版本联动，通过命名管道接收来自 **[ConvenientText](https://github.com/c1201y/ConvenientText) 插件
 - 指令同样经过安全验证与课程联动检查，与内置 IPC 通道行为一致
 
 ### 数据、隐私与安全

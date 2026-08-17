@@ -828,10 +828,6 @@ public partial class App : Application
                 // Local-only REST endpoint for the SecAgent connector. It intentionally has no UI/settings registration.
                 services.AddHostedService<SecAgentHttpHostedService>();
                 services.AddHostedService<SecAgentPluginBootstrapHostedService>();
-                services.AddHostedService(serviceProvider =>
-                    new ClassIsland1xLinkageServer(
-                        serviceProvider.GetRequiredService<ILogger<ClassIsland1xLinkageServer>>(),
-                        OnIpcRequestReceived));
                 services.AddSingleton(serviceProvider => new MusicLibraryService(
                     serviceProvider.GetRequiredService<MainConfigHandler>(),
                     serviceProvider.GetRequiredService<ILogger<MusicLibraryService>>(),

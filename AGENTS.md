@@ -97,7 +97,6 @@ Nested instruction files:
 | Settings navigation | `SecRandom/Views/SettingsView.axaml.cs` | Default page `settings.overview`; has back stack + restart dialog. General group now includes `settings.general.basic`, `settings.general.privacy`, and `settings.general.backup`. |
 | Page registration helpers | `SecRandom.Core/Extensions/Registry/` | `AddMainPage`, `AddSettingsPage`, group, and separator helpers. |
 | ClassIsland notifications | `SecRandom/Services/Notification/`, `SecRandom4Ci.Interface/` | Typed v2 IPC client for the installed SecRandom4Ci ClassIsland plugin. |
-| ClassIsland 1.x linkage | `SecRandom/Services/Ipc/ClassIsland1xLinkageServer.cs` | Hosted named-pipe server on `SecRandom.secrandom` accepting the ConvenientText plugin's JSON-line URL envelope; routes through `ProtocolCommandRouter` via the same `OnIpcRequestReceived` handler as the built-in pipe. |
 | Crash recovery | `SecRandom/Services/CrashRecovery/`, `SecRandom/Views/CrashRecoveryWindow.axaml.cs` | Fatal/dispatcher crash report prompt, guarded auto-restart, and shared desktop relaunch logic. |
 | Page registry state | `SecRandom.Core/Services/PagesRegistryService.cs` | Main/settings/group collections. |
 | Cross-platform view engine | `SecRandom.Core/Views/` | Logical view/session contracts; desktop and mobile shells provide DI-registered physical hosts. |
