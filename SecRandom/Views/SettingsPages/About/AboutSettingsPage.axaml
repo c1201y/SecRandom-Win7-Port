@@ -233,7 +233,7 @@
                 <fa:SettingsExpanderItem x:Name="S_Author_Org"
                                             Content="{x:Static lsa:Resources.S_Author_Org}"
                                             Description="{x:Static lsa:Resources.S_Author_Org_D}"
-                                            PointerPressed="OrganizationIcon_OnPointerPressed">
+                                            Tapped="OrganizationIcon_OnTapped">
                     <fa:SettingsExpanderItem.IconSource>
                         <fa:ImageIconSource Source="/Assets/SECTLLogo.png" />
                     </fa:SettingsExpanderItem.IconSource>

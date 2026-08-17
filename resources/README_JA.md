@@ -74,6 +74,10 @@ dotnet build SecRandom.sln -c Release --no-restore
 dotnet publish SecRandom.Desktop/SecRandom.Desktop.csproj -c Release -r win-x64 --self-contained true -o artifacts/SecRandom-win-x64
 ```
 
+## デバッグページ
+
+デバッグページはデフォルトで非表示です。開き方: **設定 → バージョン情報 → 作者欄の「SECTL」行** を約 1 秒以内に **20 回**タップすると、設定サイドバーの下部にデバッグ項目が表示されます。
+
 ## ライセンスと第三者通知
 
 - 本リポジトリは元プロジェクトの [GNU GPLv3](../LICENSE) に従って公開されており、派生物も GNU GPLv3 で公開する必要があります

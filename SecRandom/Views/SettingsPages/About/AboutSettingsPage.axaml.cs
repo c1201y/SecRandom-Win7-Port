@@ -35,7 +35,7 @@ public partial class AboutSettingsPage : UserControl, INotifyPropertyChanged
 {
     private const string ContributorsEndpoint = "https://api.github.com/repos/SECTL/SecRandom/contributors?per_page=30";
     private const int InternalSettingsActivationClickCount = 20;
-    private static readonly TimeSpan InternalSettingsActivationClickInterval = TimeSpan.FromMilliseconds(200);
+    private static readonly TimeSpan InternalSettingsActivationClickInterval = TimeSpan.FromMilliseconds(1000);
     private bool _isRefreshingContributors;
     private int _bannerClickCount;
     private DateTimeOffset _lastBannerClickAt;
@@ -82,11 +82,8 @@ public partial class AboutSettingsPage : UserControl, INotifyPropertyChanged
         InitializeComponent();
     }
 
-    private void OrganizationIcon_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    private void OrganizationIcon_OnTapped(object? sender, TappedEventArgs e)
     {
-        if (sender is not Control control || e.GetPosition(control).X > 48)
-            return;
-
         e.Handled = true;
         var now = DateTimeOffset.UtcNow;
         _bannerClickCount = now - _lastBannerClickAt <= InternalSettingsActivationClickInterval

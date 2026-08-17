@@ -71,6 +71,10 @@ SecRandom 是面向课堂、团队、活动、决策等场景的公平抽取应�
 dotnet publish SecRandom.Desktop/SecRandom.Desktop.csproj -c Release -r win-x64 --self-contained true -o artifacts/SecRandom-win-x64
 ```
 
+## 调试页
+
+调试页默认隐藏，打开方式：**设置 → 关于 → 作者区 "思拓互联"** 一行，在约 1 秒内连点 **20 次**，调试项即会出现在设置侧边栏底部。
+
 ## 许可证与第三方声明
 
 - 本仓库沿用原项目的 [GNU GPLv3](LICENSE) 协议发布，再发布衍生作品也必须遵循 GNU GPLv3
