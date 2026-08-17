@@ -35,7 +35,7 @@ SecRandom/
 │   ├── Linkage/         # CSES/ClassIsland sources, course state runtime, draw authorization, pre-class reset
 │   ├── Music/            # Managed local draw-music library and stable track selection resolution
 │   ├── Notification/     # ClassIsland SecRandom4Ci notification bridge
-│   ├── Ipc/             # ProtocolCommandRouter for URL/IPC command routing
+│   ├── Ipc/             # ProtocolCommandRouter for URL/IPC command routing; ClassIsland 1.x ConvenientText plugin pipe server
 │   ├── Profiles/        # Non-mutating ProfileQueryService snapshots
 │   ├── RosterTransfer/  # In-memory roster file/QR transfer, frame integrity, and unified cross-platform camera capture
 │   ├── Settings/        # SettingsSearchService

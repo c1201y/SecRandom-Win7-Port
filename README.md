@@ -15,7 +15,7 @@
 > [!NOTE]
 > 本仓库是 [SECTL/SecRandom](https://github.com/SECTL/SecRandom) 的二次开发版本，目标是在 Windows 7 SP1 上运行
 >
-> 本项目仅为个人自用维护，**绝大部分代码由 AI 生成**，请谨慎用于生产环境
+> 本项目仅为个人自用维护，**绝大部分代码由 AI 构建**，
 
 ## 说明
 
@@ -47,6 +47,12 @@ SecRandom 是面向课堂、团队、活动、决策等场景的公平抽取应�
 - 可以选择让服务器参与并见证抽取过程
 - 可以通过官方渠道重新检查抽取结果
 
+### ClassIsland 1.x 联动
+
+- 可与 ClassIsland 1.x 版本联动，通过命名管道接收来自 **[ConvenientText](https://github.com/c1201y/ConvenientText) 插件** 的联动指令
+- 支持在 ClassIsland 中触发点名重置、抽奖重置等操作（如 `secrandom://roll_call/reset`、`secrandom://lottery/reset`）
+- 指令同样经过安全验证与课程联动检查，与内置 IPC 通道行为一致
+
 ### 数据、隐私与安全
 
 - 设置、名单和历史记录都可以导入、导出、备份和恢复
@@ -63,8 +69,6 @@ SecRandom 是面向课堂、团队、活动、决策等场景的公平抽取应�
 ## 构建
 
 ```bash
-dotnet restore SecRandom.sln
-dotnet build SecRandom.sln -c Release --no-restore
 dotnet publish SecRandom.Desktop/SecRandom.Desktop.csproj -c Release -r win-x64 --self-contained true -o artifacts/SecRandom-win-x64
 ```
 
@@ -79,4 +83,4 @@ dotnet publish SecRandom.Desktop/SecRandom.Desktop.csproj -c Release -r win-x64 
 - 不提供任何形式的官方支持；使用前请自行备份数据并确认功能符合预期
 - 原项目的功能细节、在线见证服务等以 [上游仓库](https://github.com/SECTL/SecRandom) 说明为准
 
-**Copyright © 2025-2026 c1201y**
+**Copyright © 2025-2026 椰汁**

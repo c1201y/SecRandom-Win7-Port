@@ -47,6 +47,12 @@ SecRandom is a fair random-selection application for classrooms, teams, events, 
 - Optionally lets a server participate in and witness the draw.
 - Re-checks draw results through the official channel.
 
+### ClassIsland 1.x linkage
+
+- Links with ClassIsland 1.x by receiving commands over a named pipe from the **[ConvenientText](https://github.com/c1201y/ConvenientText) plugin**.
+- Triggers roll-call reset, lottery reset, and similar actions from ClassIsland (e.g. `secrandom://roll_call/reset`, `secrandom://lottery/reset`).
+- Commands pass through the same security verification and course-linkage checks as the built-in IPC channel.
+
 ### Data, privacy, and security
 
 - Settings, lists, and history can all be imported, exported, backed up, and restored.
