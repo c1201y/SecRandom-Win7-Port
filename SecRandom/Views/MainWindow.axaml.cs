@@ -39,7 +39,7 @@ public partial class MainWindow : AppWindow
         TitleBar.Height = 48;
         TitleBar.ExtendsContentIntoTitleBar = true;
 
-        // ¸²¸Ç±êÌâÀ¸°´Å¥ÑÕÉ«
+        // ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½É«
         TitleBar.ButtonHoverBackgroundColor = Color.FromArgb(23, 0, 0, 0);
         TitleBar.ButtonPressedBackgroundColor = Color.FromArgb(52, 0, 0, 0);
         TitleBar.ButtonInactiveForegroundColor = Colors.Gray;
@@ -140,6 +140,12 @@ public partial class MainWindow : AppWindow
 
     private void MainWindowOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
+        if (e.Property == IsVisibleProperty && IsVisible && _hasBeenShown)
+        {
+            Dispatcher.UIThread.Post(RefreshRestoredLayout, DispatcherPriority.Render);
+            return;
+        }
+
         if (!UsesStoredWindowSettings || !_hasBeenShown)
             return;
 
@@ -158,6 +164,16 @@ public partial class MainWindow : AppWindow
             if (WindowState != WindowState.Minimized && _settings?.AutoSaveWindowSize == true)
                 QueueWindowSizeSave();
         }
+    }
+
+    private void RefreshRestoredLayout()
+    {
+        if (!IsVisible || WindowState == WindowState.Minimized || Content is not Control content)
+            return;
+
+        content.InvalidateMeasure();
+        content.InvalidateArrange();
+        content.InvalidateVisual();
     }
 
     private void QueueWindowSizeSave()

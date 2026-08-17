@@ -184,6 +184,20 @@ public sealed partial class QuickDrawPageViewModel : ViewModelBase, IDisposable
             showBuiltInNotificationAnimation: showBuiltInNotificationAnimation);
     }
 
+    public bool CanStartTriggeredDraw()
+    {
+        if (IsDrawing || _isDrawCommandRunning || _isCoolingDown)
+            return false;
+
+        if (!TryLoadDefaultStudentList())
+            return false;
+
+        if (GetEligibleCandidates().Any())
+            return true;
+
+        return ResetForNewRoundIfExhausted() && GetEligibleCandidates().Any();
+    }
+
     private async Task StartDrawCoreAsync(
         bool skipPreview = false,
         bool showBuiltInNotificationAnimation = false)
@@ -199,6 +213,8 @@ public sealed partial class QuickDrawPageViewModel : ViewModelBase, IDisposable
             return;
 
         var candidates = GetEligibleCandidates().ToList();
+        if (candidates.Count == 0 && ResetForNewRoundIfExhausted())
+            candidates = GetEligibleCandidates().ToList();
         if (candidates.Count == 0)
         {
             StatusText = QuickDrawResources.M_NoMembers;
@@ -413,6 +429,17 @@ public sealed partial class QuickDrawPageViewModel : ViewModelBase, IDisposable
             string.Empty,
             counts,
             threshold);
+    }
+
+    private bool ResetForNewRoundIfExhausted()
+    {
+        var students = _profileService.CurrentStudentList?.Students ?? [];
+        var threshold = DrawRepeatPolicy.ResolveThreshold(Config.QuickDrawSettings.DrawMode, Config.QuickDrawSettings.HalfRepeat);
+        if (threshold <= 0 || !students.Any(student => student.IsCandidate))
+            return false;
+
+        _temporaryRecordService.ResetStudentList(SelectedStudentListName);
+        return true;
     }
 
     private async Task ShowPreviewAsync(IReadOnlyList<Student> candidates, int count, string animationMusic)

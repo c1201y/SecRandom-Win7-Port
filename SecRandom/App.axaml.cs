@@ -1748,7 +1748,10 @@ public partial class App : Application
 
             // A user-triggered quick draw always has a visible result window. Notification
             // settings only control the optional notification animation and delivery path.
-            if (!quickDraw.IsDrawing)
+            // Only pre-show it when the draw will actually proceed, so a skipped trigger
+            // (cooling down or already running) does not leave a stale window open with no
+            // auto-close scheduled.
+            if (quickDraw.CanStartTriggeredDraw())
             {
                 var window = GetOrCreateQuickDrawWindow();
                 if (!window.IsVisible)
