@@ -10,6 +10,10 @@
         <Style Selector=":is(Window)">
             <Setter Property="Icon" Value="/Assets/AppLogo.png" />
         </Style>
+
+        <Style Selector="PopupRoot">
+            <Setter Property="Background" Value="#242424" />
+        </Style>
     </Application.Styles>
 
     <Application.Resources>
@@ -18,7 +22,7 @@
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="ComboBoxDropDownBorderBrush" Color="#3A3A3A" />
                     <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="#242424" />
-                    <CornerRadius x:Key="OverlayCornerRadius">0</CornerRadius>
+                    <CornerRadius x:Key="OverlayCornerRadius">8</CornerRadius>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
