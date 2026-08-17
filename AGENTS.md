@@ -10,8 +10,8 @@ Maintenance contract:
 - `docs/project_rules.md` is the source of truth when a convention conflicts with this summary.
 -->
 
-**Last Update:** 2026-08-16
-**Last Submit:** 51f7f7fd
+**Last Update:** 2026-08-17
+**Last Submit:** 79e08f6
 **Last modified model:** MiMoCode
 
 ## OVERVIEW
@@ -214,7 +214,7 @@ Keep this map short and stable. When code moves, AI agents should re-read the mo
 - `Global.props` carries the main MSBuild behavior: unsafe enabled, Windows targeting enabled, SourceLink, full debug symbols, and default exclusion of project-local `artifacts/` / `publish/` output trees from SDK item globbing. The Git-info analyzer remains available to all projects, while the shared `AssemblyInfo.cs` is enabled only by projects that explicitly set `EnableGitInfoGenerator`; current versioned assemblies are `SecRandom.Core`, `SecRandom.Desktop`, `SecRandom.Android`, and `SecRandom.iOS`.
 - `Directory.Build.props` only pins `AvaloniaVersion`.
 - Standalone verification scripts live under `scripts/`; keep them self-contained and write outputs under `artifacts/`.
-- Release CI keeps generated material under `artifacts/release/`: RID publish trees under `publish/`, portable ZIP assembly under `portable/`, Windows installer staging under `installer/` and `setup/`, platform package workspaces under `linux/` / `macos/`, upload candidates under `dist/`, and release-job downloads/final signed assets under `downloaded/` / `output/`. Every Android build must receive the same configured release keystore secrets, rejects missing signing configuration, and verifies the produced APK certificate against that keystore before upload. The Android job stages signed arm64 and x64 APKs separately; the release job includes the supported APK artifacts in `output/`, the signed manifest, and the GitHub release. Portable ZIP contents must remain a root `SecRandomLauncher` plus one valid `app-*` payload directory; do not rearrange that runtime package contract.
+- Release CI (`build_publish.yml`) is Windows-desktop only and keeps generated material under `artifacts/release/`: RID publish trees under `publish/`, portable ZIP assembly under `portable/`, Windows installer staging under `installer/` and `setup/`, upload candidates under `dist/`, and release-job downloads/final signed assets under `downloaded/` / `output/`. The matrix builds `win-x64`/`win-x86`/`win-arm64` only; there is no Linux/macOS/Android/iOS job. Portable ZIP contents must remain a root `SecRandomLauncher` plus one valid `app-*` payload directory; do not rearrange that runtime package contract.
 - More settings owns built-in draw page chrome options such as roll-call/lottery control panel position and control visibility; do not hard-code those controls outside the page/config binding.
 - `MoreSettings.LotteryEnabled` is the single capability switch for lottery. It must consistently gate main navigation, floating-window buttons, shortcuts, and URL/IPC routes.
 - Application-owned Fluent System Icons use the `Filled` variant by default across navigation, settings, buttons, menus, floating windows, and empty states. Use the closest semantic `Filled` icon when no same-name variant exists.
@@ -265,14 +265,12 @@ dotnet run --project scripts/FairnessAudit/SecRandom.FairnessAudit.csproj -c Rel
 dotnet publish SecRandom.Desktop/SecRandom.Desktop.csproj -c Release -r <rid> --self-contained true -o artifacts/SecRandom-<rid> /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 ```
 
-CI RIDs: `win-x64`, `win-x86`, `win-arm64`, `linux-x64`, `linux-arm64`, `osx-x64`, `osx-arm64`.
+CI RIDs: `win-x64`, `win-x86`, `win-arm64` (desktop-only in scope; do not restore Linux/macOS/mobile build targets).
 
 ## NOTES
-- Build workflow and CodeQL use .NET SDK `10.0.x`. The iOS job on `macos-26` pins Xcode `26.6` through `maxim-lobanov/setup-xcode@v1`; do not override that selection with `DEVELOPER_DIR`, and retain its `xcode-select` / `xcrun --find strip` checks to catch mixed toolchains.
+- Build workflow and CodeQL use .NET SDK `10.0.x`; the release workflow `build_publish.yml` uses `8.0.x` and targets Windows desktop only.
 - In PowerShell release-workflow regex strings, delimit a variable immediately followed by a colon as `${variable}:`; `$variable:` is parsed as a scoped-variable reference and makes the whole script fail to parse.
 - The desktop `Publish Desktop` and UIAccess publish steps must run `dotnet publish` with `-p:BuildInParallel=false -p:UseSharedCompilation=false` and must check `$LASTEXITCODE` after every publish. The two full/light publishes share the same `obj/` tree, so parallel builds and the shared `VBCSCompiler` race intermittently with `CS2012` file-lock failures on Windows; a masked (unchecked) failure leaves `publish/full` incomplete and breaks downstream portable/installer packaging with confusing "file does not exist" errors. Keep the `Verify bundled audio runtime` step enabled so an incomplete self-contained publish is caught at its source instead of silently producing broken artifacts.
-- The mobile `Build Android APK` and `Publish unsigned iOS arm64 IPA` steps must also pass `-p:BuildInParallel=false -p:UseSharedCompilation=false` (and the iOS step runs with `set -euo pipefail`). The shared `SecRandom.Core`/app graph is otherwise scheduled twice in parallel within a single build, racing on `obj/Release/net10.0` resource outputs with `MSB3554`/`CS1566`/`MSB4018` "being used by another process" failures on any platform.
-- Android release signing decodes `ANDROID_SIGNING_KEYSTORE_BASE64` by trimming whitespace and translating URL-safe base64 (`-`→`+`, `_`→`/`) before `Convert.FromBase64String`, then validates the bytes with `keytool -list` before invoking `dotnet build`. Do not strip non-base64 characters blindly: a junk character (beyond whitespace/URL-safe chars) means the secret value itself is malformed, and deleting it silently corrupts the keystore so apksigner later fails with the opaque `MSB6006: "java" exited with code 2`. A decode failure must report the offending character's code point and require re-provisioning the secret, never a lossy strip. `keytool -J-*` options must be passed through array splatting (`& keytool @args`) — as bare `-J-Duser.language=en` tokens PowerShell splits them into `-J-Duser` + `.language=en`.
 - Release workflow triggers on tags `v*`, manual dispatch, PR/push build, or commit message containing `开始构建`.
 - Test project currently includes `UnitTest1.cs` coverage for legacy privacy/telemetry migration behavior.
 - `vendors/EdgeTtsSharp/` is the Edge TTS synthesis submodule. Its embedded voice list and synthesis source are compiled by the app; `Services/Voice/EdgeTtsSharpCompatibility.cs` supplies the cross-platform transport seam, and all playback remains in ClassIsland's `SoundFlow` MiniAudio package from the repository-wide MyGet source.
