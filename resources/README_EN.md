@@ -2,18 +2,10 @@
 
 <img src="secrandom-icon-paper.png" width="128" height="128" alt="SecRandom" />
 
-# SecRandom
+# SecRandom Win7 Port
 
-**A random-selection tool for classrooms and teams, with configurable workflows, managed history, and verifiable draw records.**
+**A Windows 7 port of SecRandom, a fork for personal use**
 
-[![GitHub Issues](https://img.shields.io/github/issues-search/SECTL/SecRandom?query=is%3Aopen&style=for-the-badge&color=00b4ab&logo=github&label=Issues)](https://github.com/SECTL/SecRandom/issues)
-[![Latest Release](https://img.shields.io/github/v/release/SECTL/SecRandom?style=for-the-badge&color=00b4ab&label=Latest%20Release)](https://github.com/SECTL/SecRandom/releases/latest)
-[![Pre-release](https://img.shields.io/github/v/release/SECTL/SecRandom?include_prereleases&style=for-the-badge&label=Pre-release)](https://github.com/SECTL/SecRandom/releases)
-[![Last Update](https://img.shields.io/github/last-commit/SECTL/SecRandom?style=for-the-badge&color=00b4ab&label=Last%20Update)](https://github.com/SECTL/SecRandom/commits/master)
-[![Downloads](https://img.shields.io/github/downloads/SECTL/SecRandom/total?style=for-the-badge&color=00b4ab&label=Downloads)](https://github.com/SECTL/SecRandom/releases)
-
-[![QQ Group](https://img.shields.io/badge/-QQ%20Group%20%7C%20833875216-blue?style=for-the-badge&logo=QQ)](https://qm.qq.com/q/iWcfaPHn7W)
-[![Bilibili](https://img.shields.io/badge/-Bilibili%20%7C%20%E9%BB%8E%E6%B3%BD%E6%87%BF-%23FB7299?style=for-the-badge&logo=bilibili)](https://space.bilibili.com/520571577)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](../LICENSE)
 
 **Language** [ [简体中文](../README.md) | **English** | [日本語](README_JA.md) ]
@@ -21,11 +13,17 @@
 </div>
 
 > [!NOTE]
-> SecRandom is released under GNU GPLv3. You may modify and redistribute the source, but derivative redistributions must also use GNU GPLv3.
+> This repository is a fork of [SECTL/SecRandom](https://github.com/SECTL/SecRandom) with the goal of running on Windows 7 SP1.
+>
+> Maintained for personal use only; **most of the code is AI-generated**. Use with caution in production.
 
-## SecRandom
+## About
 
-SecRandom is a fair random-selection application for classrooms, teams, events, decision-making, and other scenarios.
+SecRandom is a fair random-selection application for classrooms, teams, events, decision-making, and other scenarios. This repository adds a Windows 7 compatibility port and personal adjustments on top of the original project.
+
+- The original project targets .NET 10; this repository is ported to **.NET 6** to support Windows 7 SP1
+- Only Windows desktop targets (`win-x64`, `win-x86`, `win-arm64`) are kept; mobile and Linux/macOS builds are removed
+- Several compatibility tweaks were added for Win7 software rendering (native rounded corners, native layered transparency, disabled MiniAudio audio, etc.)
 
 ## Features
 
@@ -38,78 +36,47 @@ SecRandom is a fair random-selection application for classrooms, teams, events, 
 
 ### Fairness and list management
 
-- Dynamically adjusts weights using history count, draw interval, group, gender, and other factors to reduce repeats and distribution imbalance.
-- Uses stable internal identifiers to preserve history; student numbers, IDs, and names are display information only.
-- Supports multiple student lists, prize pools, and `.xlsx`, `.xls`, `.csv` import, mapping, and preview.
-- Saves history for every draw round for convenient review.
+- Dynamically adjusts weights based on draw history, intervals, groups, and gender to reduce repetition and uneven distribution.
+- Uses a stable internal identifier for history; student number, ID, and name are display-only.
+- Supports multiple student lists and prize pools with `.xlsx`, `.xls`, and `.csv` import, mapping, and preview.
+- Saves history for every draw round for easy review.
 
-### Reviewable draw results
+### Verifiable draw results
 
-- Every draw automatically saves a proof record file.
-- You can choose to involve the server in and witness the draw process.
-- Draw results can be checked again through official channels.
+- Automatically saves a proof record file for every draw.
+- Optionally lets a server participate in and witness the draw.
+- Re-checks draw results through the official channel.
 
 ### Data, privacy, and security
 
 - Settings, lists, and history can all be imported, exported, backed up, and restored.
-- Backups may include lists, history, draw proofs, images, and audio, but never passwords or other security information.
-- Password, TOTP, or USB-drive protection can secure important operations, and you can choose which operations require verification.
+- Backups can include lists, history, draw proofs, images, and audio, but never passwords or other security information.
+- Protects important operations with a password, TOTP, or USB drive, and configures which operations require verification.
 
-### Verification boundaries
+## Tech Stack
 
-| Mode | What it can do | What it cannot prove |
-|---|---|---|
-| Offline proof | Review a completed draw process | It is not a pre-draw server witness; it cannot prove that the local program or real-world roster was not modified |
-| Online witnessing | Protect the draw flow after the server locks it | It cannot prove that the roster is authentic, complete, or unfiltered before submission |
+| Version | Tech Stack |
+| --- | --- |
+| This repo | C# + Avalonia + FluentAvalonia (.NET 6, Windows 7 SP1 port) |
+| Upstream v3 | C# + Avalonia + FluentAvalonia (.NET 10) |
 
-## Technical evolution
+## Build
 
-| Version | Stack | Stage |
-| --- | --- | --- |
-| v1 | Python + PyQt5 + qfluentwidgets | First desktop implementation |
-| v2 | Python + PySide6 + qfluentwidgets | Qt stack evolution |
-| **v3** | **C# + Avalonia + FluentAvalonia** | .NET desktop rewrite for continued draw, verification, and desktop-integration development |
+```bash
+dotnet restore SecRandom.sln
+dotnet build SecRandom.sln -c Release --no-restore
+dotnet publish SecRandom.Desktop/SecRandom.Desktop.csproj -c Release -r win-x64 --self-contained true -o artifacts/SecRandom-win-x64
+```
 
-## Download and updates
+## License and Third-Party Notices
 
-- [GitHub Releases](https://github.com/SECTL/SecRandom/releases) provides release packages and change notes.
-- The [official download page](https://stk.sectl.cn/SecRandom) provides the latest download entry point.
-- Automatic updates validate a signed release manifest and artifact length/hash before deployment. Refer to the package and notes supplied with each release for installation details.
+- This repository is released under the original project's [GNU GPLv3](../LICENSE); derivative redistributions must also use GNU GPLv3
+- Third-party components, copyright, and distribution review details are in [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md)
 
-## License and third-party notices
+## Disclaimer
 
-- SecRandom is released under [GNU GPLv3](../LICENSE).
-- See [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md) for third-party components, copyright information, and distribution-review notes.
-- History-balanced weights and candidate filters help reduce repeat selections and improve long-term distribution. They do not replace management of real-world rosters, rules, or processes, and SecRandom does not claim to verify those conditions.
+- This is a personal secondary-development port; **most of the code is AI-generated** and may contain unknown defects
+- No official support is provided; back up your data and verify the behavior before use
+- Feature details and online witnessing services follow the [upstream repository](https://github.com/SECTL/SecRandom)
 
-## Contributors and special thanks
-
-<a href="https://github.com/SECTL/SecRandom/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=SECTL/SecRandom" alt="SecRandom contributors" />
-</a>
-
-Thank you to everyone who contributes code, reports issues, improves documentation, or provides feedback. The avatars are generated from GitHub contributor data; select them to open the [GitHub contributors page](https://github.com/SECTL/SecRandom/graphs/contributors) for complete statistics.
-
-## Support and community
-
-- [Support us on Afdian](https://afdian.com/a/lzy0983)
-- [Email](mailto:lzy.12@foxmail.com)
-- [QQ Group 833875216](https://qm.qq.com/q/iWcfaPHn7W)
-- [QQ Channel](https://pd.qq.com/s/4x5dafd34?b=9)
-- [Bilibili](https://space.bilibili.com/520571577)
-- [Report an issue](https://github.com/SECTL/SecRandom/issues)
-- [SecRandom documentation](https://secrandom.sectl.cn/doc/overview.html)
-- [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SECTL/SecRandom)
-- [English contributing guide](CONTRIBUTING_EN.md)
-
-## Star History
-
-<a href="https://www.star-history.com/?repos=SECTL%2FSecRandom&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=SECTL/SecRandom&type=date&theme=dark&legend=top-left&sealed_token=ugfdzW7iXV4wxuvKJoxpW6akarha_ogPhHQL86oTVzn8VT5lUiEMRTg8xxLjViyNUEax2PY2wSEeiYHOeJAGJfNRfLdtLGGihK9G5H-0WWX1rWT1YPBBVg" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=SECTL/SecRandom&type=date&legend=top-left&sealed_token=ugfdzW7iXV4wxuvKJoxpW6akarha_ogPhHQL86oTVzn8VT5lUiEMRTg8xxLjViyNUEax2PY2wSEeiYHOeJAGJfNRfLdtLGGihK9G5H-0WWX1rWT1YPBBVg" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=SECTL/SecRandom&type=date&legend=top-left&sealed_token=ugfdzW7iXV4wxuvKJoxpW6akarha_ogPhHQL86oTVzn8VT5lUiEMRTg8xxLjViyNUEax2PY2wSEeiYHOeJAGJfNRfLdtLGGihK9G5H-0WWX1rWT1YPBBVg" />
- </picture>
-</a>
-
-**Copyright © 2025-2026 SECTL**
+**Copyright © 2025-2026 c1201y**

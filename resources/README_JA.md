@@ -2,18 +2,10 @@
 
 <img src="secrandom-icon-paper.png" width="128" height="128" alt="SecRandom" />
 
-# SecRandom
+# SecRandom Win7 Port
 
-**授業やチームで使える、設定可能な抽選フロー、履歴管理、検証可能な抽選記録を備えたランダム抽選ツール。**
+**Windows 7 向けの SecRandom 二次開発移植版**
 
-[![GitHub Issues](https://img.shields.io/github/issues-search/SECTL/SecRandom?query=is%3Aopen&style=for-the-badge&color=00b4ab&logo=github&label=Issues)](https://github.com/SECTL/SecRandom/issues)
-[![Latest Release](https://img.shields.io/github/v/release/SECTL/SecRandom?style=for-the-badge&color=00b4ab&label=Latest%20Release)](https://github.com/SECTL/SecRandom/releases/latest)
-[![Pre-release](https://img.shields.io/github/v/release/SECTL/SecRandom?include_prereleases&style=for-the-badge&label=Pre-release)](https://github.com/SECTL/SecRandom/releases)
-[![Last Update](https://img.shields.io/github/last-commit/SECTL/SecRandom?style=for-the-badge&color=00b4ab&label=Last%20Update)](https://github.com/SECTL/SecRandom/commits/master)
-[![Downloads](https://img.shields.io/github/downloads/SECTL/SecRandom/total?style=for-the-badge&color=00b4ab&label=Downloads)](https://github.com/SECTL/SecRandom/releases)
-
-[![QQ Group](https://img.shields.io/badge/-QQ%20Group%20%7C%20833875216-blue?style=for-the-badge&logo=QQ)](https://qm.qq.com/q/iWcfaPHn7W)
-[![Bilibili](https://img.shields.io/badge/-Bilibili%20%7C%20%E9%BB%8E%E6%B3%BD%E6%87%BF-%23FB7299?style=for-the-badge&logo=bilibili)](https://space.bilibili.com/520571577)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](../LICENSE)
 
 **言語** [ [简体中文](../README.md) | [English](README_EN.md) | **日本語** ]
@@ -21,11 +13,17 @@
 </div>
 
 > [!NOTE]
-> SecRandom は GNU GPLv3 で公開されています。ソースコードの変更と再配布は可能ですが、派生物も GNU GPLv3 で公開する必要があります。
+> このリポジトリは [SECTL/SecRandom](https://github.com/SECTL/SecRandom) の二次開発版で、Windows 7 SP1 での動作を目的としています
+>
+> 個人用途で保守しており、**コードの大部分は AI によって生成されています**。本番環境での利用には注意してください
 
-## SecRandom
+## 概要
 
-SecRandom は、授業、チーム、イベント、意思決定などの場面で公平な抽選を行うためのアプリケーションです。
+SecRandom は、授業、チーム、イベント、意思決定などの場面で公平な抽選を行うためのアプリケーションです。このリポジトリでは、元プロジェクトに Windows 7 互換性の移植と個人向けの調整を加えています。
+
+- 元プロジェクトは .NET 10 で構築されていますが、本リポジトリは **.NET 6** に移植し、Windows 7 SP1 をサポートします
+- Windows デスクトップのみ（`win-x64`、`win-x86`、`win-arm64`）を対象とし、モバイルおよび Linux/macOS のビルドは除外しました
+- Win7 のソフトウェアレンダリング向けにいくつかの互換処理を追加しました（ネイティブ角丸、ネイティブレイヤード透明度、MiniAudio オーディオ無効化など）
 
 ## 機能
 
@@ -55,61 +53,30 @@ SecRandom は、授業、チーム、イベント、意思決定などの場面�
 - バックアップにはリスト、履歴、抽選証明、画像、音声を含められますが、パスワードなどのセキュリティ情報は含まれません。
 - パスワード、TOTP、USB メモリによる保護で重要な操作を守り、検証が必要な操作を設定できます。
 
-### 検証の境界
+## 技術スタック
 
-| モード | できること | 証明できないこと |
-|---|---|---|
-| オフライン証明 | 完了した抽選プロセスを再確認する | 抽選前のサーバー立会いではなく、ローカルプログラムや現実の名簿が変更されていないことを証明できない |
-| オンライン立会い | サーバーがロックした後の抽選フローを保護する | 名簿が真正かつ完全で、送信前に絞り込まれていないことを証明できない |
+| バージョン | 技術スタック |
+| --- | --- |
+| 本リポジトリ | C# + Avalonia + FluentAvalonia（.NET 6、Windows 7 SP1 移植） |
+| 元 v3 | C# + Avalonia + FluentAvalonia（.NET 10） |
 
-## 技術の変遷
+## ビルド
 
-| バージョン | 技術スタック | 段階 |
-| --- | --- | --- |
-| v1 | Python + PyQt5 + qfluentwidgets | 初代デスクトップ実装 |
-| v2 | Python + PySide6 + qfluentwidgets | Qt スタックの進化 |
-| **v3** | **C# + Avalonia + FluentAvalonia** | 抽選、検証、デスクトップ連携を継続的に発展させる .NET デスクトップ再構築 |
-
-## ダウンロードと更新
-
-- [GitHub Releases](https://github.com/SECTL/SecRandom/releases) でリリースパッケージと変更履歴を提供しています。
-- [公式ダウンロードページ](https://stk.sectl.cn/SecRandom) から最新版のダウンロード入口を利用できます。
-- 自動更新では、配置前に署名付きリリースマニフェストと成果物の長さ・ハッシュを検証します。インストールの詳細は各リリースに含まれるパッケージと説明を参照してください。
+```bash
+dotnet restore SecRandom.sln
+dotnet build SecRandom.sln -c Release --no-restore
+dotnet publish SecRandom.Desktop/SecRandom.Desktop.csproj -c Release -r win-x64 --self-contained true -o artifacts/SecRandom-win-x64
+```
 
 ## ライセンスと第三者通知
 
-- SecRandom は [GNU GPLv3](../LICENSE) で公開されています。
-- 第三者コンポーネント、著作権情報、配布審査に関する注記は [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md) を参照してください。
-- 履歴に基づく重み付けと候補者フィルターは、同じ人の連続選出を減らし、長期的な分布を改善するためのものです。現実の名簿、ルール、運用手順を管理する代わりにはならず、それらをソフトウェアで検証できるとは主張しません。
+- 本リポジトリは元プロジェクトの [GNU GPLv3](../LICENSE) に従って公開されており、派生物も GNU GPLv3 で公開する必要があります
+- 第三者コンポーネント、著作権情報、配布審査に関する注記は [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md) を参照してください
 
-## 貢献者と特別な謝辞
+## 免責事項
 
-<a href="https://github.com/SECTL/SecRandom/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=SECTL/SecRandom" alt="SecRandom contributors" />
-</a>
+- 個人による二次開発移植であり、**コードの大部分は AI によって生成されています**。未知の欠陥が含まれる可能性があります
+- 公式サポートは提供していません。利用前にデータをバックアップし、機能が期待どおりであることを確認してください
+- 機能の詳細やオンライン立会いサービスについては、[元リポジトリ](https://github.com/SECTL/SecRandom) の説明を参照してください
 
-コードの提供、問題報告、ドキュメント改善、フィードバックを寄せてくださるすべての貢献者に感謝します。アバターは GitHub の貢献者データから動的に生成され、クリックすると完全な統計を [GitHub の貢献者ページ](https://github.com/SECTL/SecRandom/graphs/contributors) で確認できます。
-
-## サポートとコミュニティ
-
-- [Afdian で支援する](https://afdian.com/a/lzy0983)
-- [メール](mailto:lzy.12@foxmail.com)
-- [QQ グループ 833875216](https://qm.qq.com/q/iWcfaPHn7W)
-- [QQ チャンネル](https://pd.qq.com/s/4x5dafd34?b=9)
-- [Bilibili](https://space.bilibili.com/520571577)
-- [問題を報告する](https://github.com/SECTL/SecRandom/issues)
-- [SecRandom 公式ドキュメント](https://secrandom.sectl.cn/doc/overview.html)
-- [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SECTL/SecRandom)
-- [日本語の貢献ガイド](CONTRIBUTING_JA.md)
-
-## Star History
-
-<a href="https://www.star-history.com/?repos=SECTL%2FSecRandom&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=SECTL/SecRandom&type=date&theme=dark&legend=top-left&sealed_token=ugfdzW7iXV4wxuvKJoxpW6akarha_ogPhHQL86oTVzn8VT5lUiEMRTg8xxLjViyNUEax2PY2wSEeiYHOeJAGJfNRfLdtLGGihK9G5H-0WWX1rWT1YPBBVg" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=SECTL/SecRandom&type=date&legend=top-left&sealed_token=ugfdzW7iXV4wxuvKJoxpW6akarha_ogPhHQL86oTVzn8VT5lUiEMRTg8xxLjViyNUEax2PY2wSEeiYHOeJAGJfNRfLdtLGGihK9G5H-0WWX1rWT1YPBBVg" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=SECTL/SecRandom&type=date&legend=top-left&sealed_token=ugfdzW7iXV4wxuvKJoxpW6akarha_ogPhHQL86oTVzn8VT5lUiEMRTg8xxLjViyNUEax2PY2wSEeiYHOeJAGJfNRfLdtLGGihK9G5H-0WWX1rWT1YPBBVg" />
- </picture>
-</a>
-
-**Copyright © 2025-2026 SECTL**
+**Copyright © 2025-2026 c1201y**
