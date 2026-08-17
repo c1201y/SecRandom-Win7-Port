@@ -12,14 +12,18 @@
         </Style>
 
         <Style Selector="PopupRoot">
-            <Setter Property="Background" Value="#242424" />
+            <Setter Property="Background" Value="{DynamicResource PopupHostBackground}" />
         </Style>
     </Application.Styles>
 
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="PopupHostBackground" Color="#F3F3F3" />
+                </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="PopupHostBackground" Color="#242424" />
                     <SolidColorBrush x:Key="ComboBoxDropDownBorderBrush" Color="#3A3A3A" />
                     <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="#242424" />
                     <CornerRadius x:Key="OverlayCornerRadius">8</CornerRadius>

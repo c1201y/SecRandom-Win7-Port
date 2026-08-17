@@ -9,7 +9,8 @@ public enum WindowFeatures
     SkipTaskSwitcher = 1 << 2,
     NoActivate = 1 << 3,
     ClickThrough = 1 << 4,
-    ExcludeFromCapture = 1 << 5
+    ExcludeFromCapture = 1 << 5,
+    RoundedCorners = 1 << 6
 }
 
 public readonly record struct WindowFeatureRequest(WindowFeatures Features, bool Enabled);

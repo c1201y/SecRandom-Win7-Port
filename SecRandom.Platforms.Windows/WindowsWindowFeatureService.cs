@@ -90,10 +90,11 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
 
     public WindowFeatures SupportedFeatures => WindowFeatures.Topmost |
                                                 WindowFeatures.ToolWindow |
-                                                WindowFeatures.SkipTaskSwitcher |
-                                                WindowFeatures.NoActivate |
-                                                WindowFeatures.ClickThrough |
-                                                (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19041)
+                                                 WindowFeatures.SkipTaskSwitcher |
+                                                 WindowFeatures.NoActivate |
+                                                 WindowFeatures.ClickThrough |
+                                                 WindowFeatures.RoundedCorners |
+                                                 (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19041)
                                                     ? WindowFeatures.ExcludeFromCapture
                                                     : WindowFeatures.None);
 
@@ -138,6 +139,17 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
             else
             {
                 failed |= WindowFeatures.ExcludeFromCapture;
+                detail ??= failure;
+            }
+        }
+
+        if ((requested & WindowFeatures.RoundedCorners) != 0)
+        {
+            if (TrySetRoundedCorners(window.Value, request.Enabled, out var failure))
+                applied |= WindowFeatures.RoundedCorners;
+            else
+            {
+                failed |= WindowFeatures.RoundedCorners;
                 detail ??= failure;
             }
         }
@@ -261,6 +273,54 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
         }
     }
 
+    private static bool TrySetRoundedCorners(nint window, bool enabled, out string? failure)
+    {
+        try
+        {
+            if (!GetClientRect(window, out var rect))
+            {
+                failure = $"GetClientRect failed with Win32 error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            if (!enabled)
+            {
+                if (SetWindowRgn(window, (nint)0, true) != 0)
+                {
+                    failure = null;
+                    return true;
+                }
+
+                failure = $"SetWindowRgn failed with Win32 error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            var width = Math.Max(1, rect.Right - rect.Left);
+            var height = Math.Max(1, rect.Bottom - rect.Top);
+            var region = CreateRoundRectRgn(0, 0, width + 1, height + 1, 16, 16);
+            if (region == (nint)0)
+            {
+                failure = $"CreateRoundRectRgn failed with Win32 error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            if (SetWindowRgn(window, region, true) != 0)
+            {
+                failure = null;
+                return true;
+            }
+
+            DeleteObject(region);
+            failure = $"SetWindowRgn failed with Win32 error {Marshal.GetLastWin32Error()}.";
+            return false;
+        }
+        catch (Exception exception)
+        {
+            failure = exception.Message;
+            return false;
+        }
+    }
+
     private static long SetFlag(long value, long flag, bool enabled) => enabled ? value | flag : value & ~flag;
 
     [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
@@ -277,6 +337,29 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool SetWindowDisplayAffinity(nint hWnd, uint affinity);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetClientRect(nint hWnd, out NativeRect rect);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern int SetWindowRgn(nint hWnd, nint hRgn, [MarshalAs(UnmanagedType.Bool)] bool redraw);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
+    private static extern nint CreateRoundRectRgn(int left, int top, int right, int bottom, int width, int height);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool DeleteObject(nint handle);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private readonly struct NativeRect
+    {
+        public readonly int Left;
+        public readonly int Top;
+        public readonly int Right;
+        public readonly int Bottom;
+    }
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

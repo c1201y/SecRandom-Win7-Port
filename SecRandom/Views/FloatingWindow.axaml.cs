@@ -75,6 +75,11 @@ public partial class FloatingWindow : Window
         _featureAvailability.Changed += FeatureAvailabilityOnChanged;
         Opened += OnOpened;
         Closed += (_, _) => _featureAvailability.Changed -= FeatureAvailabilityOnChanged;
+        SizeChanged += (_, _) =>
+        {
+            if (IsVisible)
+                this.ApplyPlatformFeatures(WindowFeatures.RoundedCorners, enabled: true);
+        };
         RefreshItems();
     }
 
@@ -355,6 +360,7 @@ public partial class FloatingWindow : Window
     private void OnOpened(object? sender, EventArgs e)
     {
         this.ApplyPlatformFeatures(WindowFeatures.SkipTaskSwitcher, enabled: true);
+        this.ApplyPlatformFeatures(WindowFeatures.RoundedCorners, enabled: true);
 
         // The platform handle only exists after the window is opened; reapply the
         // configured opacity so the layered-window value is not left at its default.
@@ -655,6 +661,7 @@ public partial class FloatingWindow : Window
             UpdateDockButton();
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render).GetTask();
             RepositionDockedWindow();
+            this.ApplyPlatformFeatures(WindowFeatures.RoundedCorners, enabled: true);
             RootGrid.Opacity = 1;
             await AnimateControlAsync(
                 DockButton,
@@ -756,6 +763,7 @@ public partial class FloatingWindow : Window
             ExpandedContent.IsVisible = true;
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render).GetTask();
             PositionExpandedWindowAtDockAnchor(useCurrentSize: true);
+            this.ApplyPlatformFeatures(WindowFeatures.RoundedCorners, enabled: true);
             RootGrid.Opacity = 1;
             await AnimateControlAsync(
                 ExpandedContent,
