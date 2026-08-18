@@ -11,86 +11,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
               x:Class="SecRandom.Views.SettingsPages.About.AboutSettingsPage"
               x:DataType="local:AboutSettingsPage">
-    <UserControl.Resources>
-        <ScrollViewer x:Key="ContributorsDrawer" Width="320">
-            <StackPanel Margin="16" Spacing="8">
-                <Grid ColumnDefinitions="* Auto">
-                    <TextBlock Grid.Column="0"
-                               Text="{x:Static lsa:Resources.S_Ack_Contributors}"
-                               Theme="{StaticResource SubtitleTextBlockStyle}" />
-                    
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                        <Button IsEnabled="{Binding CanRefreshContributors}"
-                                ToolTip.Tip="{x:Static lsa:Resources.C_Refresh}"
-                                Theme="{StaticResource TransparentButton}"
-                                Click="RefreshContributors_OnClick">
-                            <sr:FluentIcon Glyph="{sr:Fi ArrowClockwiseFilled}" />
-                        </Button>
-                        
-                        <Button ToolTip.Tip="{x:Static lsa:Resources.C_Close}"
-                                Theme="{StaticResource TransparentButton}"
-                                Click="CloseDrawer_OnClick">
-                            <sr:FluentIcon Glyph="{sr:Fi DismissRegular}" />
-                        </Button>
-                    </StackPanel>
-                </Grid>
-                
-                <TextBlock Text="{x:Static lsa:Resources.S_Ack_Contributors_D}"
-                           TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                
-                <ItemsControl ItemsSource="{Binding Contributors}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Spacing="4"></StackPanel>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="local:GitHubContributor">
-                            <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                                    Margin="0" Padding="4" Background="Transparent"
-                                    CommandParameter="{Binding ProfileUrl}" Click="OpenContributorProfile_OnClick"
-                                    ToolTip.Tip="{Binding ProfileUrl}">
-                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
-                                    <Border Grid.Column="0"
-                                            Width="36" Height="36"
-                                            Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                                            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
-                                            BorderThickness="1"
-                                            CornerRadius="18"
-                                            ClipToBounds="True">
-                                        <Border Width="34" Height="34" CornerRadius="17" ClipToBounds="True">
-                                            <Image Source="{Binding Avatar}" Stretch="UniformToFill" />
-                                        </Border>
-                                    </Border>
-                                    
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
-                                        <TextBlock Text="{Binding Login}"
-                                                   FontWeight="SemiBold"
-                                                   TextTrimming="CharacterEllipsis" />
-                                        <TextBlock Text="{Binding ContributionText}"
-                                                   FontSize="12"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                                    </StackPanel>
-                                    
-                                    <sr:FluentIcon Grid.Column="2"
-                                                   Glyph="{sr:Fi OpenFilled}"
-                                                   Margin="0 0 8 0"
-                                                   VerticalAlignment="Center" />
-                                </Grid>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </ScrollViewer>
-    </UserControl.Resources>
+    <UserControl.Resources />
     
     <sr:StickyScrollViewer CollapsedHeight="58">
         <sr:StickyScrollViewer.HeaderContent>
             <Grid>
-                <Panel MaxHeight="300"
+                <Panel MaxHeight="500"
                        Opacity="{Binding $self.(sr:StickyScrollViewer.HeaderFadingOpacity)}"
                        Background="Transparent">
                     <Panel.OpacityMask>
@@ -180,7 +106,7 @@
                     <TextBlock Background="Transparent">
                         <Run Text="Copyright (c) 2025-" />
                         <Run Text="{Binding Year, Source={x:Static system:DateTime.Now}, Mode=OneWay}" />
-                        SECTL
+                        椰汁
                     </TextBlock>
                 </fa:SettingsExpanderItem>
 
@@ -213,7 +139,7 @@
                                    Header="{x:Static lsa:Resources.S_Author_R}"
                                    Description="{x:Static lsa:Resources.S_Author_D}" IsExpanded="True">
                 <fa:SettingsExpander.IconSource>
-                    <fa:ImageIconSource Source="/Assets/AuthorAionflux.png" />
+                    <fa:ImageIconSource Source="/Assets/Avatar.png" />
                 </fa:SettingsExpander.IconSource>
 
                 <fa:SettingsExpanderItem x:Name="S_Author_Bilibili"
@@ -221,38 +147,7 @@
                                            Description="{x:Static lsa:Resources.S_Author_BiliBili_D}"
                                             IsClickEnabled="True" ActionIconSource="{sr:FluentIconSource {sr:Fi OpenFilled}}"
                                            Click="UriNavigationCommands_OnClick"
-                                           CommandParameter="https://space.bilibili.com/520571577" />
-
-                <fa:SettingsExpanderItem x:Name="S_Author_Donate"
-                                           Content="{x:Static lsa:Resources.S_Author_Donate}"
-                                           Description="{x:Static lsa:Resources.S_Author_Donate_D}"
-                                            IsClickEnabled="True" ActionIconSource="{sr:FluentIconSource {sr:Fi OpenFilled}}"
-                                           Click="UriNavigationCommands_OnClick"
-                                           CommandParameter="https://afdian.com/a/lzy0983" />
-
-                <fa:SettingsExpanderItem x:Name="S_Author_Org"
-                                            Content="{x:Static lsa:Resources.S_Author_Org}"
-                                            Description="{x:Static lsa:Resources.S_Author_Org_D}">
-                    <fa:SettingsExpanderItem.IconSource>
-                        <fa:ImageIconSource Source="/Assets/SECTLLogo.png" />
-                    </fa:SettingsExpanderItem.IconSource>
-
-                    <fa:SettingsExpanderItem.Footer>
-                        <WrapPanel>
-                            <WrapPanel.Styles>
-                                <Style Selector="HyperlinkButton">
-                                    <Setter Property="Padding" Value="4" />
-                                    <Setter Property="Margin" Value="2" />
-                                </Style>
-                            </WrapPanel.Styles>
-
-                             <HyperlinkButton Click="UriNavigationCommands_OnClick"
-                                              CommandParameter="https://sectl.cn">
-                                 <TextBlock Text="{x:Static lsa:Resources.C_OrgHome}" />
-                             </HyperlinkButton>
-                        </WrapPanel>
-                    </fa:SettingsExpanderItem.Footer>
-                </fa:SettingsExpanderItem>
+                                            CommandParameter="https://space.bilibili.com/3546609547741581" />
             </fa:SettingsExpander>
 
             <fa:SettingsExpander x:Name="S_Ack"
@@ -268,19 +163,8 @@
                             人
                         </TextBlock>
                     </fa:SettingsExpanderItem.Footer>
-                </fa:SettingsExpanderItem>
+</fa:SettingsExpanderItem>
 
-                 <fa:SettingsExpanderItem x:Name="S_Ack_Contributors" Content="{x:Static lsa:Resources.S_Ack_Contributors}"
-                                           Description="{x:Static lsa:Resources.S_Ack_Contributors_D}"
-                                           IsClickEnabled="True"
-                                           Click="Contributors_OnClick" />
-
-                <fa:SettingsExpanderItem x:Name="S_Debug"
-                                           Content="{x:Static lsa:Resources.S_Debug}"
-                                           Description="{x:Static lsa:Resources.S_Debug_D}"
-                                           IconSource="{sr:FluentIconSource {sr:Fi BugFilled}}"
-                                           IsClickEnabled="True"
-                                           Click="Debug_OnClick" />
             </fa:SettingsExpander>
         </StackPanel>
     </sr:StickyScrollViewer>

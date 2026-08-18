@@ -13,6 +13,8 @@
   <data name="C_MoreOptions" xml:space="preserve"><value>その他のオプション...</value></data>
   <data name="C_MoreOptions_LogViewer" xml:space="preserve"><value>ログを表示</value></data>
   <data name="C_MoreOptions_LogViewer_D" xml:space="preserve"><value>アプリケーションのログファイルを表示・管理します</value></data>
+  <data name="C_MoreOptions_Debug" xml:space="preserve"><value>デバッグ</value></data>
+  <data name="C_MoreOptions_Debug_D" xml:space="preserve"><value>設定サイドバーにデバッグページを表示します</value></data>
   <data name="C_MoreOptions_ExportDiagnosticData" xml:space="preserve"><value>診断データをエクスポート</value></data>
   <data name="C_MoreOptions_ExportDiagnosticData_D" xml:space="preserve"><value>匿名化した実行情報と限定ログを今すぐエクスポートして問題を調査します</value></data>
   <data name="C_MoreOptions_ExportSettings" xml:space="preserve"><value>設定をエクスポート</value></data>

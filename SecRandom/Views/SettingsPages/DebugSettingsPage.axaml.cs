@@ -44,7 +44,7 @@ public partial class DebugSettingsPage : UserControl, INotifyPropertyChanged
     {
         DataContext = this;
         InitializeComponent();
-        InternalSettingsToggle.IsCheckedChanged += InternalSettingsToggle_OnIsCheckedChanged;
+        IsInternalSettingsEnabled = _configHandler.Data.General.InternalSettingsEnabled;
         RefreshDiagnostics();
     }
 
@@ -140,6 +140,8 @@ public partial class DebugSettingsPage : UserControl, INotifyPropertyChanged
         if (toggle.IsChecked != true)
         {
             AttachedSettingsRegistryExtensions.UnregisterAttachedSettingsControl<BehindSceneAttachedSettingsControl>();
+            _configHandler.Data.General.InternalSettingsEnabled = false;
+            _configHandler.Save();
             IsInternalSettingsEnabled = false;
             return;
         }
@@ -167,6 +169,8 @@ public partial class DebugSettingsPage : UserControl, INotifyPropertyChanged
 
         AttachedSettingsRegistryExtensions.RegisterAttachedSettingsControl<BehindSceneAttachedSettingsControl>(
             SecRandom.Langs.Common.Resources.AttachedSettings_BehindScene);
+        _configHandler.Data.General.InternalSettingsEnabled = true;
+        _configHandler.Save();
         IsInternalSettingsEnabled = true;
     }
 

@@ -433,6 +433,11 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
         SelectNavigationItemById("settings.logs");
     }
 
+    private void DebugMenuItem_OnClick(object? sender, RoutedEventArgs e)
+    {
+        ShowDebugNavigationItem();
+    }
+
     private void FeedbackMenuItem_OnClick(object? sender, RoutedEventArgs e)
     {
         FeedbackDrawer drawer = ViewModel.DrawerContent as FeedbackDrawer

@@ -11,9 +11,9 @@ public static class GlobalConstants
     public static string FullCommitHash => GitInfo.CommitHash ?? string.Empty;
 
     public static string CodeName => @"Nonomi";
-    public static string Version => $@"v{GitInfo.Version}";
-    public static string AssemblyVersion => GitInfo.AssemblyVersion;
-    public static string DisplayVersion => $@"{Version} (Codename {CodeName})";
+    public static string Version => @"v3.0.0.0";
+    public static string AssemblyVersion => @"3.0.0.0";
+    public static string DisplayVersion => $@"{Version} 移植版";
     public static string VersionLong => $@"{Version}-{CodeName}-{CommitHash}({Branch})";
 
     public static string PlatformExecutableExtension => OperatingSystem.IsWindows() ? @".exe" : "";

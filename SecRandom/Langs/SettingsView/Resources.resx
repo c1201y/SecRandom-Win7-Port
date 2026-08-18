@@ -51,6 +51,12 @@
     <data name="C_MoreOptions_LogViewer_D" xml:space="preserve">
         <value>查看和管理程序日志文件</value>
     </data>
+    <data name="C_MoreOptions_Debug" xml:space="preserve">
+        <value>调试</value>
+    </data>
+    <data name="C_MoreOptions_Debug_D" xml:space="preserve">
+        <value>在设置侧边栏显示调试页面</value>
+    </data>
     <data name="C_MoreOptions_ExportDiagnosticData" xml:space="preserve">
         <value>导出诊断数据</value>
     </data>

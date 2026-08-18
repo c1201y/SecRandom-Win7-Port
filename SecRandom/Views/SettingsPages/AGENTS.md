@@ -84,6 +84,6 @@ SecRandom/Views/SettingsPages/
 
 - Do not add a settings page file here without registering it in `BuildHost()`.
 - Do not invent a new page-ID shape that breaks `settings.xxx` / `settings.group.xxx`.
-- `DebugSettingsPage` is available in all builds for the About-page activation path; keep it hidden by default in release builds and localize all user-facing text under `Langs/SettingsPages/Debug/`. It is revealed by clicking the "调试" (`S_Debug`) row in the About acknowledgment section (`Debug_OnClick` in `AboutSettingsPage`), then `SettingsView.ShowDebugNavigationItem()`.
+- `DebugSettingsPage` is available in all builds for the settings-shell activation path; keep it hidden by default in release builds and localize all user-facing text under `Langs/SettingsPages/Debug/`. It is revealed by clicking the "调试" (`C_MoreOptions_Debug`) item in the `SettingsView` top-right "⋯" more-options menu (`DebugMenuItem_OnClick`), which calls `SettingsView.ShowDebugNavigationItem()`.
 - Do not put backup/config persistence logic in these pages when the boundary belongs in Core handlers or app services.
 - Do not open navigation targets by manually editing menu items in `SettingsView`; register pages/groups and let the registry build the menu.

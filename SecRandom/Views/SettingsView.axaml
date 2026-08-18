@@ -134,6 +134,10 @@
                                           Header="{x:Static ls:Resources.C_MoreOptions_LogViewer}"
                                           ToolTip.Tip="{x:Static ls:Resources.C_MoreOptions_LogViewer_D}"
                                           Click="LogViewerMenuItem_OnClick" />
+                                <MenuItem Icon="{sr:FluentIcon {sr:Fi BugFilled}}"
+                                          Header="{x:Static ls:Resources.C_MoreOptions_Debug}"
+                                          ToolTip.Tip="{x:Static ls:Resources.C_MoreOptions_Debug_D}"
+                                          Click="DebugMenuItem_OnClick" />
                                 <MenuItem Icon="{sr:FluentIcon {sr:Fi DatabaseArrowDownFilled}}"
                                           Header="{x:Static ls:Resources.C_MoreOptions_ExportDiagnosticData}"
                                           ToolTip.Tip="{x:Static ls:Resources.C_MoreOptions_ExportDiagnosticData_D}"

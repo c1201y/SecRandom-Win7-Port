@@ -135,6 +135,8 @@
     <data name="M_OpenDirectoryFailed"><value>Unable to open the directory.</value></data>
     <data name="C_MoreOptions_LogViewer"><value>View logs</value></data>
     <data name="C_MoreOptions_LogViewer_D"><value>View and manage application log files</value></data>
+    <data name="C_MoreOptions_Debug"><value>Debug</value></data>
+    <data name="C_MoreOptions_Debug_D"><value>Show the debug page in the settings sidebar</value></data>
   <data name="C_Close"><value>Close</value></data>
   <data name="C_CopySessionCode"><value>Copy session code</value></data>
     <data name="M_ImportUnsupportedTitle"><value>Unsupported Import File</value></data>

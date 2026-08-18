@@ -109,12 +109,9 @@ The official GNU GPLv3 text controls. This acknowledgement does not require you 
   <data name="C_OverwriteTitle" xml:space="preserve"><value>Confirm list overwrite</value></data>
   <data name="C_Overwrite" xml:space="preserve"><value>Overwrite</value></data>
   <data name="C_ResourcesTitle" xml:space="preserve"><value>Project resources</value></data>
-  <data name="C_SectlWebsite" xml:space="preserve"><value>SECTL website</value></data>
+  <data name="C_SectlWebsite" xml:space="preserve"><value>椰汁 website</value></data>
   <data name="C_Documentation" xml:space="preserve"><value>SecRandom documentation</value></data>
-  <data name="C_AuthorBilibili" xml:space="preserve"><value>Lizeyi_Aionflux on Bilibili</value></data>
-  <data name="C_Sponsor" xml:space="preserve"><value>Support on Afdian</value></data>
-  <data name="C_Community" xml:space="preserve"><value>SECTL community group</value></data>
-  <data name="C_CommunityAnswer" xml:space="preserve"><value>QQ group: 833875216. Join answer: 思拓创联/SECTL</value></data>
+  <data name="C_AuthorBilibili" xml:space="preserve"><value>椰汁 on Bilibili</value></data>
   <data name="C_Previous" xml:space="preserve"><value>Previous</value></data>
   <data name="C_Start" xml:space="preserve"><value>Start</value></data>
   <data name="C_Next" xml:space="preserve"><value>Next</value></data>

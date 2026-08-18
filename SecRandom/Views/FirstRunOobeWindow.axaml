@@ -153,7 +153,7 @@
                         </Border>
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_RollCallList}"
                                                Description="{x:Static langs:Resources.C_RollCallListDescription}"
-                                               IconSource="&#xECC4;"
+                                               IconSource="{sr:FluentIconSource {sr:Fi PeopleListFilled}}"
                                                IsExpanded="True">
                             <fa:SettingsExpander.Footer>
                                 <ComboBox MinWidth="220"
@@ -188,14 +188,14 @@
                                    Margin="0 0 0 8"
                                    TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_LotteryEnabled}"
-                                               IconSource="&#xE8EC;">
+                                               IconSource="{sr:FluentIconSource {sr:Fi GiftFilled}}">
                             <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.MoreSettings.LotteryEnabled}" />
                             </fa:SettingsExpander.Footer>
                         </fa:SettingsExpander>
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_PrizeList}"
                                                Description="{x:Static langs:Resources.C_PrizeListDescription}"
-                                               IconSource="&#xEAFB;"
+                                               IconSource="{sr:FluentIconSource {sr:Fi LotteryFilled}}"
                                                IsExpanded="True"
                                                IsVisible="{Binding ViewModel.MoreSettings.LotteryEnabled}">
                             <fa:SettingsExpander.Footer>
@@ -229,7 +229,7 @@
                                    Theme="{StaticResource TitleTextBlockStyle}" />
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_Theme}"
                                                Description="{x:Static langs:Resources.C_ThemeDescription}"
-                                               IconSource="&#xE5CA;">
+                                               IconSource="{sr:FluentIconSource {sr:Fi DarkThemeFilled}}">
                             <fa:SettingsExpander.Footer>
                                 <ComboBox SelectedIndex="{Binding ViewModel.Appearance.Theme}">
                                     <ComboBoxItem Content="{x:Static langs:Resources.O_ThemeLight}" />
@@ -240,7 +240,7 @@
                         </fa:SettingsExpander>
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_ThemeColor}"
                                                Description="{x:Static langs:Resources.C_ThemeColorDescription}"
-                                               IconSource="&#xE51D;">
+                                               IconSource="{sr:FluentIconSource {sr:Fi ColorFilled}}">
                             <fa:SettingsExpander.Footer>
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <ColorPicker Color="{Binding ViewModel.Appearance.ThemeColor}"
@@ -254,7 +254,7 @@
                         </fa:SettingsExpander>
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_Opacity}"
                                                Description="{x:Static langs:Resources.C_OpacityDescription}"
-                                               IconSource="&#xF482;">
+                                               IconSource="{sr:FluentIconSource {sr:Fi WindowFilled}}">
                             <fa:SettingsExpander.Footer>
                                 <NumericUpDown Value="{Binding ViewModel.FloatingWindow.FloatingWindowOpacity}"
                                                Minimum="20" Maximum="100" />
@@ -271,21 +271,21 @@
                                    TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_Autostart}"
                                                Description="{x:Static langs:Resources.C_AutostartDescription}"
-                                               IconSource="&#xEDE8;">
+                                               IconSource="{sr:FluentIconSource {sr:Fi PowerFilled}}">
                             <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.Autostart}" />
                             </fa:SettingsExpander.Footer>
                         </fa:SettingsExpander>
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_ShowStartupWindow}"
                                                Description="{x:Static langs:Resources.C_ShowStartupWindowDescription}"
-                                               IconSource="&#xF482;">
+                                               IconSource="{sr:FluentIconSource {sr:Fi WindowFilled}}">
                             <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.Basic.ShowStartupWindow}" />
                             </fa:SettingsExpander.Footer>
                         </fa:SettingsExpander>
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_ExternalIntegration}"
                                                Description="{x:Static langs:Resources.C_ExternalIntegrationDescription}"
-                                               IconSource="&#xEABB;">
+                                               IconSource="{sr:FluentIconSource {sr:Fi LinkSquareFilled}}">
                             <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.ExternalIntegration}" />
                             </fa:SettingsExpander.Footer>
@@ -306,14 +306,14 @@
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_SentryTelemetry}"
                                                Description="{x:Static langs:Resources.C_SentryTelemetryDescription}"
-                                               IconSource="&#xEE20;">
+                                               IconSource="{sr:FluentIconSource {sr:Fi PulseFilled}}">
                             <fa:SettingsExpander.Footer>
                                 <ToggleSwitch IsChecked="{Binding ViewModel.PrivacySettings.SentryTelemetryEnabled}" />
                             </fa:SettingsExpander.Footer>
                         </fa:SettingsExpander>
                         <fa:SettingsExpander Header="{x:Static langs:Resources.C_OnlineStatus}"
                                                Description="{x:Static langs:Resources.C_OnlineStatusDescription}"
-                                               IconSource="&#xE904;">
+                                               IconSource="{sr:FluentIconSource {sr:Fi GlobeFilled}}">
                             <fa:SettingsExpander.Footer>
                                 <ComboBox SelectedIndex="{Binding ViewModel.PrivacySettings.OnlineStatusMode}">
                                     <ComboBoxItem Content="{x:Static langs:Resources.O_OnlineStatusMode_Full}" />
@@ -356,22 +356,10 @@
                                 <HyperlinkButton CommandParameter="https://secrandom.sectl.cn/"
                                                  Click="OpenLink_OnClick"
                                                  Content="{x:Static langs:Resources.C_Documentation}" />
-                                <HyperlinkButton CommandParameter="https://space.bilibili.com/520571577"
-                                                 Click="OpenLink_OnClick"
-                                                 Content="{x:Static langs:Resources.C_AuthorBilibili}" />
-                                <HyperlinkButton CommandParameter="https://afdian.com/a/lzy0983"
-                                                 Click="OpenLink_OnClick"
-                                                 Content="{x:Static langs:Resources.C_Sponsor}" />
-                                <HyperlinkButton CommandParameter="https://qm.qq.com/q/k0l04MbSXS"
-                                                 Click="OpenLink_OnClick"
-                                                 Content="{x:Static langs:Resources.C_Community}" />
+                                 <HyperlinkButton CommandParameter="https://space.bilibili.com/3546609547741581"
+                                                  Click="OpenLink_OnClick"
+                                                  Content="{x:Static langs:Resources.C_AuthorBilibili}" />
                             </WrapPanel>
-                            <Border Padding="12,8" BorderBrush="{DynamicResource ControlElevationBorderBrush}"
-                                    BorderThickness="1" CornerRadius="6">
-                                <SelectableTextBlock Text="{x:Static langs:Resources.C_CommunityAnswer}"
-                                                     TextWrapping="Wrap"
-                                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                            </Border>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
@@ -391,7 +379,7 @@
                             Spacing="8"
                             VerticalAlignment="Center"
                             IsVisible="{Binding ViewModel.IsWelcomeStep}">
-                    <sr:FluentIcon Glyph="&#xE904;"
+                    <sr:FluentIcon Glyph="{sr:Fi GlobeFilled}"
                                    Width="20"
                                    Height="20"
                                    VerticalAlignment="Center"

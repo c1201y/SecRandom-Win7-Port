@@ -485,6 +485,24 @@ namespace SecRandom.Langs.SettingsView {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to 调试.
+        /// </summary>
+        public static string C_MoreOptions_Debug {
+            get {
+                return ResourceManager.GetString("C_MoreOptions_Debug", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 在设置侧边栏显示调试页面.
+        /// </summary>
+        public static string C_MoreOptions_Debug_D {
+            get {
+                return ResourceManager.GetString("C_MoreOptions_Debug_D", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to 打开应用目录.
         /// </summary>
         public static string C_MoreOptions_OpenAppDirectory {

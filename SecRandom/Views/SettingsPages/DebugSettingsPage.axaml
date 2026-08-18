@@ -48,8 +48,8 @@
                 <fa:SettingsExpanderItem Content="{Binding Strings.C_EnableInternalSettings}"
                                            Description="{Binding Strings.C_EnableInternalSettings_D}">
                     <fa:SettingsExpanderItem.Footer>
-                        <ToggleSwitch x:Name="InternalSettingsToggle"
-                                      IsChecked="{Binding IsInternalSettingsEnabled}" />
+                            <ToggleSwitch x:Name="InternalSettingsToggle"
+                                          IsChecked="{Binding IsInternalSettingsEnabled}" />
                     </fa:SettingsExpanderItem.Footer>
                 </fa:SettingsExpanderItem>
             </fa:SettingsExpander>

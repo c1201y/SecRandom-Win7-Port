@@ -846,10 +846,12 @@ public partial class App : Application
                 services.AddSingleton<ISecurityVerificationPrompt, SecurityVerificationPrompt>();
                 services.AddSingleton<ISecurityService, SecurityService>();
 
-                services.AddAttachedSettingsControl<DrawImageAttachedSettingsControl>("չʾͼƬ");
-                services.AddAttachedSettingsControl<DrawMusicAttachedSettingsControl>("ר������");
+                services.AddAttachedSettingsControl<DrawImageAttachedSettingsControl>("展示图片");
+                services.AddAttachedSettingsControl<DrawMusicAttachedSettingsControl>("专属音乐");
                 services.AddAttachedSettingsControl<SpecificAnnouncementAttachedSettingsControl>(
                     Langs.AttachedSettings.Resources.C_SpecificVoice);
+                services.AddAttachedSettingsControl<BehindSceneAttachedSettingsControl>(
+                    Langs.Common.Resources.AttachedSettings_BehindScene);
 
                 // ���� ViewModels
                 // �������� AI���㿴������Ļ������ס��ViewModel һ��Ҫע�ᵽ�����������棡������
@@ -1005,11 +1007,14 @@ public partial class App : Application
             })
             .Build();
 
+        ApplyBehindSceneAttachedSettingsRegistration(
+            IAppHost.GetService<MainConfigHandler>().Data.General.InternalSettingsEnabled);
+
         var logger = IAppHost.GetService<ILogger<App>>();
 
         logger.LogInformation(@"SecRandom {VERSION} (Codename: {CODENAME})", GlobalConstants.Version,
             GlobalConstants.CodeName);
-        logger.LogInformation(@"Copyright by SECTL(2025~{YEAR})  Licensed under GPL3.0", DateTime.Now.Year);
+        logger.LogInformation(@"Copyright by 椰汁(2025~{YEAR})  Licensed under GPL3.0", DateTime.Now.Year);
         logger.LogInformation("Host built.");
 
         // ˢ�¸��Ի�����
@@ -1021,6 +1026,19 @@ public partial class App : Application
         var isVisible = false;
         if (GlobalConstants.IsDevelopment && isVisible)
             IAppHost.GetService<SettingsSearchService>().LogTestInformation();
+    }
+
+    private static void ApplyBehindSceneAttachedSettingsRegistration(bool enabled)
+    {
+        if (enabled)
+        {
+            AttachedSettingsRegistryExtensions.RegisterAttachedSettingsControl<BehindSceneAttachedSettingsControl>(
+                Langs.Common.Resources.AttachedSettings_BehindScene);
+        }
+        else
+        {
+            AttachedSettingsRegistryExtensions.UnregisterAttachedSettingsControl<BehindSceneAttachedSettingsControl>();
+        }
     }
 
     private static MainConfigModel LoadStartupSettings(MainConfigModel fallback)
