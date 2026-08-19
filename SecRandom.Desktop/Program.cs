@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
@@ -124,7 +125,10 @@ internal sealed class Program
             Visual.IsVisibleProperty.Changed.AddClassHandler<TopLevel, bool>((topLevel, change) =>
             {
                 if (change.GetNewValue<bool>() && topLevel.PlatformImpl is not null)
+                {
                     ApplyWindows7Scaling(topLevel);
+                    AttachWindows7BackgroundErase(topLevel);
+                }
             });
         }
 
@@ -192,6 +196,95 @@ internal sealed class Program
 
         return null;
     }
+
+    private static readonly ConditionalWeakTable<TopLevel, Win32Properties.CustomWndProcHookCallback> s_windows7BackgroundHooks = new();
+
+    private static void AttachWindows7BackgroundErase(TopLevel topLevel)
+    {
+        // Avalonia's Win32 window class registers hbrBackground = NULL and leaves
+        // WM_ERASEBKGND unhandled, so the client area stays black until the first frame is
+        // presented. In light mode that reads as a black -> white flash when a window opens.
+        // Paint the theme background during WM_ERASEBKGND so the pre-frame window already
+        // matches the rendered content. Transparent windows (FloatingWindow) are skipped:
+        // an opaque erase would break their transparency.
+        if (s_windows7BackgroundHooks.TryGetValue(topLevel, out _))
+            return;
+
+        Win32Properties.CustomWndProcHookCallback callback = (IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, ref bool handled) =>
+        {
+            if (msg != 0x0014) // WM_ERASEBKGND
+                return IntPtr.Zero;
+
+            if (ResolveWindows7BackgroundColor(topLevel) is { } color)
+            {
+                var rect = new RECT();
+                if (GetClientRect(hWnd, out rect))
+                {
+                    var brush = CreateSolidBrush(color);
+                    try
+                    {
+                        FillRect(wParam, ref rect, brush);
+                        handled = true;
+                        return new IntPtr(1);
+                    }
+                    finally
+                    {
+                        DeleteObject(brush);
+                    }
+                }
+            }
+
+            return IntPtr.Zero;
+        };
+
+        Win32Properties.AddWndProcHookCallback(topLevel, callback);
+        s_windows7BackgroundHooks.Add(topLevel, callback);
+    }
+
+    private static uint? ResolveWindows7BackgroundColor(TopLevel topLevel)
+    {
+        // A window that opts into transparency (FloatingWindow) must not get an
+        // opaque erase background.
+        if (topLevel.Background is ISolidColorBrush explicitBrush)
+        {
+            if (explicitBrush.Color.A == 255)
+                return ToColorRef(explicitBrush.Color);
+            return null;
+        }
+
+        if (topLevel.TryFindResource("SolidBackgroundFillColorBaseBrush", out var resource) &&
+            resource is ISolidColorBrush baseBrush &&
+            baseBrush.Color.A == 255)
+            return ToColorRef(baseBrush.Color);
+
+        return null;
+    }
+
+    private static uint ToColorRef(Color color)
+    {
+        return (uint)(color.R | (color.G << 8) | (color.B << 16));
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct RECT
+    {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+    }
+
+    [DllImport("user32.dll")]
+    private static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+
+    [DllImport("user32.dll")]
+    private static extern int FillRect(IntPtr hDC, ref RECT lprc, IntPtr hbr);
+
+    [DllImport("gdi32.dll")]
+    private static extern IntPtr CreateSolidBrush(uint crColor);
+
+    [DllImport("gdi32.dll")]
+    private static extern bool DeleteObject(IntPtr hObject);
 
     [DllImport("user32.dll")]
     private static extern IntPtr GetDC(IntPtr hWnd);
