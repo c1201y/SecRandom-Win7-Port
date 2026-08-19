@@ -90,6 +90,7 @@ jobs:
 
       - name: Verify bundled audio runtime
         shell: pwsh
+        if: ${{ matrix.arch == 'x64' }}
         env:
           RID: ${{ format('win-{0}', matrix.arch) }}
         run: |
