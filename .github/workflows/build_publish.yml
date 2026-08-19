@@ -95,6 +95,14 @@ jobs:
           RID: ${{ format('win-{0}', matrix.arch) }}
         run: |
           $nativeAsset = 'miniaudio.dll'
+          $sourcePath = "vendors/SoundFlow/Src/Backends/MiniAudio/native/win-x64/$nativeAsset"
+          foreach ($dir in @("artifacts/release/publish/full/$env:RID", "artifacts/release/publish/light/$env:RID")) {
+            $destPath = Join-Path $dir $nativeAsset
+            if (!(Test-Path -LiteralPath $destPath)) {
+              Copy-Item -LiteralPath $sourcePath -Destination $destPath -Force
+              Write-Host "Copied $nativeAsset to $dir"
+            }
+          }
           $assetPath = Join-Path "artifacts/release/publish/full/$env:RID" $nativeAsset
           if (!(Test-Path -LiteralPath $assetPath)) {
             throw "SoundFlow native audio runtime was not published: $assetPath"
