@@ -19,6 +19,10 @@
             <Setter Property="Padding" Value="0" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Width" Value="420" />
+            <Setter Property="Height" Value="560" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
         </ControlTheme>
     </Button.Resources>
 
@@ -26,7 +30,9 @@
 
     <Button.Flyout>
         <Flyout FlyoutPresenterTheme="{StaticResource AttachedSettingsFlyoutPresenterTheme}">
-            <Border MinWidth="260"
+            <Border Width="420"
+                    MinWidth="420"
+                    MaxWidth="480"
                     Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
                     CornerRadius="6"
                     Padding="12">
