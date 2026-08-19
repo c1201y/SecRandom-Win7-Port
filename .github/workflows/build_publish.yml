@@ -1,13 +1,10 @@
 ﻿name: Build & Publish
 
 on:
-  push:
-    branches:
-      - '**'
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "发布标签（例如 v2.3.100）"
+        description: "发布标签（例如 v3.0.0.0）"
         required: true
         type: string
 
@@ -29,7 +26,21 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag || github.ref }}
+
+      - name: Create and push tag
+        shell: pwsh
+        run: |
+          $tag = '${{ github.event.inputs.release_tag }}'
+          $created = git tag $tag 2>&1
+          $tagExit = $LASTEXITCODE
+          if ($tagExit -eq 0) {
+            Write-Host "Created tag $tag"
+            git push origin $tag 2>&1 | Out-Null
+            if ($LASTEXITCODE -ne 0) { Write-Host "Warning: git push failed." }
+          } else {
+            Write-Host "Tag $tag already exists, skipping creation."
+          }
+          exit 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
@@ -44,15 +55,6 @@ jobs:
         run: |
           dotnet restore SecRandom.Desktop/SecRandom.Desktop.csproj -r $env:RID -p:SecRandomPlatform=$env:PLATFORM
           dotnet restore SecRandom.Launcher/SecRandom.Launcher.csproj -r $env:RID
-
-      - name: Get Latest Tag
-        id: get_tag
-        if: ${{ github.event_name != 'workflow_dispatch' }}
-        shell: pwsh
-        run: |
-          $latestTag = git describe --tags --abbrev=0
-          echo "LATEST_TAG=$latestTag" >> $env:GITHUB_OUTPUT
-          echo "Latest tag: $latestTag"
 
       - name: Publish Desktop
         shell: pwsh
@@ -100,7 +102,7 @@ jobs:
       - name: Pack Portable Zips
         shell: pwsh
         env:
-          VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag || steps.get_tag.outputs.LATEST_TAG }}
+          VERSION: ${{ github.event.inputs.release_tag }}
           RID: ${{ format('win-{0}', matrix.arch) }}
           WINDOWS_CODESIGN_PFX_BASE64: ${{ secrets.WINDOWS_CODESIGN_PFX_BASE64 }}
           WINDOWS_CODESIGN_PFX_PASSWORD: ${{ secrets.WINDOWS_CODESIGN_PFX_PASSWORD }}
@@ -186,7 +188,7 @@ jobs:
       - name: Build Windows Setup
         shell: pwsh
         env:
-          VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag || steps.get_tag.outputs.LATEST_TAG }}
+          VERSION: ${{ github.event.inputs.release_tag }}
           ARCH: ${{ matrix.arch }}
           RID: ${{ format('win-{0}', matrix.arch) }}
           PLATFORM: Windows
@@ -283,7 +285,7 @@ jobs:
     name: Publish_Release
     runs-on: windows-2022
     needs: [build_desktop]
-    if: ${{ always() && success('build_desktop') && github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag && github.event_name != 'pull_request' }}
+    if: ${{ always() && success('build_desktop') && github.event.inputs.release_tag }}
     permissions:
       contents: write
     concurrency:
@@ -294,7 +296,6 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-          ref: ${{ github.event.inputs.release_tag }}
 
       - name: Download Artifacts
         uses: actions/download-artifact@v8
