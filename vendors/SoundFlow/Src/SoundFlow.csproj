@@ -15,8 +15,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="Backends\MiniAudio\native\**\miniaudio.dll">
+        <Content Include="Backends\MiniAudio\native\**\miniaudio.dll">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
 </Project>
