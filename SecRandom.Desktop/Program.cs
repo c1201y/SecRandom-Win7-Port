@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Platform;
 using SecRandom;
@@ -38,6 +40,7 @@ internal sealed class Program
         }
 
         args = UiAccessStartup.GetApplicationArguments(args);
+        ConfigureWindows7DpiAwareness();
         ConfigurePlatformServices();
         ProtocolActivation.SetStartupArguments(args);
         CrashRecoveryRuntime.SetStartupArguments(args);
@@ -74,6 +77,12 @@ internal sealed class Program
 #endif
     }
 
+    private static void ConfigureWindows7DpiAwareness()
+    {
+        if (OperatingSystem.IsWindows() && Environment.OSVersion.Version < new Version(6, 2))
+            SetProcessDPIAware();
+    }
+
     private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         if (e.ExceptionObject is Exception exception)
@@ -101,12 +110,100 @@ internal sealed class Program
             builder = builder.With(new Win32PlatformOptions
             {
                 RenderingMode = [Win32RenderingMode.Software],
-                CompositionMode = [Win32CompositionMode.RedirectionSurface]
+                CompositionMode = [Win32CompositionMode.RedirectionSurface],
+                DpiAwareness = Win32DpiAwareness.SystemDpiAware
+            });
+
+            // Avalonia 11.3 cannot populate Win32 RenderScaling on Windows 7 because
+            // GetDpiForMonitor is unavailable there. Patch the scaling into each top-level
+            // when it becomes visible: Window.Show and PopupRoot.Show set IsVisible=true
+            // before the initial layout pass and before the native window is shown, so
+            // correcting the scaling at that point lets windows and popups be created,
+            // sized and laid out at the correct scale from the start. This avoids both the
+            // blurry 1.0 fallback and the visible resize a post-show correction would cause.
+            Visual.IsVisibleProperty.Changed.AddClassHandler<TopLevel, bool>((topLevel, change) =>
+            {
+                if (change.GetNewValue<bool>() && topLevel.PlatformImpl is not null)
+                    ApplyWindows7Scaling(topLevel);
             });
         }
 
         return builder;
     }
+
+    private static void ApplyWindows7Scaling(TopLevel topLevel)
+    {
+        var implementation = topLevel.PlatformImpl!;
+        ApplyWindows7ScalingToImpl(implementation);
+
+        // Notify the TopLevel so its own _scaling field and layout scaling follow the impl.
+        var scalingChanged = implementation.GetType()
+            .GetProperty("ScalingChanged", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            ?.GetValue(implementation) as Action<double>;
+        if (scalingChanged is not null)
+        {
+            var dpi = GetSystemDpi();
+            if (dpi > 0)
+                scalingChanged(dpi / 96d);
+        }
+    }
+
+    private static void ApplyWindows7ScalingToImpl(object implementation)
+    {
+        var dpi = GetSystemDpi();
+        if (dpi <= 0)
+            return;
+
+        var scaling = dpi / 96d;
+        var type = implementation.GetType();
+        var scalingField = FindInstanceField(type, "_scaling");
+        var dpiField = FindInstanceField(type, "_dpi");
+        if (scalingField is null || dpiField is null)
+            return;
+
+        scalingField.SetValue(implementation, scaling);
+        dpiField.SetValue(implementation, (uint)dpi);
+    }
+
+    private static int GetSystemDpi()
+    {
+        var hdc = GetDC(IntPtr.Zero);
+        if (hdc == IntPtr.Zero)
+            return 0;
+
+        try
+        {
+            return GetDeviceCaps(hdc, 88); // LOGPIXELSX
+        }
+        finally
+        {
+            ReleaseDC(IntPtr.Zero, hdc);
+        }
+    }
+
+    private static FieldInfo? FindInstanceField(Type type, string name)
+    {
+        for (var current = type; current is not null; current = current.BaseType)
+        {
+            var field = current.GetField(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+            if (field is not null)
+                return field;
+        }
+
+        return null;
+    }
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetDC(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern bool SetProcessDPIAware();
+
+    [DllImport("gdi32.dll")]
+    private static extern int GetDeviceCaps(IntPtr hdc, int index);
+
+    [DllImport("user32.dll")]
+    private static extern int ReleaseDC(IntPtr hWnd, IntPtr hdc);
 
     private static void BindAssetLoader()
     {
