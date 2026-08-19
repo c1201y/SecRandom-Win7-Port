@@ -87,7 +87,7 @@ public sealed class MacOsWindowFeatureService : IWindowFeatureService
         {
             var styleMaskSelector = SelRegisterName("styleMask");
             var collectionBehaviorSelector = SelRegisterName("collectionBehavior");
-            if (styleMaskSelector == nint.Zero || collectionBehaviorSelector == nint.Zero)
+            if (styleMaskSelector == (nint)0 || collectionBehaviorSelector == (nint)0)
             {
                 failure = "Unable to resolve the Objective-C NSWindow style selectors.";
                 return false;
@@ -124,7 +124,7 @@ public sealed class MacOsWindowFeatureService : IWindowFeatureService
         try
         {
             var selector = SelRegisterName(selectorName);
-            if (selector == nint.Zero)
+            if (selector == (nint)0)
             {
                 failure = $"Unable to resolve Objective-C selector '{selectorName}'.";
                 return false;

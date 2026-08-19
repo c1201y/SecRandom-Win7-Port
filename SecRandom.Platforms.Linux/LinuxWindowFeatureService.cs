@@ -85,7 +85,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
         nint display;
         try
         {
-            display = XOpenDisplay(nint.Zero);
+            display = XOpenDisplay((nint)0);
         }
         catch (Exception exception)
         {
@@ -93,7 +93,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
             return false;
         }
 
-        if (display == nint.Zero)
+        if (display == (nint)0)
         {
             failure = "Unable to open the X11 display. The active compositor may not expose X11 window management.";
             return false;
@@ -103,7 +103,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
         {
             var stateAtom = XInternAtom(display, "_NET_WM_STATE", onlyIfExists: false);
             var aboveAtom = XInternAtom(display, "_NET_WM_STATE_ABOVE", onlyIfExists: false);
-            if (stateAtom == nint.Zero || aboveAtom == nint.Zero)
+            if (stateAtom == (nint)0 || aboveAtom == (nint)0)
             {
                 failure = "The X11 window manager does not expose the EWMH topmost atoms.";
                 return false;
@@ -138,7 +138,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
         nint display;
         try
         {
-            display = XOpenDisplay(nint.Zero);
+            display = XOpenDisplay((nint)0);
         }
         catch (Exception exception)
         {
@@ -146,7 +146,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
             return false;
         }
 
-        if (display == nint.Zero)
+        if (display == (nint)0)
         {
             failure = "Unable to open the X11 display. The active compositor may not expose X11 window management.";
             return false;
@@ -158,7 +158,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
             var atomAtom = XInternAtom(display, "ATOM", onlyIfExists: false);
             var typeAtom = XInternAtom(display,
                 enabled ? "_NET_WM_WINDOW_TYPE_UTILITY" : "_NET_WM_WINDOW_TYPE_NORMAL", onlyIfExists: false);
-            if (windowTypeAtom == nint.Zero || atomAtom == nint.Zero || typeAtom == nint.Zero)
+            if (windowTypeAtom == (nint)0 || atomAtom == (nint)0 || typeAtom == (nint)0)
             {
                 failure = "The X11 window manager does not expose the EWMH window-type atoms.";
                 return false;
@@ -185,7 +185,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
         nint display;
         try
         {
-            display = XOpenDisplay(nint.Zero);
+            display = XOpenDisplay((nint)0);
         }
         catch (Exception exception)
         {
@@ -193,7 +193,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
             return false;
         }
 
-        if (display == nint.Zero)
+        if (display == (nint)0)
         {
             failure = "Unable to open the X11 display. The active compositor may not expose X11 window management.";
             return false;
@@ -204,7 +204,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
             var stateAtom = XInternAtom(display, "_NET_WM_STATE", onlyIfExists: false);
             var skipTaskbarAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_TASKBAR", onlyIfExists: false);
             var skipPagerAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_PAGER", onlyIfExists: false);
-            if (stateAtom == nint.Zero || skipTaskbarAtom == nint.Zero || skipPagerAtom == nint.Zero)
+            if (stateAtom == (nint)0 || skipTaskbarAtom == (nint)0 || skipPagerAtom == (nint)0)
             {
                 failure = "The X11 window manager does not expose the EWMH task-switcher atoms.";
                 return false;
@@ -242,10 +242,10 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
         string feature,
         out string? failure)
     {
-        nint children = nint.Zero;
+        nint children = (nint)0;
         try
         {
-            if (XQueryTree(display, window, out var root, out _, out children, out _) == 0 || root == nint.Zero)
+            if (XQueryTree(display, window, out var root, out _, out children, out _) == 0 || root == (nint)0)
             {
                 failure = "Unable to resolve the X11 root window for the EWMH request.";
                 return false;
@@ -263,7 +263,7 @@ public sealed class LinuxWindowFeatureService : IWindowFeatureService
         }
         finally
         {
-            if (children != nint.Zero)
+            if (children != (nint)0)
                 XFree(children);
         }
     }
