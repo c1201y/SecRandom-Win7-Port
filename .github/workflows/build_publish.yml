@@ -329,7 +329,8 @@ jobs:
           UPDATE_MANIFEST_PRIVATE_KEY_PEM_BASE64: ${{ secrets.UPDATE_MANIFEST_PRIVATE_KEY_PEM_BASE64 }}
         run: |
           if ([string]::IsNullOrWhiteSpace($env:UPDATE_MANIFEST_PRIVATE_KEY_PEM_BASE64)) {
-            throw 'Release publication requires the UPDATE_MANIFEST_PRIVATE_KEY_PEM_BASE64 secret.'
+            Write-Warning 'UPDATE_MANIFEST_PRIVATE_KEY_PEM_BASE64 is not configured; skipping update manifest generation.'
+            exit 0
           }
           $privateKeyPath = Join-Path $env:RUNNER_TEMP 'secrandom-update-ed25519.pem'
           $publicDerPath = Join-Path $env:RUNNER_TEMP 'secrandom-update-ed25519-public.der'
@@ -402,7 +403,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           name: SecRandom ${{ github.event.inputs.release_tag }}
-          artifacts: "./artifacts/release/output/*.zip,./artifacts/release/output/*.exe,./artifacts/release/output/SecRandom-update-manifest.json,./artifacts/release/output/SecRandom-update-manifest.sig"
+          artifacts: "./artifacts/release/output/*.zip,./artifacts/release/output/*.exe,./artifacts/release/output/SecRandom-update-manifest.*"
           draft: true
           bodyFile: ./release-note.md
           token: ${{ secrets.GITHUB_TOKEN }}
