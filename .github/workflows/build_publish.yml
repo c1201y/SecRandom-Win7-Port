@@ -408,3 +408,54 @@ jobs:
           bodyFile: ./release-note.md
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.event.inputs.release_tag }}
+
+      - name: Upload to OpenList cloud
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        env:
+          OPENLIST_URL: ${{ secrets.OPENLIST_URL }}
+          OPENLIST_USERNAME: ${{ secrets.OPENLIST_USERNAME }}
+          OPENLIST_PASSWORD: ${{ secrets.OPENLIST_PASSWORD }}
+          RELEASE_TAG: ${{ github.event.inputs.release_tag }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:OPENLIST_URL) -or
+              [string]::IsNullOrWhiteSpace($env:OPENLIST_USERNAME) -or
+              [string]::IsNullOrWhiteSpace($env:OPENLIST_PASSWORD)) {
+            Write-Warning 'OpenList secrets not configured, skipping cloud upload.'
+            exit 0
+          }
+
+          $loginResp = Invoke-RestMethod -Uri "$env:OPENLIST_URL/api/auth/login" -Method Post `
+            -Body (@{ username = $env:OPENLIST_USERNAME; password = $env:OPENLIST_PASSWORD } | ConvertTo-Json) `
+            -ContentType "application/json" -TimeoutSec 15
+          if ($loginResp.code -ne 200) { throw "OpenList login failed: $($loginResp.message)" }
+          $token = $loginResp.data.token
+          Write-Host "OpenList login succeeded."
+
+          $targetDir = "/SecRandom/$env:RELEASE_TAG"
+          $headers = @{ Authorization = $token }
+          $files = Get-ChildItem -Path './artifacts/release/output' -File
+          $total = $files.Count
+          $index = 0
+
+          foreach ($file in $files) {
+            $index++
+            $remotePath = "$targetDir/$($file.Name)"
+            Write-Host "[$index/$total] Uploading $($file.Name) ($([math]::Round($file.Length/1MB, 1)) MB)..."
+            $fileStream = [System.IO.File]::OpenRead($file.FullName)
+            try {
+              $uploadResp = Invoke-RestMethod -Uri "$env:OPENLIST_URL/api/fs/put" -Method Put `
+                -Headers @{ Authorization = $token; 'File-Path' = $remotePath } `
+                -ContentType "application/octet-stream" `
+                -Body $fileStream -TimeoutSec 3600
+              if ($uploadResp.code -eq 200) {
+                Write-Host "  Done."
+              } else {
+                Write-Warning "  Upload failed: $($uploadResp.message)"
+              }
+            } finally {
+              $fileStream.Dispose()
+            }
+          }
+
+          Write-Host "Cloud upload completed: $targetDir"
