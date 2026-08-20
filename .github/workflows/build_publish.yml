@@ -425,15 +425,14 @@ jobs:
             exit 0
           }
 
+          $loginBody = @{ username = $env:OPENLIST_USERNAME; password = $env:OPENLIST_PASSWORD } | ConvertTo-Json
           $loginResp = Invoke-RestMethod -Uri "$env:OPENLIST_URL/api/auth/login" -Method Post `
-            -Body (@{ username = $env:OPENLIST_USERNAME; password = $env:OPENLIST_PASSWORD } | ConvertTo-Json) `
-            -ContentType "application/json" -TimeoutSec 15
+            -Body $loginBody -ContentType "application/json" -TimeoutSec 15
           if ($loginResp.code -ne 200) { throw "OpenList login failed: $($loginResp.message)" }
           $token = $loginResp.data.token
           Write-Host "OpenList login succeeded."
 
           $targetDir = "/SecRandom/$env:RELEASE_TAG"
-          $headers = @{ Authorization = $token }
           $files = Get-ChildItem -Path './artifacts/release/output' -File
           $total = $files.Count
           $index = 0
@@ -441,20 +440,21 @@ jobs:
           foreach ($file in $files) {
             $index++
             $remotePath = "$targetDir/$($file.Name)"
-            Write-Host "[$index/$total] Uploading $($file.Name) ($([math]::Round($file.Length/1MB, 1)) MB)..."
-            $fileStream = [System.IO.File]::OpenRead($file.FullName)
-            try {
-              $uploadResp = Invoke-RestMethod -Uri "$env:OPENLIST_URL/api/fs/put" -Method Put `
-                -Headers @{ Authorization = $token; 'File-Path' = $remotePath } `
-                -ContentType "application/octet-stream" `
-                -Body $fileStream -TimeoutSec 3600
-              if ($uploadResp.code -eq 200) {
-                Write-Host "  Done."
-              } else {
-                Write-Warning "  Upload failed: $($uploadResp.message)"
-              }
-            } finally {
-              $fileStream.Dispose()
+            $sizeMB = [math]::Round($file.Length / 1MB, 1)
+            Write-Host "[$index/$total] Uploading $($file.Name) ($sizeMB MB)..."
+            $result = & curl.exe -X PUT "$env:OPENLIST_URL/api/fs/put" `
+              -H "Authorization: $token" `
+              -H "File-Path: $remotePath" `
+              -H "Content-Type: application/octet-stream" `
+              --data-binary "@$($file.FullName)" `
+              --connect-timeout 30 --max-time 7200 -s -w "`n%{http_code}"
+            $lines = $result -split "`n"
+            $httpCode = $lines[-1]
+            $body = ($lines[0..($lines.Count-2)] -join "`n")
+            if ($httpCode -eq "200") {
+              Write-Host "  Done."
+            } else {
+              Write-Warning "  Upload failed (HTTP $httpCode): $body"
             }
           }
 
