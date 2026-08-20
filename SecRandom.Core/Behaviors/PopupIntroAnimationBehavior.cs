@@ -63,6 +63,9 @@ public class PopupIntroAnimationBehavior
 
         var compositor = visual.Compositor;
         var popup = control.Parent as Popup;
+        if (IsWindows7Dropdown(popup))
+            return;
+
         var animationOpacity = compositor.CreateScalarKeyFrameAnimation();
         animationOpacity.Target = nameof(visual.Opacity);
         animationOpacity.Duration = TimeSpan.FromSeconds(0.15);
@@ -79,6 +82,16 @@ public class PopupIntroAnimationBehavior
         animationScale.InsertKeyFrame(0f, visual.Scale with { X = 0.925, Y = 0.925 });
         animationScale.InsertKeyFrame(1f, visual.Scale with { X = 1, Y = 1 }, Easing.Parse("0.22, 1, 0.36, 1"));
         visual.StartAnimation(nameof(visual.Scale), animationScale);
+    }
+
+    private static bool IsWindows7Dropdown(Popup? popup)
+    {
+        if (popup is null || !OperatingSystem.IsWindows() || Environment.OSVersion.Version >= new Version(6, 2))
+            return false;
+
+        return popup.Placement is PlacementMode.Bottom
+            or PlacementMode.BottomEdgeAlignedLeft
+            or PlacementMode.BottomEdgeAlignedRight;
     }
 
     private static Vector3D GetOriginFromPlacement(PlacementMode p, Rect size, Vector3D vectorRaw)
