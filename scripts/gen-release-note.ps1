@@ -23,14 +23,13 @@ if (-not $files) {
 $downloadSummary = @"
 **下载链接**
 
-| 文件名 | GitHub | SECTL 高速 |
-| --- | --- | --- |
+| 文件名 | GitHub |
+| --- | --- |
 "@
 
 foreach ($file in $files) {
     $gh = "https://github.com/${repo}/releases/download/${tag}/$($file.Name)"
-    $stk = "https://stk.sectl.top/SecRandom/${tag}/$($file.Name)"
-    $downloadSummary += "`n| $($file.Name) | [下载](${gh}) | [下载](${stk}) |"
+    $downloadSummary += "`n| $($file.Name) | [下载](${gh}) |"
 }
 
 $md5Summary = @"
