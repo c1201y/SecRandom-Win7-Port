@@ -3,6 +3,8 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Rendering.Composition;
+using Avalonia.VisualTree;
+using FluentAvalonia.UI.Controls;
 
 namespace SecRandom.Core.Behaviors;
 
@@ -63,7 +65,7 @@ public class PopupIntroAnimationBehavior
 
         var compositor = visual.Compositor;
         var popup = control.Parent as Popup;
-        if (IsWindows7Dropdown(popup))
+        if (IsWindows7MenuPopup(popup))
             return;
 
         var animationOpacity = compositor.CreateScalarKeyFrameAnimation();
@@ -84,14 +86,29 @@ public class PopupIntroAnimationBehavior
         visual.StartAnimation(nameof(visual.Scale), animationScale);
     }
 
-    private static bool IsWindows7Dropdown(Popup? popup)
+    private static bool IsWindows7MenuPopup(Popup? popup)
     {
         if (popup is null || !OperatingSystem.IsWindows() || Environment.OSVersion.Version >= new Version(6, 2))
             return false;
 
-        return popup.Placement is PlacementMode.Bottom
+        // Menu-style popups (combo dropdowns and navigation flyouts) animate their popup
+        // window opacity from 0 on Win7's software renderer, which shows a black frame
+        // before the content appears. The settings compact-pane flyout reports
+        // AnchorAndGravity, so match it through its placement target instead of the
+        // placement mode alone.
+        if (popup.Placement is PlacementMode.Bottom
             or PlacementMode.BottomEdgeAlignedLeft
-            or PlacementMode.BottomEdgeAlignedRight;
+            or PlacementMode.BottomEdgeAlignedRight
+            or PlacementMode.LeftEdgeAlignedTop
+            or PlacementMode.LeftEdgeAlignedBottom
+            or PlacementMode.RightEdgeAlignedTop
+            or PlacementMode.RightEdgeAlignedBottom)
+        {
+            return true;
+        }
+
+        return popup.PlacementTarget is Visual target
+            && target.GetVisualAncestors().Append(target).OfType<NavigationView>().Any();
     }
 
     private static Vector3D GetOriginFromPlacement(PlacementMode p, Rect size, Vector3D vectorRaw)
