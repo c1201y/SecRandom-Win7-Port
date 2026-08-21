@@ -20,7 +20,7 @@ if (-not $files) {
     throw "No files found in $outDir"
 }
 
-$cloudBase = "https://pan.132614.xyz/@manage?path=SecRandom/${tag}"
+$cloudBase = "https://pan.132614.xyz/SecRandom/${tag}"
 
 $downloadSummary = @"
 **下载链接**
@@ -31,7 +31,8 @@ $downloadSummary = @"
 
 foreach ($file in $files) {
     $gh = "https://github.com/${repo}/releases/download/${tag}/$($file.Name)"
-    $downloadSummary += "`n| $($file.Name) | [下载](${gh}) | [下载](${cloudBase}) |"
+    $cloud = "${cloudBase}/$($file.Name)"
+    $downloadSummary += "`n| $($file.Name) | [下载](${gh}) | [下载](${cloud}) |"
 }
 
 $md5Summary = @"
