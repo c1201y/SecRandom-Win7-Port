@@ -20,8 +20,12 @@ if (-not $files) {
     throw "No files found in $outDir"
 }
 
+$cloudBase = "https://pan.132614.xyz/@manage?path=SecRandom/${tag}"
+
 $downloadSummary = @"
 **下载链接**
+
+> 快速下载：[打开云盘目录](${cloudBase})
 
 | 文件名 | GitHub |
 | --- | --- |
