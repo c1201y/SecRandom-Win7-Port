@@ -25,15 +25,13 @@ $cloudBase = "https://pan.132614.xyz/@manage?path=SecRandom/${tag}"
 $downloadSummary = @"
 **下载链接**
 
-> 快速下载：[打开云盘目录](${cloudBase})
-
-| 文件名 | GitHub |
-| --- | --- |
+| 文件名 | GitHub | 快速下载 |
+| --- | --- | --- |
 "@
 
 foreach ($file in $files) {
     $gh = "https://github.com/${repo}/releases/download/${tag}/$($file.Name)"
-    $downloadSummary += "`n| $($file.Name) | [下载](${gh}) |"
+    $downloadSummary += "`n| $($file.Name) | [下载](${gh}) | [下载](${cloudBase}) |"
 }
 
 $md5Summary = @"
