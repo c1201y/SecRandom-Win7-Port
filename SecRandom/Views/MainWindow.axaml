@@ -7,6 +7,8 @@
                          x:Class="SecRandom.Views.MainWindow"
                          Icon="/Assets/AppLogo.ico"
                          WindowStartupLocation="CenterScreen"
+                         SystemDecorations="None"
+                         CanResize="True"
                          MinWidth="800" MinHeight="600"
                          Loaded="OnLoaded">
 </faWindowing:AppWindow>

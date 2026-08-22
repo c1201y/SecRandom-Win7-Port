@@ -212,6 +212,71 @@ internal sealed class Program
 
         Win32Properties.CustomWndProcHookCallback callback = (IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, ref bool handled) =>
         {
+            if (topLevel is Window { CanResize: true, SystemDecorations: SystemDecorations.None } resizableWindow
+                && resizableWindow.WindowState != WindowState.Maximized)
+            {
+                // Win7 never enters the system sizing loop for undecorated windows, so the
+                // left/bottom/right edges run a manual capture-based resize instead of
+                // relying on WM_NCHITTEST/WS_THICKFRAME non-client behavior.
+                var resizeState = s_windows7ResizeStates.GetValue(topLevel, static _ => new Windows7ManualResizeState());
+
+                if (msg == 0x0014 && resizeState.IsActive) // WM_ERASEBKGND
+                {
+                    // SetWindowPos sends an erase request for each resize step. Letting the
+                    // Win7 background brush run here produces a visible erase -> render flash.
+                    handled = true;
+                    return new IntPtr(1);
+                }
+
+                switch (msg)
+                {
+                    case 0x0020: // WM_SETCURSOR
+                        if ((unchecked((int)(long)lParam) & 0xFFFF) == 1 /* HTCLIENT */
+                            && TryGetWindows7ResizeZone(hWnd, out var cursorZone))
+                        {
+                            SetCursor(LoadWindows7ResizeCursor(cursorZone));
+                            handled = true;
+                            return new IntPtr(1);
+                        }
+
+                        break;
+
+                    case 0x0201: // WM_LBUTTONDOWN
+                        if (TryGetWindows7ResizeZone(hWnd, out var dragZone))
+                        {
+                            StartWindows7ManualResize(resizeState, hWnd, resizableWindow, dragZone);
+                            handled = true;
+                            return IntPtr.Zero;
+                        }
+
+                        break;
+
+                    case 0x0200: // WM_MOUSEMOVE
+                        if (resizeState.IsActive)
+                        {
+                            UpdateWindows7ManualResize(resizeState, hWnd);
+                            handled = true;
+                            return IntPtr.Zero;
+                        }
+
+                        break;
+
+                    case 0x0202: // WM_LBUTTONUP
+                        if (resizeState.IsActive)
+                        {
+                            EndWindows7ManualResize(resizeState);
+                            handled = true;
+                            return IntPtr.Zero;
+                        }
+
+                        break;
+
+                    case 0x0021: // WM_CAPTURECHANGED
+                        resizeState.IsActive = false;
+                        break;
+                }
+            }
+
             if (msg != 0x0014) // WM_ERASEBKGND
                 return IntPtr.Zero;
 
@@ -239,6 +304,106 @@ internal sealed class Program
 
         Win32Properties.AddWndProcHookCallback(topLevel, callback);
         s_windows7BackgroundHooks.Add(topLevel, callback);
+    }
+
+    private sealed class Windows7ManualResizeState
+    {
+        public bool IsActive;
+        public bool EdgeLeft;
+        public bool EdgeRight;
+        public bool EdgeBottom;
+        public POINT AnchorPoint;
+        public RECT AnchorRect;
+        public double MinWidth;
+        public double MinHeight;
+    }
+
+    private const int W7ResizeZoneLeft = 0x1;
+    private const int W7ResizeZoneRight = 0x2;
+    private const int W7ResizeZoneBottom = 0x4;
+
+    private static readonly ConditionalWeakTable<TopLevel, Windows7ManualResizeState> s_windows7ResizeStates = new();
+
+    private static bool TryGetWindows7ResizeZone(IntPtr hWnd, out int zone)
+    {
+        zone = 0;
+        if (!GetCursorPos(out var cursor) || !GetWindowRect(hWnd, out var rect))
+            return false;
+
+        var border = Math.Max(8, GetSystemMetrics(32) + GetSystemMetrics(92));
+        if (cursor.X < rect.Left + border)
+            zone |= W7ResizeZoneLeft;
+        if (cursor.X >= rect.Right - border)
+            zone |= W7ResizeZoneRight;
+        if (cursor.Y >= rect.Bottom - border)
+            zone |= W7ResizeZoneBottom;
+
+        return zone != 0;
+    }
+
+    private static void StartWindows7ManualResize(
+        Windows7ManualResizeState state,
+        IntPtr hWnd,
+        Window window,
+        int zone)
+    {
+        if (!GetCursorPos(out var anchor) || !GetWindowRect(hWnd, out state.AnchorRect))
+            return;
+
+        state.AnchorPoint = anchor;
+        state.EdgeLeft = (zone & W7ResizeZoneLeft) != 0;
+        state.EdgeRight = (zone & W7ResizeZoneRight) != 0;
+        state.EdgeBottom = (zone & W7ResizeZoneBottom) != 0;
+        state.MinWidth = window.MinWidth * window.RenderScaling;
+        state.MinHeight = window.MinHeight * window.RenderScaling;
+        state.IsActive = true;
+        SetCapture(hWnd);
+    }
+
+    private static void UpdateWindows7ManualResize(Windows7ManualResizeState state, IntPtr hWnd)
+    {
+        if (!GetCursorPos(out var cursor))
+            return;
+
+        var deltaX = cursor.X - state.AnchorPoint.X;
+        var deltaY = cursor.Y - state.AnchorPoint.Y;
+        var left = state.AnchorRect.Left;
+        var top = state.AnchorRect.Top;
+        var width = state.AnchorRect.Right - state.AnchorRect.Left;
+        var height = state.AnchorRect.Bottom - state.AnchorRect.Top;
+
+        if (state.EdgeRight)
+        {
+            width = Math.Max((int)state.MinWidth, width + deltaX);
+        }
+        else if (state.EdgeLeft)
+        {
+            width = Math.Max((int)state.MinWidth, width - deltaX);
+            left = state.AnchorRect.Right - width;
+        }
+
+        if (state.EdgeBottom)
+            height = Math.Max((int)state.MinHeight, height + deltaY);
+
+        // SWP_NOZORDER | SWP_NOACTIVATE keeps focus and z-order stable while dragging.
+        SetWindowPos(hWnd, IntPtr.Zero, left, top, width, height, 0x0004 | 0x0010);
+    }
+
+    private static void EndWindows7ManualResize(Windows7ManualResizeState state)
+    {
+        state.IsActive = false;
+        ReleaseCapture();
+    }
+
+    private static IntPtr LoadWindows7ResizeCursor(int zone)
+    {
+        // OCR constants: IDC_SIZENWSE=32642, IDC_SIZENESW=32643, IDC_SIZEWE=32644, IDC_SIZENS=32645.
+        var id = (zone & W7ResizeZoneBottom) != 0
+            ? (zone & W7ResizeZoneLeft) != 0 ? 32643
+                : (zone & W7ResizeZoneRight) != 0 ? 32642
+                : 32645
+            : 32644;
+        return LoadCursor(IntPtr.Zero, new IntPtr(id));
     }
 
     private static uint? ResolveWindows7BackgroundColor(TopLevel topLevel)
@@ -276,6 +441,44 @@ internal sealed class Program
 
     [DllImport("user32.dll")]
     private static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+
+    [DllImport("user32.dll")]
+    private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool SetWindowPos(
+        IntPtr hWnd,
+        IntPtr hWndInsertAfter,
+        int x,
+        int y,
+        int cx,
+        int cy,
+        uint flags);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr SetCapture(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern bool ReleaseCapture();
+
+    [DllImport("user32.dll")]
+    private static extern bool GetCursorPos(out POINT point);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr LoadCursor(IntPtr hInstance, IntPtr lpCursorName);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr SetCursor(IntPtr hCursor);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct POINT
+    {
+        public int X;
+        public int Y;
+    }
+
+    [DllImport("user32.dll")]
+    private static extern int GetSystemMetrics(int index);
 
     [DllImport("user32.dll")]
     private static extern int FillRect(IntPtr hDC, ref RECT lprc, IntPtr hbr);
