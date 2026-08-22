@@ -5,6 +5,8 @@ using Avalonia.Controls.Selection;
 using Avalonia.Controls.Templates;
 using Avalonia.Input.Platform;
 using Avalonia.Layout;
+using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using FluentAvalonia.UI.Controls;
 using QRCoder;
@@ -27,6 +29,10 @@ internal static class SecuritySetupDialogs
         var current = CreatePasswordInput(SR.C_CurrentPasswordPlaceholder);
         var password = CreatePasswordInput(SR.C_NewPasswordPlaceholder);
         var confirmation = CreatePasswordInput(SR.C_ConfirmPasswordPlaceholder);
+
+        // 校验失败时必须给出可见反馈；此前仅静默取消关闭，用户会以为点击保存没有响应。
+        var errorText = CreateDialogErrorText();
+
         var panel = new StackPanel { Spacing = 10 };
         panel.Children.Add(new TextBlock { Text = SR.S_Password_D, TextWrapping = TextWrapping.Wrap });
         if (hasPassword)
@@ -38,14 +44,46 @@ internal static class SecuritySetupDialogs
         panel.Children.Add(password);
         panel.Children.Add(new TextBlock { Text = SR.C_ConfirmPassword });
         panel.Children.Add(confirmation);
+        panel.Children.Add(errorText);
+
+        string? Validate()
+        {
+            var currentText = current.Text ?? string.Empty;
+            var passwordText = password.Text ?? string.Empty;
+            if (hasPassword && currentText.Length == 0)
+                return SR.M_CurrentPasswordRequired;
+            if (passwordText.Length < SecurityService.MinPasswordLength)
+                return string.Format(SR.M_PasswordTooShortFormat, SecurityService.MinPasswordLength);
+            if (!string.Equals(passwordText, confirmation.Text, StringComparison.Ordinal))
+                return SR.M_PasswordMismatch;
+            return null;
+        }
+
+        void ShowValidationError()
+        {
+            var message = Validate();
+            errorText.IsVisible = message is not null;
+            errorText.Text = message ?? string.Empty;
+        }
+
+        current.TextChanged += (_, _) => ShowValidationError();
+        password.TextChanged += (_, _) => ShowValidationError();
+        confirmation.TextChanged += (_, _) => ShowValidationError();
 
         var dialog = CreateDialog(xamlRoot, hasPassword ? SR.M_PasswordDialogTitle : SR.M_SetPasswordDialogTitle, panel);
         dialog.Buttons.Add(new TaskDialogButton(SR.C_Cancel, "cancel"));
         dialog.Buttons.Add(new TaskDialogButton(SR.C_Save, "save") { IsDefault = true });
         dialog.Closing += (_, args) =>
         {
-            if (Equals(args.Result, "save") && !string.Equals(password.Text, confirmation.Text, StringComparison.Ordinal))
+            if (!Equals(args.Result, "save"))
+                return;
+
+            if (Validate() is { } message)
+            {
                 args.Cancel = true;
+                errorText.IsVisible = true;
+                errorText.Text = message;
+            }
         };
 
         return await dialog.ShowAsync() switch
@@ -290,6 +328,18 @@ internal static class SecuritySetupDialogs
         Header = title,
         Content = content
     };
+
+    private static TextBlock CreateDialogErrorText()
+    {
+        var errorText = new TextBlock
+        {
+            IsVisible = false,
+            TextWrapping = TextWrapping.Wrap
+        };
+        errorText.Bind(TextBlock.ForegroundProperty,
+            new DynamicResourceExtension("SystemFillColorCriticalBrush"));
+        return errorText;
+    }
 
     private static TextBox CreatePasswordInput(string placeholderText) => new()
     {

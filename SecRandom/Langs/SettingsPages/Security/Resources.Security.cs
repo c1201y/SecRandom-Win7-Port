@@ -91,6 +91,9 @@ public partial class Resources
     public static string M_PasswordSaved => Text(nameof(M_PasswordSaved));
     public static string M_PasswordSaveFailed => Text(nameof(M_PasswordSaveFailed));
     public static string M_SetPasswordFirst => Text(nameof(M_SetPasswordFirst));
+    public static string M_PasswordMismatch => Text(nameof(M_PasswordMismatch));
+    public static string M_PasswordTooShortFormat => Text(nameof(M_PasswordTooShortFormat));
+    public static string M_CurrentPasswordRequired => Text(nameof(M_CurrentPasswordRequired));
     public static string M_TotpSaved => Text(nameof(M_TotpSaved));
     public static string M_TotpSaveFailed => Text(nameof(M_TotpSaveFailed));
     public static string M_UsbUpdated => Text(nameof(M_UsbUpdated));

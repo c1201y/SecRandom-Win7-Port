@@ -25,6 +25,7 @@ internal sealed class SecurityService(
 {
     private const int LockoutFailureLimit = 5;
     private static readonly TimeSpan LockoutDuration = TimeSpan.FromSeconds(30);
+    internal const int MinPasswordLength = 6;
 
     private readonly IRemovableStorageBindingMarker _bindingMarker =
         bindingMarker ?? PortableRemovableStorageBindingMarker.Instance;
@@ -353,7 +354,7 @@ internal sealed class SecurityService(
 
     public Task<bool> SetPasswordAsync(string password, string? currentPassword = null, CancellationToken cancellationToken = default)
     {
-        if (password.Length < 6)
+        if (password.Length < MinPasswordLength)
             return Task.FromResult(false);
 
         lock (_gate)

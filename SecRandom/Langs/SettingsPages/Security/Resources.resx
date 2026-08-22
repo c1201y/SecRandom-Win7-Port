@@ -123,6 +123,9 @@
   <data name="M_PasswordSaved" xml:space="preserve"><value>密码已保存</value></data>
   <data name="M_PasswordSaveFailed" xml:space="preserve"><value>无法保存密码；密码至少需要 6 位，修改时请确认当前密码</value></data>
   <data name="M_SetPasswordFirst" xml:space="preserve"><value>请先设置密码</value></data>
+  <data name="M_PasswordMismatch" xml:space="preserve"><value>两次输入的新密码不一致</value></data>
+  <data name="M_PasswordTooShortFormat" xml:space="preserve"><value>密码至少需要 {0} 位</value></data>
+  <data name="M_CurrentPasswordRequired" xml:space="preserve"><value>请输入当前密码</value></data>
   <data name="M_TotpSaved" xml:space="preserve"><value>TOTP 设置已保存</value></data>
   <data name="M_TotpSaveFailed" xml:space="preserve"><value>验证码无效，未保存 TOTP 设置</value></data>
   <data name="M_UsbUpdated" xml:space="preserve"><value>U 盘绑定已更新</value></data>

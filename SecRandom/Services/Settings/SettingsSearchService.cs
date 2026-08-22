@@ -183,9 +183,13 @@ public class SettingsSearchService
                     if (!IsSearchableSetting(settingsPageResourceId, settingsPageInfo.Id, rootId))
                         continue;
 
-                    var rootName = (string)properties.First(property => property.Name == rootId).GetValue(null)!;
+                    // 缺失的资源键会从设计器属性返回 null，这里统一归一化为空字符串，
+                    // 保证搜索筛选永远不会遇到 null 元数据。
+                    var rootName = properties.First(property => property.Name == rootId).GetValue(null) as string ??
+                                   string.Empty;
                     var rootDescription =
-                        (string?)properties.FirstOrDefault(property => property.Name == rootId + "_D")?.GetValue(null) ??
+                        properties.FirstOrDefault(property => property.Name == rootId + "_D")?.GetValue(null) as
+                            string ??
                         string.Empty;
                     SettingsMetadata.Add(new SettingsMetadata
                     {
@@ -208,8 +212,8 @@ public class SettingsSearchService
                             continue;
 
                         var subDescription =
-                            (string?)properties.FirstOrDefault(property => property.Name == fullId + "_D")
-                                ?.GetValue(null) ?? string.Empty;
+                            properties.FirstOrDefault(property => property.Name == fullId + "_D")
+                                ?.GetValue(null) as string ?? string.Empty;
                         SettingsMetadata.Add(new SettingsMetadata
                         {
                             PageId = settingsPageInfo.Id,
@@ -219,7 +223,8 @@ public class SettingsSearchService
                             CategoryControlId = GetCategoryControlId(settingsPageResourceId, fullId),
                             Id = fullId,
                             ControlId = GetControlId(settingsPageResourceId, fullId, false),
-                            Name = (string)properties.First(property => property.Name == fullId).GetValue(null)!,
+                            Name = properties.First(property => property.Name == fullId).GetValue(null) as string ??
+                                   string.Empty,
                             Description = subDescription
                         });
                     }

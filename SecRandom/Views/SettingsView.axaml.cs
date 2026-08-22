@@ -129,13 +129,13 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
 
         const StringComparison mode = StringComparison.OrdinalIgnoreCase;
 
-        if (metadata.ToString().StartsWith(search, mode)) return true;
+        if (metadata.ToString()?.StartsWith(search, mode) == true) return true;
 
-        // ����������
-        return metadata.PageName.Contains(search, mode) ||
-               metadata.CategoryName.Contains(search, mode) ||
-               metadata.Name.Contains(search, mode) ||
-               metadata.Description.Contains(search, mode);
+        // 本地化元数据在部分部署下可能缺失（为 null），筛选过程绝不能抛出异常。
+        return metadata.PageName?.Contains(search, mode) == true ||
+               metadata.CategoryName?.Contains(search, mode) == true ||
+               metadata.Name?.Contains(search, mode) == true ||
+               metadata.Description?.Contains(search, mode) == true;
     }
 
     private void SearchBox_OnKeyUp(object? sender, KeyEventArgs e)
