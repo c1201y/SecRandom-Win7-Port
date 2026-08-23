@@ -35,19 +35,24 @@ jobs:
         env:
           PLATFORM: Windows
         run: |
-          dotnet restore SecRandom.sln -p:SecRandomPlatform=$env:PLATFORM
+          # The Android/iOS heads require mobile workloads, so only the desktop
+          # project graph is restored and built in this Windows-only workflow.
+          dotnet restore SecRandom.Desktop/SecRandom.Desktop.csproj -p:SecRandomPlatform=$env:PLATFORM
+          dotnet restore SecRandom.Core.Tests/SecRandom.Core.Tests.csproj
           if ($LASTEXITCODE -ne 0) { throw "Restore failed with exit code $LASTEXITCODE." }
 
       - name: Build
         shell: pwsh
+        env:
+          PLATFORM: Windows
         run: |
-          dotnet build SecRandom.sln -c Release --no-restore -p:BuildInParallel=false -p:UseSharedCompilation=false
+          dotnet build SecRandom.Desktop/SecRandom.Desktop.csproj -c Release --no-restore "-p:SecRandomPlatform=$env:PLATFORM" -p:BuildInParallel=false -p:UseSharedCompilation=false
           if ($LASTEXITCODE -ne 0) { throw "Build failed with exit code $LASTEXITCODE." }
 
       - name: Test
         shell: pwsh
         run: |
-          dotnet test SecRandom.sln -c Release --no-build
+          dotnet test SecRandom.Core.Tests/SecRandom.Core.Tests.csproj -c Release --no-restore
           if ($LASTEXITCODE -ne 0) { throw "Tests failed with exit code $LASTEXITCODE." }
 
       - name: Publish Desktop
