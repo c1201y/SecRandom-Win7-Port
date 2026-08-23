@@ -39,4 +39,4 @@ the upstream notice set.
 
 Source: https://github.com/ClassIsland/EdgeTtsSharp
 
-The repository is included as the `vendors/EdgeTtsSharp` Git submodule for Edge voice metadata and synthesis protocol code. Its upstream repository currently does not declare a license; distribution review is required before shipping this dependency in a release.
+The repository is included as vendored sources under `vendors/EdgeTtsSharp` for Edge voice metadata and synthesis protocol code. Its upstream repository currently does not declare a license; distribution review is required before shipping this dependency in a release.

@@ -22,7 +22,7 @@ This checkout has been ported from .NET 10 to .NET 6 for Windows 7 SP1 support. 
 
 - **Target Framework:** All projects now target `net6.0` (or `net6.0-windows7.0` for Desktop)
 - **SDK:** Uses .NET SDK 8.0.424 to build net6.0 targets
-- **EdgeTtsSharp:** Restored on net6.0. The `vendors/EdgeTtsSharp` submodule (pinned commit) sources are compiled into the app again; `Services/Voice/EdgeTtsSharpCompatibility.cs` supplies the net6 transport seam because `ClientWebSocket.ConnectAsync(Uri, HttpMessageInvoker, ...)` is .NET 8+ only — it uses plain `ConnectAsync(Uri, token)` with handshake headers via `Options.SetRequestHeader`. A local empty `WebSocketSharp` marker namespace satisfies the vendored unused `using`. Edge TTS uses the current stable MP3 output, and Windows playback uses the managed NLayer decoder plus system waveOut through NAudio.WinMM, without WMP, COM, or bundled native codec DLLs.
+- **EdgeTtsSharp:** Restored on net6.0. The vendored `vendors/EdgeTtsSharp` sources are compiled into the app; `Services/Voice/EdgeTtsSharpCompatibility.cs` supplies the net6 transport seam because `ClientWebSocket.ConnectAsync(Uri, HttpMessageInvoker, ...)` is .NET 8+ only — it uses plain `ConnectAsync(Uri, token)` with handshake headers via `Options.SetRequestHeader`. A local empty `WebSocketSharp` marker namespace satisfies the vendored unused `using`. Edge TTS uses the current stable MP3 output, and Windows playback uses the managed NLayer decoder plus system waveOut through NAudio.WinMM, without WMP, COM, or bundled native codec DLLs.
 - **FluentIconKind:** Source generator (IconsMappingGenerator) doesn't run on net6.0. Icon references in AXAML replaced with Unicode literals (`&#xE713;` etc.). A manual `FluentIconKind` enum exists in `SecRandom.Core/Icons/` but is not used by AXAML.
 - **Polyfills added:**
   - `UnsafeAccessorAttribute` in `CompilerPolyfills.cs`
@@ -70,7 +70,7 @@ SecRandom-C/
 ├── docs/                  # Project rules, localization, namespace boundaries
 ├── CHANGELOG/             # Versioned release notes, mostly v3 tree
 ├── resources/             # README mirrors, screenshots, banners, root static assets
-├── vendors/EdgeTtsSharp/  # Edge TTS synthesis submodule; app supplies a cross-platform transport seam
+├── vendors/EdgeTtsSharp/  # Vendored Edge TTS synthesis sources; app supplies a cross-platform transport seam
 ├── Global.props           # Main shared MSBuild policy; imported by projects
 ├── Directory.Build.props  # Avalonia version pin only
 └── SecRandom.sln          # Build/test solution entrypoint
@@ -273,7 +273,7 @@ CI RIDs: `win-x64`, `win-x86`, `win-arm64` (desktop-only in scope; do not restor
 - The desktop `Publish Desktop` and UIAccess publish steps must run `dotnet publish` with `-p:BuildInParallel=false -p:UseSharedCompilation=false` and must check `$LASTEXITCODE` after every publish. The two full/light publishes share the same `obj/` tree, so parallel builds and the shared `VBCSCompiler` race intermittently with `CS2012` file-lock failures on Windows; a masked (unchecked) failure leaves `publish/full` incomplete and breaks downstream portable/installer packaging with confusing "file does not exist" errors. Keep the `Verify bundled audio runtime` step enabled so an incomplete self-contained publish is caught at its source instead of silently producing broken artifacts.
 - Release workflow triggers on tags `v*`, manual dispatch, PR/push build, or commit message containing `开始构建`.
 - Test project currently includes `UnitTest1.cs` coverage for legacy privacy/telemetry migration behavior.
-- `vendors/EdgeTtsSharp/` is the Edge TTS synthesis submodule. Its embedded voice list and synthesis source are compiled by the app; `Services/Voice/EdgeTtsSharpCompatibility.cs` supplies the cross-platform transport seam, and all playback remains in ClassIsland's `SoundFlow` MiniAudio package from the repository-wide MyGet source.
+- `vendors/EdgeTtsSharp/` is a vendored copy of the Edge TTS synthesis sources (not a submodule). Its embedded voice list and synthesis source are compiled by the app; `Services/Voice/EdgeTtsSharpCompatibility.cs` supplies the cross-platform transport seam, and all playback remains in ClassIsland's `SoundFlow` MiniAudio package from the repository-wide MyGet source.
 - README mentions `vendors/pythonnet-stub-generator/`; treat it as third-party if present in future snapshots.
 - CodeQL workflow (`codeQL.yml`) runs on push, PR, and weekly schedule; C# scans use manual build mode with .NET SDK `10.0.x`.
 - Keep `SecRandom.Core` public contracts stable.

@@ -1,6 +1,6 @@
 root = true
 
-# EdgeTtsSharp is compiled from its upstream submodule. Its nullable annotations and
+# EdgeTtsSharp is compiled from its vendored upstream copy. Its nullable annotations and
 # legacy naming are not maintained by this project, so suppress only its known diagnostics.
 [vendors/EdgeTtsSharp/**/*.cs]
 dotnet_diagnostic.CS8600.severity = none
