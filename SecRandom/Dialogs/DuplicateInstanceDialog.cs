@@ -31,6 +31,9 @@ public static class DuplicateInstanceDialog
     {
         var dialog = new ContentDialog
         {
+            // FA clamps card width to [320, 548]; the long localized primary label
+            // clips at the 320 minimum, so request the full upstream width.
+            MinWidth = 548,
             Title = Langs.Common.Resources.MultiInstance_Title,
             Content = Langs.Common.Resources.MultiInstance_Message,
             PrimaryButtonText = Langs.Common.Resources.MultiInstance_OpenExisting,

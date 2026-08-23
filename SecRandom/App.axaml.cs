@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls;
@@ -11,6 +12,7 @@ using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using HotAvalonia;
@@ -541,18 +543,37 @@ public partial class App : Application
         IClassicDesktopStyleApplicationLifetime _,
         string? startupProtocolUri = null)
     {
+        // The overlay dialog is shown through the normal ShowAsync path, but the
+        // borderless window is resized to hug the dialog card so only the card is visible.
         var host = new Window
         {
-            SizeToContent = SizeToContent.Manual,
-            WindowState = WindowState.Maximized,
+            Width = 420,
+            Height = 220,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
             ShowInTaskbar = false,
+            Topmost = true,
             CanResize = false,
             SystemDecorations = SystemDecorations.None,
-            Background = null,
-            TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent }
+            // Some Windows compositions still draw a 1px non-client edge plus a
+            // DWM shadow for WS_POPUP windows; NoChrome removes both.
+            ExtendClientAreaToDecorationsHint = true,
+            ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome,
+            ExtendClientAreaTitleBarHeightHint = 0
         };
 
-        // Opened �¼��� Dispatcher �¼�ѭ�����첽���У��������� UI �߳�
+        // The hugged window must stay fully opaque: under the Win7 software-rendering
+        // path every pixel not covered by the card composites as black. The FA window
+        // template does not reliably paint Window.Background, so an explicit full-size
+        // surface border carries the card color instead.
+        var surface = new Border();
+        if (host.TryFindResource("SolidBackgroundFillColorBaseBrush", out var background)
+            && background is IBrush backgroundBrush)
+            surface.Background = backgroundBrush;
+        else
+            surface.Background = Brushes.White;
+        host.Content = surface;
+
+        // Opened 事件在 Dispatcher 事件循环里异步执行，能安全回到 UI 线程
         host.Opened += async (_, _) =>
         {
             if (startupProtocolUri is not null)
@@ -567,7 +588,7 @@ public partial class App : Application
                 }
             }
 
-            var action = await DuplicateInstanceDialog.ShowAsync(host);
+            var action = await ShowDialogHuggingCardAsync(host, surface);
 
             switch (action)
             {
@@ -595,6 +616,227 @@ public partial class App : Application
         };
 
         return host;
+    }
+
+    private static async Task<DuplicateInstanceAction> ShowDialogHuggingCardAsync(
+        Window host, Border surface)
+    {
+        var dialogTask = DuplicateInstanceDialog.ShowAsync(host);
+
+        // Wait for the overlay dialog to complete a layout pass, then shrink the
+        // borderless window to the card bounds and adopt the card background so
+        // no host surface, smoke layer, or gray frame stays visible. Any failure
+        // here must degrade to the normal dialog, never take the process down.
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            try
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+                if (HugDialogCard(host, surface))
+                    break;
+            }
+            catch (Exception exception)
+            {
+                WriteDesktopStartupDiagnostic("Dialog hug pass failed.", exception);
+                break;
+            }
+        }
+
+        return await dialogTask;
+    }
+
+    private static bool HugDialogCard(Window host, Border surface)
+    {
+        var dialog = host.GetVisualDescendants().OfType<ContentDialog>().FirstOrDefault();
+        if (dialog is null || dialog.Bounds.Width < 80 || dialog.Bounds.Height < 80)
+            return false;
+
+        // Drop shadows come from Visual.Effect and Border.BoxShadow; once the
+        // window hugs the card, their clipped remains show as corner ticks.
+        foreach (var visual in host.GetVisualDescendants())
+            visual.Effect = null;
+
+        // The template's Panel#LayoutRoot carries the semi-transparent smoke fill
+        // behind the card; clear it so only the card color remains.
+        foreach (var panel in dialog.GetVisualDescendants().OfType<Panel>())
+        {
+            if (panel.Name == "LayoutRoot")
+                panel.Background = null;
+        }
+
+        // Pass 1: the wrapper layers around the card (FADialogHost and friends) are
+        // opaque theme surfaces; strip their background and every margin, padding,
+        // stroke, and shadow so only the card remains when the window hugs it.
+        foreach (var border in host.GetVisualDescendants().OfType<Border>())
+        {
+            if (!IsVisualDescendant(border, dialog))
+            {
+                border.BoxShadow = default;
+                border.Margin = default;
+                border.Padding = default;
+                border.BorderThickness = default;
+                border.BorderBrush = null;
+                border.Background = null;
+                // A rounded wrapper leaves its own corners unpainted; the hugged
+                // window needs square full-bleed wrappers behind the card.
+                border.CornerRadius = default;
+            }
+        }
+
+        host.UpdateLayout();
+
+        // Pass 2: the ContentDialog control stretches over the whole overlay; the
+        // visible card is its largest fully-opaque child surface. Hug that one.
+        Border? card = null;
+        double largest = 0;
+        foreach (var border in dialog.GetVisualDescendants().OfType<Border>())
+        {
+            if (border.Background is not ISolidColorBrush solid || solid.Color.A != byte.MaxValue)
+                continue;
+
+            var area = border.Bounds.Width * border.Bounds.Height;
+            if (area > largest)
+            {
+                largest = area;
+                card = border;
+            }
+        }
+
+        if (card is null || card.Bounds.Width < 80 || card.Bounds.Height < 80)
+            return false;
+
+        // The card's rounded corners leave the window corners uncovered, and the
+        // software-rendering path does not paint Window.Background there (it shows
+        // as black). Paint the full-size wrapper layers with the card color so the
+        // exposed slivers blend into the card instead.
+        foreach (var border in host.GetVisualDescendants().OfType<Border>())
+        {
+            if (!IsVisualDescendant(border, dialog)
+                && border.Bounds.Width >= dialog.Bounds.Width * 0.9)
+            {
+                border.Background = card.Background;
+                border.CornerRadius = default;
+            }
+        }
+
+        // The explicit surface border is the reliable full-bleed painter under the
+        // software-rendering path; adopt the card color so corner slivers blend.
+        if (!ReferenceEquals(surface, card))
+            surface.Background = card.Background;
+
+        // The theme strokes the outer card surface; combined with the hugged window
+        // edge it reads as a hard frame, so strip wide inner strokes too.
+        foreach (var border in dialog.GetVisualDescendants().OfType<Border>())
+        {
+            if (IsVisualDescendant(border, dialog)
+                && border.Bounds.Width >= card.Bounds.Width * 0.95
+                && border.Bounds.Height >= card.Bounds.Height * 0.9)
+            {
+                border.BorderThickness = default;
+                border.BorderBrush = null;
+            }
+        }
+
+        host.UpdateLayout();
+
+        host.Width = Math.Ceiling(card.Bounds.Width);
+        host.Height = Math.Ceiling(card.Bounds.Height);
+        host.Background = card.Background;
+        host.UpdateLayout();
+
+        // The card may reflow after the resize; adjust once more if it drifted.
+        if (Math.Abs(card.Bounds.Width - host.Width) > 0.5 ||
+            Math.Abs(card.Bounds.Height - host.Height) > 0.5)
+        {
+            host.Width = Math.Ceiling(card.Bounds.Width);
+            host.Height = Math.Ceiling(card.Bounds.Height);
+            host.UpdateLayout();
+        }
+
+        CenterOnScreen(host);
+        ClipWindowToRoundedRegion(host, card.CornerRadius.TopLeft);
+        return true;
+    }
+
+    private static void ClipWindowToRoundedRegion(Window host, double cornerRadiusDip)
+    {
+        // Win7 has no reliable per-pixel transparency under the software-rendering
+        // path, so clip the window itself to a rounded region instead. The region
+        // radius must match the card corner exactly, otherwise the exposed sliver
+        // between the two arcs reads as a dark speck. Region coordinates are device
+        // pixels; SetWindowRgn owns the region afterwards.
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        try
+        {
+            var hwnd = host.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+            if (hwnd == IntPtr.Zero)
+                return;
+
+            var scale = host.RenderScaling;
+            var width = (int)Math.Ceiling(host.Width * scale) + 1;
+            var height = (int)Math.Ceiling(host.Height * scale) + 1;
+            var radius = (int)Math.Round(cornerRadiusDip * scale);
+            if (width <= 0 || height <= 0 || radius <= 0)
+                return;
+
+            var region = CreateRoundRectRgn(0, 0, width, height, radius, radius);
+            if (region != IntPtr.Zero)
+                _ = SetWindowRgn(hwnd, region, true);
+        }
+        catch
+        {
+            // Cosmetic-only; a square window is acceptable when clipping fails.
+        }
+    }
+
+    [DllImport("gdi32.dll")]
+    private static extern IntPtr CreateRoundRectRgn(
+        int left, int top, int right, int bottom, int ellipseWidth, int ellipseHeight);
+
+    [DllImport("user32.dll")]
+    private static extern int SetWindowRgn(IntPtr hWnd, IntPtr hRgn, bool redraw);
+
+    private static bool IsVisualDescendant(Visual candidate, Visual ancestor)
+    {
+        var current = candidate;
+        while (current is not null)
+        {
+            if (current == ancestor)
+                return true;
+            current = current.GetVisualParent();
+        }
+
+        return false;
+    }
+
+    private static void CenterOnScreen(Window host)
+    {
+        if (!SupportsProgrammaticWindowPositioning)
+            return;
+
+        try
+        {
+            var screen = host.Screens.ScreenFromVisual(host)
+                ?? host.Screens.ScreenFromWindow(host)
+                ?? (host.Screens.ScreenCount > 0 ? host.Screens.All[0] : null);
+            if (screen is null)
+                return;
+
+            // Screens work in device pixels while Width/Height are DIPs.
+            var scale = host.RenderScaling;
+            var area = screen.WorkingArea;
+            var width = (host.FrameSize?.Width ?? host.Width) * scale;
+            var height = (host.FrameSize?.Height ?? host.Height) * scale;
+            host.Position = new PixelPoint(
+                area.X + Math.Max(0, (int)Math.Round((area.Width - width) / 2)),
+                area.Y + Math.Max(0, (int)Math.Round((area.Height - height) / 2)));
+        }
+        catch
+        {
+            // Best-effort centering only; keep the startup position otherwise.
+        }
     }
 
     private static Window CreatePortableDataRootFailureHost(
