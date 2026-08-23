@@ -33,7 +33,7 @@ public sealed class MacOsCameraDeviceCatalog : IPlatformCameraDeviceCatalog
             if (!process.Start())
                 return [];
 
-            var outputTask = process.StandardOutput.ReadToEndAsync(timeout.Token);
+            var outputTask = process.StandardOutput.ReadToEndAsync();
             await process.WaitForExitAsync(timeout.Token);
             var output = await outputTask;
             if (process.ExitCode != 0)

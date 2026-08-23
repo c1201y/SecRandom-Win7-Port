@@ -821,7 +821,7 @@ public partial class App : Application
                 services.AddHostedService<UpdateScheduler>();
                 services.AddSingleton<ProtocolCommandRouter>();
                 services.AddSingleton<ISpeechProvider, SystemSpeechProvider>();
-                // EdgeTtsSpeechProvider removed: Edge TTS functionality is not available in this build.
+                services.AddSingleton<ISpeechProvider, EdgeTtsSpeechProvider>();
                 services.AddSingleton<ISpeechAudioPlayer, SpeechAudioPlayer>();
                 services.AddSingleton<IVoiceAnnouncementService, VoiceAnnouncementService>();
                 services.AddSingleton<NotificationService>();

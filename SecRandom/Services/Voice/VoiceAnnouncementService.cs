@@ -103,22 +103,48 @@ public sealed class VoiceAnnouncementService(
             }
 
             var voiceId = ResolveVoiceId(settings, provider.Engine);
-            var path = GetCachedAudioPath(provider.Engine, voiceId, text);
-            if (!File.Exists(path) || new FileInfo(path).Length == 0)
+            try
             {
-                var audio = await provider.SynthesizeAsync(
-                    new SpeechSynthesisRequest(text, voiceId),
-                    cancellationToken).ConfigureAwait(false);
-                path = await WriteAudioAsync(path, audio, cancellationToken).ConfigureAwait(false);
+                await SynthesizeAndPlayAsync(provider, voiceId, text, settings, cancellationToken)
+                    .ConfigureAwait(false);
             }
+            catch (Exception exception) when (
+                provider.Engine == SystemSpeechProvider.SystemEngine &&
+                exception is not OperationCanceledException)
+            {
+                if (!_speechProviders.TryGetValue(EdgeTtsSpeechProvider.EdgeEngine, out var edgeProvider))
+                    throw;
 
-            await audioPlayer.PlayAsync(path, settings.VolumeSize, settings.SpeechRate, cancellationToken)
-                .ConfigureAwait(false);
+                logger.LogWarning(exception, "System TTS failed. Falling back to Edge TTS.");
+                var edgeVoiceId = ResolveVoiceId(settings, edgeProvider.Engine);
+                await SynthesizeAndPlayAsync(edgeProvider, edgeVoiceId, text, settings, cancellationToken)
+                    .ConfigureAwait(false);
+            }
         }
         finally
         {
             _speakGate.Release();
         }
+    }
+
+    private async Task SynthesizeAndPlayAsync(
+        ISpeechProvider provider,
+        string voiceId,
+        string text,
+        VoiceSettingsConfig settings,
+        CancellationToken cancellationToken)
+    {
+        var path = GetCachedAudioPath(provider.Engine, voiceId, text);
+        if (!File.Exists(path) || new FileInfo(path).Length == 0)
+        {
+            var audio = await provider.SynthesizeAsync(
+                new SpeechSynthesisRequest(text, voiceId),
+                cancellationToken).ConfigureAwait(false);
+            path = await WriteAudioAsync(path, audio, cancellationToken).ConfigureAwait(false);
+        }
+
+        await audioPlayer.PlayAsync(path, settings.VolumeSize, settings.SpeechRate, cancellationToken)
+            .ConfigureAwait(false);
     }
 
     private static SpecificAnnouncementAttachedSettings? GetSpecificSettings(Student student) => student

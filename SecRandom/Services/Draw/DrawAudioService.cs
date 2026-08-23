@@ -18,12 +18,10 @@ public sealed class DrawAudioService(MusicLibraryService musicLibrary, ILogger<D
 {
     // The bundled miniaudio backend can raise an unmanaged access violation while
     // opening the WASAPI device on Windows 7. Do not enter native audio code there.
-    private static readonly bool IsNativeAudioSupported = !OperatingSystem.IsWindows()
-        || (RuntimeInformation.ProcessArchitecture == Architecture.X64
-            && Environment.OSVersion.Version >= new Version(6, 2));
-
     private readonly object _gate = new();
-    private readonly IPlaybackBackend _backend = new SoundFlowPlaybackBackend();
+    private readonly IPlaybackBackend _backend = OperatingSystem.IsWindows()
+        ? new WindowsPlaybackBackend()
+        : new SoundFlowPlaybackBackend();
     private PlaybackSession? _activeSession;
     private PlaybackSession? _fadingSession;
     private bool _isDisposed;
@@ -150,9 +148,6 @@ public sealed class DrawAudioService(MusicLibraryService musicLibrary, ILogger<D
 
     private bool StartSession(PlaybackKind kind, string selection, int volume, int fadeIn, int fadeOut, bool loop)
     {
-        if (!IsNativeAudioSupported)
-            return false;
-
         var path = selection == MusicLibraryService.RandomTrackId
             ? musicLibrary.ResolveRandomPath()
             : musicLibrary.ResolvePath(selection);
@@ -371,6 +366,41 @@ public sealed class DrawAudioService(MusicLibraryService musicLibrary, ILogger<D
             _device = null;
             _engine = null;
         }
+    }
+
+    private sealed class WindowsPlaybackBackend : IPlaybackBackend
+    {
+        public IPlaybackHandle Create(string path, float volume, bool loop)
+        {
+            return new WindowsPlaybackHandle(WindowsAudioPlayback.Start(path, volume, loop));
+        }
+
+        public void Dispose()
+        {
+        }
+    }
+
+    private sealed class WindowsPlaybackHandle(WindowsAudioPlayback.Session session) : IPlaybackHandle
+    {
+        public event EventHandler<EventArgs>? PlaybackEnded
+        {
+            add => session.PlaybackEnded += value;
+            remove => session.PlaybackEnded -= value;
+        }
+
+        public float Volume
+        {
+            get => session.Volume;
+            set => session.Volume = value;
+        }
+
+        public float DurationSeconds => (float)session.DurationSeconds;
+
+        public void Play() => session.Play();
+
+        public void Stop() => session.Stop();
+
+        public void Dispose() => session.Dispose();
     }
 
     private sealed class SoundFlowPlaybackHandle(AudioPlaybackDevice device, SoundPlayer player) : IPlaybackHandle

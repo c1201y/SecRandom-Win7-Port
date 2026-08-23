@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using SecRandom.Core.Abstraction.Services;
+using SecRandom.Services.Draw;
 using SoundFlow.Abstracts.Devices;
 using SoundFlow.Backends.MiniAudio;
 using SoundFlow.Components;
@@ -19,6 +20,13 @@ public sealed class SpeechAudioPlayer : ISpeechAudioPlayer
         int playbackSpeed,
         CancellationToken cancellationToken = default)
     {
+        if (OperatingSystem.IsWindows())
+        {
+            await WindowsAudioPlayback.PlayToCompletionAsync(path, volume, cancellationToken)
+                .ConfigureAwait(false);
+            return;
+        }
+
         cancellationToken.ThrowIfCancellationRequested();
 
         using var engine = new MiniAudioEngine();

@@ -31,6 +31,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="NAudio.WinMM" Version="2.2.1" />
+        <PackageReference Include="NLayer.NAudioSupport" Version="2.0.1" />
         <ProjectReference Include="..\SecRandom.Core\SecRandom.Core.csproj" />
         <ProjectReference Include="..\SecRandom4Ci.Interface\SecRandom4Ci.Interface.csproj" />
         <ProjectReference Include="..\SecRandom.Platforms\SecRandom.Platforms.csproj" />
@@ -474,7 +476,13 @@
     </ItemGroup>
 
     <ItemGroup>
-
+        <!-- EdgeTtsSharp sources are compiled into the app; Wss transport lives in Services/Voice/EdgeTtsSharpCompatibility.cs -->
+        <Compile Include="..\vendors\EdgeTtsSharp\Edge_tts_sharp\Edge_tts.cs" Link="ThirdParty\EdgeTtsSharp\Edge_tts.cs" />
+        <Compile Include="..\vendors\EdgeTtsSharp\Edge_tts_sharp\Tools.cs" Link="ThirdParty\EdgeTtsSharp\Tools.cs" />
+        <Compile Include="..\vendors\EdgeTtsSharp\Edge_tts_sharp\Model\eVoice.cs" Link="ThirdParty\EdgeTtsSharp\Model\eVoice.cs" />
+        <Compile Include="..\vendors\EdgeTtsSharp\Edge_tts_sharp\Model\PlayOption.cs" Link="ThirdParty\EdgeTtsSharp\Model\PlayOption.cs" />
+        <Compile Include="..\vendors\EdgeTtsSharp\Edge_tts_sharp\Model\Log.cs" Link="ThirdParty\EdgeTtsSharp\Model\Log.cs" />
+        <EmbeddedResource Include="..\vendors\EdgeTtsSharp\Edge_tts_sharp\Source\VoiceList.json" Link="ThirdParty\EdgeTtsSharp\Source\VoiceList.json" LogicalName="Edge_tts_sharp.Source.VoiceList.json" />
     </ItemGroup>
 
     <Import Project="..\Global.props" />
