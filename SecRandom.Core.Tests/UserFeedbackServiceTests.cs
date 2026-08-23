@@ -2,6 +2,7 @@
 using SecRandom.Core.Services.Archive;
 using SecRandom.Services.Feedback;
 using SecRandom.Services.ImportExport;
+using FeedbackResources = SecRandom.Langs.SettingsView.Resources;
 
 namespace SecRandom.Core.Tests;
 
@@ -79,9 +80,9 @@ public class UserFeedbackServiceTests
     {
         string message = CreateBugSubmission().BuildMessage();
 
-        Assert.Contains("## 期望行为", message);
-        Assert.Contains("## 实际结果", message);
-        Assert.Contains("## 重现步骤", message);
+        Assert.Contains($"## {FeedbackResources.C_Feedback_Expected}", message);
+        Assert.Contains($"## {FeedbackResources.C_Feedback_Actual}", message);
+        Assert.Contains($"## {FeedbackResources.C_Feedback_Reproduce}", message);
     }
 
     [Fact]
