@@ -37,7 +37,7 @@ jobs:
         run: |
           # The Android/iOS heads require mobile workloads, so only the desktop
           # project graph is restored and built in this Windows-only workflow.
-          dotnet restore SecRandom.Desktop/SecRandom.Desktop.csproj -p:SecRandomPlatform=$env:PLATFORM
+          dotnet restore SecRandom.Desktop/SecRandom.Desktop.csproj -r win-x64 -p:SecRandomPlatform=$env:PLATFORM
           dotnet restore SecRandom.Core.Tests/SecRandom.Core.Tests.csproj
           if ($LASTEXITCODE -ne 0) { throw "Restore failed with exit code $LASTEXITCODE." }
 
