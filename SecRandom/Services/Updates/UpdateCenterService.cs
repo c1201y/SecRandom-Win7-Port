@@ -34,10 +34,10 @@ public sealed class UpdateCenterService(
     : INotifyPropertyChanged
 {
     private const string Product = "SecRandom";
-    private const string Repository = "SECTL/SecRandom";
+    private const string Repository = "c1201y/SecRandom-Win7-Port";
     private const string ManifestFileName = "SecRandom-update-manifest.json";
     private const string SignatureFileName = "SecRandom-update-manifest.sig";
-    private static readonly Uri GitHubRawMetadataUri = new("https://raw.githubusercontent.com/SECTL/SecRandom/master/metadata.yaml");
+    private static readonly Uri GitHubRawMetadataUri = new("https://raw.githubusercontent.com/c1201y/SecRandom-Win7-Port/master/metadata.yaml");
     private static readonly Uri GitHubMirrorPrefix = new("https://ghproxy.sectl.cn/");
     private readonly HttpClient _httpClient = httpClient;
     private readonly IDeserializer _yamlDeserializer = new DeserializerBuilder()

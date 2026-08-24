@@ -12,7 +12,7 @@ namespace SecRandom.Views;
 
 public partial class FeedbackDrawer : UserControl
 {
-    private const string GitHubIssuesUrl = "https://github.com/SECTL/SecRandom/issues";
+    private const string GitHubIssuesUrl = "https://github.com/c1201y/SecRandom-Win7-Port/issues";
     private Action? _closeDrawer;
 
     public FeedbackDrawer()

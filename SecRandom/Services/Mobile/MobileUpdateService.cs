@@ -18,10 +18,10 @@ namespace SecRandom.Services.Mobile;
 
 public sealed class MobileUpdateService(HttpClient httpClient, IMobileUpdateInstaller installer) : INotifyPropertyChanged
 {
-    private const string Repository = "SECTL/SecRandom";
+    private const string Repository = "c1201y/SecRandom-Win7-Port";
     private const string ManifestFileName = "SecRandom-update-manifest.json";
     private const string SignatureFileName = "SecRandom-update-manifest.sig";
-    private static readonly Uri MetadataUri = new("https://raw.githubusercontent.com/SECTL/SecRandom/master/metadata.yaml");
+    private static readonly Uri MetadataUri = new("https://raw.githubusercontent.com/c1201y/SecRandom-Win7-Port/master/metadata.yaml");
     private static readonly Uri MirrorPrefix = new("https://ghproxy.sectl.cn/");
     private readonly IDeserializer _yaml = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
     private UpdateArtifact? _artifact;

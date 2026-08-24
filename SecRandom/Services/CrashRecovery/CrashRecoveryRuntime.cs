@@ -22,7 +22,7 @@ public static class CrashRecoveryRuntime
     public const string CrashAutoRestartArgument = "--crash-auto-restart";
     public const int MaxCrashReportBytes = 1024 * 1024;
 
-    private const string FeedbackUrl = "https://github.com/SECTL/SecRandom/issues/new";
+    private const string FeedbackUrl = "https://github.com/c1201y/SecRandom-Win7-Port/issues/new";
     private static int _fatalExceptionHandled;
 
     public static CrashRecoveryPromptOptions? StartupPromptOptions { get; private set; }
