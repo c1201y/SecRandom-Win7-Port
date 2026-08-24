@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <PackageId>SecRandom.PluginSdk</PackageId>
+        <Title>SecRandom Plugin SDK</Title>
+        <Description>SDK for developing SecRandom plugins. The SDK version tracks the main application release; plugins declare the targeted host API version in manifest.yml (see PluginApiVersions).</Description>
+        <Authors>c1201y</Authors>
+        <RepositoryUrl>https://github.com/c1201y/SecRandom-Win7-Port</RepositoryUrl>
+        <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+        <PackageTags>secrandom;plugin;addin;srpx</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SecRandom.Core\SecRandom.Core.csproj"
+                          IncludeAssets="all" />
+        <None Include="SecRandom.PluginSdk.targets" Pack="True" PackagePath="build/net6.0" />
+        <None Include="README.md" Pack="True" PackagePath="\" />
+    </ItemGroup>
+</Project>

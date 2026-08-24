@@ -7,6 +7,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using SecRandom.Core.Abstraction;
+using SecRandom.Core.Abstraction.Services;
 using SecRandom.Core.Attributes;
 using SecRandom.Core.Enums.Configs;
 using SecRandom.Core.Icons;
@@ -24,13 +25,29 @@ namespace SecRandom.Views.SettingsPages.Personalized;
 public partial class FloatingWindowSettingsPage : UserControl
 {
     private bool _isSettingsSubscribed;
+    private readonly IFloatingWindowButtonRegistry _floatingWindowButtonRegistry = IAppHost.GetService<IFloatingWindowButtonRegistry>();
 
     public FloatingWindowSettingsPage()
     {
         Settings = ViewModel.Config.FloatingWindowSettings;
         var migratedSize = NormalizeFloatingWindowSize() | NormalizeDockedWindowSize();
-        ButtonOptions =
-        [
+        foreach (var option in BuildButtonOptions())
+            ButtonOptions.Add(option);
+        SelectedButtonOptions = BuildSelectedOptions(ButtonOptions);
+        SelectedButtonOptions.CollectionChanged += SelectedButtonOptions_OnCollectionChanged;
+        DataContext = this;
+        InitializeComponent();
+        SubscribeSettings();
+        _floatingWindowButtonRegistry.Changed += FloatingWindowButtonRegistry_OnChanged;
+        Unloaded += (_, _) => _floatingWindowButtonRegistry.Changed -= FloatingWindowButtonRegistry_OnChanged;
+        if (migratedSize)
+            ConfigHandler.Save();
+    }
+
+    private AvaloniaList<MultiSelectSettingOption> BuildButtonOptions()
+    {
+        var options = new AvaloniaList<MultiSelectSettingOption>
+        {
             new(LR.S_Buttons_RollCall, () => Settings.ShowRollCallButton,
                 value => Settings.ShowRollCallButton = value),
             new(LR.S_Buttons_QuickDraw, () => Settings.ShowQuickDrawButton,
@@ -39,14 +56,48 @@ public partial class FloatingWindowSettingsPage : UserControl
                 value => Settings.ShowLotteryButton = value),
             new(LR.S_Buttons_Timer, () => Settings.ShowTimerButton,
                 value => Settings.ShowTimerButton = value)
-        ];
-        SelectedButtonOptions = BuildSelectedOptions(ButtonOptions);
+        };
+        foreach (var button in _floatingWindowButtonRegistry.Buttons)
+        {
+            options.Add(new MultiSelectSettingOption(
+                button.Label,
+                () => Settings.VisiblePluginButtonIds.Contains(button.Id, StringComparer.OrdinalIgnoreCase),
+                value =>
+                {
+                    if (value)
+                    {
+                        if (!Settings.VisiblePluginButtonIds.Contains(button.Id, StringComparer.OrdinalIgnoreCase))
+                            Settings.VisiblePluginButtonIds.Add(button.Id);
+                    }
+                    else
+                    {
+                        Settings.VisiblePluginButtonIds.Remove(button.Id);
+                    }
+                }));
+        }
+
+        return options;
+    }
+
+    private void FloatingWindowButtonRegistry_OnChanged(object? sender, EventArgs e)
+    {
+        RebuildButtonOptions();
+    }
+
+    private void RebuildButtonOptions()
+    {
+        if (!IsLoaded)
+            return;
+
+        var wasSelected = SelectedButtonOptions.Select(option => option.Label).ToHashSet();
+        SelectedButtonOptions.CollectionChanged -= SelectedButtonOptions_OnCollectionChanged;
+        ButtonOptions.Clear();
+        foreach (var option in BuildButtonOptions())
+            ButtonOptions.Add(option);
+        SelectedButtonOptions.Clear();
+        foreach (var option in ButtonOptions.Where(option => wasSelected.Contains(option.Label)))
+            SelectedButtonOptions.Add(option);
         SelectedButtonOptions.CollectionChanged += SelectedButtonOptions_OnCollectionChanged;
-        DataContext = this;
-        InitializeComponent();
-        SubscribeSettings();
-        if (migratedSize)
-            ConfigHandler.Save();
     }
 
     public ViewModelBase ViewModel { get; } = IAppHost.GetService<ViewModelBase>();

@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecRandom4Ci.Interface", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecRandom.Launcher", "SecRandom.Launcher\SecRandom.Launcher.csproj", "{8B6AE2A9-AB95-4F1E-90C8-0E0714A8E76D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IconsMappingGenerator", "roslyn/IconsMappingGenerator/IconsMappingGenerator.csproj", "{79C529FD-70E8-4A4A-8907-DE822554967C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IconsMappingGenerator", "roslyn\IconsMappingGenerator\IconsMappingGenerator.csproj", "{79C529FD-70E8-4A4A-8907-DE822554967C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecRandom.Platforms.Abstractions", "SecRandom.Platforms.Abstractions\SecRandom.Platforms.Abstractions.csproj", "{1846EC89-3B33-4B78-BEB7-08F7CF1E2CD6}"
 EndProject
@@ -42,6 +42,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecRandom.Android", "SecRandom.Android\SecRandom.Android.csproj", "{8E41CBAE-25D9-4DDB-9D9E-4494F1856C88}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecRandom.iOS", "SecRandom.iOS\SecRandom.iOS.csproj", "{08294FBE-5861-4380-AAA3-21E3B57270A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecRandom.PluginSdk", "SecRandom.PluginSdk\SecRandom.PluginSdk.csproj", "{6C3279BA-BF26-4F9F-A7DF-F9186D88E50F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,10 @@ Global
 		{08294FBE-5861-4380-AAA3-21E3B57270A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08294FBE-5861-4380-AAA3-21E3B57270A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08294FBE-5861-4380-AAA3-21E3B57270A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C3279BA-BF26-4F9F-A7DF-F9186D88E50F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C3279BA-BF26-4F9F-A7DF-F9186D88E50F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C3279BA-BF26-4F9F-A7DF-F9186D88E50F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C3279BA-BF26-4F9F-A7DF-F9186D88E50F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

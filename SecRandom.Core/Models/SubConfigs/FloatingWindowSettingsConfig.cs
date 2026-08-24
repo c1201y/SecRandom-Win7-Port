@@ -12,6 +12,7 @@ public partial class FloatingWindowSettingsConfig : ObservableObject
     [ObservableProperty] private bool _showQuickDrawButton = true;
     [ObservableProperty] private bool _showLotteryButton = false;
     [ObservableProperty] private bool _showTimerButton = false;
+    [ObservableProperty] private List<string> _visiblePluginButtonIds = [];
     [ObservableProperty] private int _floatingWindowPlacement = 1;
     [ObservableProperty] private int _floatingWindowDisplayStyle = 0;
     [ObservableProperty] private int _floatingWindowTheme = 0;

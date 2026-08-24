@@ -90,7 +90,11 @@ using SecRandom.Views.SettingsPages.LogViewer;
 using SecRandom.Views.SettingsPages.More;
 using SecRandom.Views.SettingsPages.Personalized;
 using SecRandom.Views.SettingsPages.Picking;
+using SecRandom.Views.SettingsPages.Plugins;
 using SecRandom.Views.SettingsPages.Update;
+using SecRandom.Services.Plugins;
+using SecRandom.PluginSdk;
+using SecRandom.Core.Abstraction.Services.Views;
 // using SecRandom.Views.SettingsPages.Plugins.Overview;
 using DefaultNotificationSettingsPage = SecRandom.Views.SettingsPages.Notification.DefaultNotificationSettingsPage;
 using FloatingWindowSettingsPage = SecRandom.Views.SettingsPages.Personalized.FloatingWindowSettingsPage;
@@ -957,8 +961,13 @@ public partial class App : Application
         IAppHost.Host = Host
             .CreateDefaultBuilder()
             .UseContentRoot(AppContext.BaseDirectory)
-            .ConfigureServices(services =>
+            .ConfigureServices((context, services) =>
             {
+                // 插件宿主先于其余服务创建;插件入口在 Build 之前向同一集合注册扩展服务。
+                var pluginManager = new PluginManager();
+                services.AddSingleton<IPluginManager>(pluginManager);
+                services.AddSingleton(pluginManager);
+
                 if (isMobile)
                 {
                     services.AddPlatformServices(platform);
@@ -1257,8 +1266,11 @@ public partial class App : Application
                 services.AddSettingsPage<LotteryHistorySettingsPage>(Langs.Common.Resources.Feat_LotteryHistory);
 
                 services.AddSettingsPageSeparator(isHide: true);
-                // services.AddSettingsPage<PluginsSettingsPage>(Langs.SettingsPages.Plugins.Overview.Resources
-                //     .Page_Title);
+                if (!isMobile)
+                {
+                    services.AddSettingsPage<PluginsSettingsPage>(Langs.SettingsPages.Plugins.Overview.Resources
+                        .Page_Title);
+                }
 
                 // �ײ�
                 services.AddSettingsPage<UpdateSettingsPage>(Langs.Common.Resources.Settings_Update);
@@ -1267,6 +1279,23 @@ public partial class App : Application
                 services.AddSettingsPageSeparator(PageLocation.Bottom, isHide: true);
                 services.AddSettingsPage<DebugSettingsPage>(
                     Langs.SettingsPages.Debug.DebugStrings.Get("Page_Title"));
+
+                if (!isMobile)
+                {
+                    services.AddSingleton<IMainView, MainViewAdapter>();
+                    services.AddSingleton<ISettingsView, SettingsViewAdapter>();
+                    services.AddSingleton<IAppNavigationService, AppNavigationService>();
+                    services.AddSingleton<IAppLifecycleService, AppLifecycleService>();
+                    services.AddSingleton<IPluginDrawService, PluginDrawService>();
+                    services.AddSingleton<IFloatingWindowButtonRegistry, FloatingWindowButtonRegistry>();
+                    services.AddHostedService<PluginLifecycleBridge>();
+                    services.AddHttpClient("plugin-market", client => client.Timeout = TimeSpan.FromSeconds(30));
+                    services.AddSingleton<PluginMarketService>(provider => new PluginMarketService(
+                        provider.GetRequiredService<ILogger<PluginMarketService>>(),
+                        provider.GetRequiredService<IHttpClientFactory>().CreateClient("plugin-market"),
+                        provider.GetRequiredService<IPluginManager>()));
+                    pluginManager.Initialize(context, services);
+                }
             })
             .Build();
 
@@ -1372,6 +1401,21 @@ public partial class App : Application
 
         IAppHost.GetService<MainConfigHandler>().Save();
         IAppHost.GetService<IProfileService>().SaveProfile();
+
+        var pluginManager = IAppHost.TryGetService<PluginManager>();
+        if (pluginManager is not null)
+        {
+            try
+            {
+                await pluginManager.DisposePluginsAsync().ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                IAppHost.TryGetService<ILogger<App>>()?
+                    .LogError(exception, "Plugin disposal failed.");
+            }
+        }
+
         await ShutdownTelemetryAsync().ConfigureAwait(false);
 
         IHost? host = IAppHost.Host;
