@@ -45,6 +45,7 @@
 ポータブル版フォルダー全体を書き込み可能な場所へ移動するか、フォルダーのアクセス許可を変更してから再試行してください</value></data>
     <data name="M_UnknownError" xml:space="preserve"><value>不明なエラー</value></data>
     <data name="Feat_Lottery" xml:space="preserve"><value>抽選</value></data>
+    <data name="Feat_Timer" xml:space="preserve"><value>タイマー</value></data>
     <data name="Settings_About" xml:space="preserve"><value>SecRandom について</value></data>
     <data name="Settings_Basic" xml:space="preserve"><value>基本</value></data>
     <data name="Settings_RosterManagement" xml:space="preserve"><value>名簿管理</value></data>

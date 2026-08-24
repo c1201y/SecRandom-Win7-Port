@@ -170,6 +170,12 @@
                 <fa:SettingsExpander.Footer>
                     <ToggleSwitch IsChecked="{Binding Settings.StudentImage}" />
                 </fa:SettingsExpander.Footer>
+
+                <fa:SettingsExpanderItem Content="{x:Static lp:Resources.C_BatchAvatar}"
+                                         Description="{x:Static lp:Resources.C_BatchAvatarHint}"
+                                         IsClickEnabled="True"
+                                         ActionIconSource="{sr:FluentIconSource {sr:Fi ChevronRightFilled}}"
+                                         Click="BatchAvatarButton_OnClick" />
             </fa:SettingsExpander>
 
             <fa:SettingsExpander x:Name="S_StudentImagePosition" Header="{x:Static lp:Resources.S_StudentImagePosition}" Description="{x:Static lp:Resources.S_StudentImagePosition_D}" IconSource="{sr:FluentIconSource {sr:Fi ImageFilled}}">

@@ -99,6 +99,15 @@ namespace SecRandom.Langs.SettingsPages.FloatingWindow {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to 计时器按钮.
+        /// </summary>
+        public static string S_Buttons_Timer {
+            get {
+                return ResourceManager.GetString("S_Buttons_Timer", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to 在悬浮窗中显示抽奖入口。.
         /// </summary>
         public static string S_Buttons_Lottery_D {

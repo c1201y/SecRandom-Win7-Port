@@ -28,6 +28,11 @@ public partial class DefaultDrawSettingsPage : UserControl
 
     public ViewModelBase ViewModel { get; } = IAppHost.GetService<ViewModelBase>();
     public DefaultDrawSettingsConfig Settings { get; }
+
+    private void BatchAvatarButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        SettingsView.Current?.OpenDrawer(new BatchAvatarDrawer());
+    }
     public ObservableCollection<MusicSelection> MusicSelections => MusicLibrary.Selections;
 
     private MainConfigHandler ConfigHandler { get; } = IAppHost.GetService<MainConfigHandler>();

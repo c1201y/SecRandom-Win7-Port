@@ -36,7 +36,9 @@ public partial class FloatingWindowSettingsPage : UserControl
             new(LR.S_Buttons_QuickDraw, () => Settings.ShowQuickDrawButton,
                 value => Settings.ShowQuickDrawButton = value),
             new(LR.S_Buttons_Lottery, () => Settings.ShowLotteryButton,
-                value => Settings.ShowLotteryButton = value)
+                value => Settings.ShowLotteryButton = value),
+            new(LR.S_Buttons_Timer, () => Settings.ShowTimerButton,
+                value => Settings.ShowTimerButton = value)
         ];
         SelectedButtonOptions = BuildSelectedOptions(ButtonOptions);
         SelectedButtonOptions.CollectionChanged += SelectedButtonOptions_OnCollectionChanged;

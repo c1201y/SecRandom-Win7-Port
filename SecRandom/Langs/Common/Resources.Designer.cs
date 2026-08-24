@@ -132,6 +132,15 @@ namespace SecRandom.Langs.Common {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to 计时器.
+        /// </summary>
+        public static string Feat_Timer {
+            get {
+                return ResourceManager.GetString("Feat_Timer", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to 闪抽.
         /// </summary>
         public static string Feat_QuickDraw {
