@@ -8,6 +8,7 @@ namespace SecRandom.Core.Views;
 
 public class ViewHostControl : UserControl, IViewHost
 {
+    private static readonly SolidColorBrush ModalScrimBrush = new(Color.FromArgb(96, 0, 0, 0));
     private readonly Grid _root;
     private readonly NavigationPage _navigationPage;
     private readonly Border _modalOverlay;
@@ -30,7 +31,7 @@ public class ViewHostControl : UserControl, IViewHost
             IsVisible = false,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
-            Background = new SolidColorBrush(Color.FromArgb(96, 0, 0, 0)),
+            Background = ModalScrimBrush,
             Child = _modalPresenter
         };
         _root = new Grid();
@@ -59,6 +60,7 @@ public class ViewHostControl : UserControl, IViewHost
                 await _navigationPage.ReplaceAsync(view).ConfigureAwait(true);
             else
                 await _navigationPage.PushAsync(view).ConfigureAwait(true);
+            UpdateModalScrim();
             UpdateVisibility();
         }).ConfigureAwait(false);
     }
@@ -72,6 +74,7 @@ public class ViewHostControl : UserControl, IViewHost
             _modalStack.Add(view);
             _modalPresenter.Content = view;
             _modalOverlay.IsVisible = true;
+            UpdateModalScrim();
             UpdateVisibility();
         });
     }
@@ -88,6 +91,7 @@ public class ViewHostControl : UserControl, IViewHost
                 _modalStack.Add(view);
                 _modalPresenter.Content = view;
                 _modalOverlay.IsVisible = true;
+                UpdateModalScrim();
                 UpdateVisibility();
                 return;
             }
@@ -108,6 +112,7 @@ public class ViewHostControl : UserControl, IViewHost
             {
                 _modalPresenter.Content = ActiveModalView;
                 _modalOverlay.IsVisible = ActiveModalView is not null;
+                UpdateModalScrim();
                 UpdateVisibility();
                 return;
             }
@@ -121,6 +126,7 @@ public class ViewHostControl : UserControl, IViewHost
                     else
                         await _navigationPage.PopAsync().ConfigureAwait(true);
                 }
+                UpdateModalScrim();
                 UpdateVisibility();
             }
         }).ConfigureAwait(false);
@@ -159,6 +165,7 @@ public class ViewHostControl : UserControl, IViewHost
             _modalStack.Clear();
             _modalPresenter.Content = null;
             _modalOverlay.IsVisible = false;
+            UpdateModalScrim();
             UpdateVisibility();
             Destroyed?.Invoke(this, EventArgs.Empty);
         });
@@ -194,5 +201,12 @@ public class ViewHostControl : UserControl, IViewHost
         var hasActiveView = !_isDestroyed && HasActiveView;
         IsVisible = hasActiveView;
         IsHitTestVisible = hasActiveView;
+    }
+
+    // 专属宿主窗口只承载模态视图时(如计时器),38% 黑色遮罩会把整窗压灰;
+    // 只有存在底层页面栈时遮罩才有压暗意义。
+    private void UpdateModalScrim()
+    {
+        _modalOverlay.Background = _pageStack.Count == 0 ? null : ModalScrimBrush;
     }
 }

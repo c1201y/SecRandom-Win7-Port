@@ -132,6 +132,9 @@ internal sealed class DesktopViewHostWindow : AppWindow, IViewHost
         MinHeight = 400;
         CanResize = true;
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        // Win7 软件渲染路径下 FA AppWindow 模板底色显示为灰色;视图页自身透明,
+        // 显式铺白与主窗口内容一致。
+        Background = Brushes.White;
         Content = _contentHost;
 
         Loaded += WindowOnLoaded;
