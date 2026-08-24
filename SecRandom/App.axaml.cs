@@ -782,8 +782,13 @@ public partial class App : Application
                 return;
 
             var region = CreateRoundRectRgn(0, 0, width, height, radius, radius);
-            if (region != IntPtr.Zero)
-                _ = SetWindowRgn(hwnd, region, true);
+            if (region == IntPtr.Zero)
+                return;
+
+            // Only a successful SetWindowRgn transfers ownership; on failure the
+            // region must be deleted or the GDI object leaks.
+            if (SetWindowRgn(hwnd, region, true) == 0)
+                DeleteObject(region);
         }
         catch
         {
@@ -797,6 +802,9 @@ public partial class App : Application
 
     [DllImport("user32.dll")]
     private static extern int SetWindowRgn(IntPtr hWnd, IntPtr hRgn, bool redraw);
+
+    [DllImport("gdi32.dll")]
+    private static extern bool DeleteObject(IntPtr hObject);
 
     private static bool IsVisualDescendant(Visual candidate, Visual ancestor)
     {

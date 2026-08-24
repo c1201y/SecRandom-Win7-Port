@@ -22,7 +22,7 @@ public sealed class SpeechAudioPlayer : ISpeechAudioPlayer
     {
         if (OperatingSystem.IsWindows())
         {
-            await WindowsAudioPlayback.PlayToCompletionAsync(path, volume, cancellationToken)
+            await WindowsAudioPlayback.PlayToCompletionAsync(path, volume, playbackSpeed, cancellationToken)
                 .ConfigureAwait(false);
             return;
         }
