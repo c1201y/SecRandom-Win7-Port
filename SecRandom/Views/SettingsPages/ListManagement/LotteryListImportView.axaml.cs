@@ -453,6 +453,11 @@ public partial class LotteryListImportView : UserControl, INotifyPropertyChanged
         }
     }
 
+    private async void FileImportButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        await OpenFileImportAsync();
+    }
+
     private async Task OpenFileImportAsync()
     {
         await StopQrScannerAsync();

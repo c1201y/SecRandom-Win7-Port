@@ -1,7 +1,9 @@
 using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -39,10 +41,14 @@ public partial class MainWindow : AppWindow
         TitleBar.Height = 48;
         TitleBar.ExtendsContentIntoTitleBar = true;
 
-        // ���Ǳ�������ť��ɫ
+        // 透明标题栏按钮颜色
         TitleBar.ButtonHoverBackgroundColor = Color.FromArgb(23, 0, 0, 0);
         TitleBar.ButtonPressedBackgroundColor = Color.FromArgb(52, 0, 0, 0);
         TitleBar.ButtonInactiveForegroundColor = Colors.Gray;
+
+        // SystemDecorations=None 没有原生缩放边框,自行处理边缘拖拽缩放。
+        PointerMoved += MainWindowOnPointerMoved;
+        PointerPressed += MainWindowOnPointerPressed;
 
         if (!UsesStoredWindowSettings)
             return;
@@ -67,6 +73,52 @@ public partial class MainWindow : AppWindow
         AvaloniaXamlLoader.Load(this);
     }
 
+    // 无边框窗口的边缘拖拽缩放:窗口边缘 ResizeBorderThickness 像素内按下即进入系统缩放拖拽。
+    private const double ResizeBorderThickness = 6;
+
+    private WindowEdge? GetResizeEdge(Point position)
+    {
+        if (WindowState != WindowState.Normal)
+            return null;
+
+        var left = position.X <= ResizeBorderThickness;
+        var right = position.X >= Bounds.Width - ResizeBorderThickness;
+        var top = position.Y <= ResizeBorderThickness;
+        var bottom = position.Y >= Bounds.Height - ResizeBorderThickness;
+        if (top && left) return WindowEdge.NorthWest;
+        if (top && right) return WindowEdge.NorthEast;
+        if (bottom && left) return WindowEdge.SouthWest;
+        if (bottom && right) return WindowEdge.SouthEast;
+        if (top) return WindowEdge.North;
+        if (bottom) return WindowEdge.South;
+        if (left) return WindowEdge.West;
+        if (right) return WindowEdge.East;
+        return null;
+    }
+
+    private void MainWindowOnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        var edge = GetResizeEdge(e.GetPosition(this));
+        Cursor = edge switch
+        {
+            WindowEdge.North or WindowEdge.South => new Cursor(StandardCursorType.SizeNorthSouth),
+            WindowEdge.West or WindowEdge.East => new Cursor(StandardCursorType.SizeWestEast),
+            WindowEdge.NorthWest or WindowEdge.SouthEast => new Cursor(StandardCursorType.TopLeftCorner),
+            WindowEdge.NorthEast or WindowEdge.SouthWest => new Cursor(StandardCursorType.TopRightCorner),
+            _ => Cursor.Default
+        };
+    }
+
+    private void MainWindowOnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed
+            && GetResizeEdge(e.GetPosition(this)) is { } edge)
+        {
+            BeginResizeDrag(edge, e);
+            e.Handled = true;
+        }
+    }
+
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         if (App.IsMicaSupported)
@@ -74,6 +126,8 @@ public partial class MainWindow : AppWindow
             TransparencyLevelHint = [WindowTransparencyLevel.Mica];
             Background = Brushes.Transparent;
         }
+
+        EnableBorderlessResize();
 
         if (WindowState != WindowState.Maximized)
         {
@@ -88,6 +142,30 @@ public partial class MainWindow : AppWindow
         _hasBeenShown = true;
         ApplyPlatformWindowFeatures();
     }
+
+    // SystemDecorations=None 移除了 WS_THICKFRAME,WM_SYSCOMMAND 的 SC_SIZE 缩放
+    // 拖拽因此失效;补回该样式,FA AppWindow 的 WM_NCCALCSIZE 处理会保持视觉无边框。
+    private void EnableBorderlessResize()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var handle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+        if (handle == IntPtr.Zero)
+            return;
+
+        const int GWL_STYLE = -16;
+        const int WS_THICKFRAME = 0x00040000;
+        var style = GetWindowLong(handle, GWL_STYLE);
+        if ((style & WS_THICKFRAME) == 0)
+            SetWindowLong(handle, GWL_STYLE, style | WS_THICKFRAME);
+    }
+
+    [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+    private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
     private bool UsesStoredWindowSettings => _settingsScope != MainWindowSettingsScope.None;
     private bool UsesPrimaryWindowSettings => _settingsScope == MainWindowSettingsScope.Primary;

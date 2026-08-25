@@ -252,6 +252,11 @@ public partial class RollCallListImportView : UserControl, INotifyPropertyChange
         remove => NotifyPropertyChanged -= value;
     }
 
+    private async void FileImportButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        await OpenFileImportAsync();
+    }
+
     private async Task SelectFileAsync()
     {
         var topLevel = TopLevel.GetTopLevel(this);
