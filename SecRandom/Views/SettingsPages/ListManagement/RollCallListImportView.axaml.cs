@@ -857,6 +857,15 @@ public partial class RollCallListImportView : UserControl, INotifyPropertyChange
 
         if (result == ContentDialogResult.Primary)
         {
+            _logger.LogInformation("点名名单导入保留重复姓名：有效行数={Count}。", students.Count);
+            _importHandler(students);
+            return;
+        }
+
+        if (result == ContentDialogResult.Secondary)
+        {
+            RosterImportParser.RenameDuplicatedStudents(students);
+            _logger.LogInformation("点名名单导入已自动处理重复姓名：有效行数={Count}。", students.Count);
             _importHandler(students);
         }
     }

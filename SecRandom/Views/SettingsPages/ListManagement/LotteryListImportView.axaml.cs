@@ -849,6 +849,15 @@ public partial class LotteryListImportView : UserControl, INotifyPropertyChanged
 
         if (result == ContentDialogResult.Primary)
         {
+            _logger.LogInformation("抽奖名单导入保留重复名称：有效行数={Count}。", prizes.Count);
+            _importHandler(prizes);
+            return;
+        }
+
+        if (result == ContentDialogResult.Secondary)
+        {
+            RosterImportParser.RenameDuplicatedPrizes(prizes);
+            _logger.LogInformation("抽奖名单导入已自动处理重复名称：有效行数={Count}。", prizes.Count);
             _importHandler(prizes);
         }
     }

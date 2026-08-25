@@ -503,8 +503,14 @@ public partial class RollCallListSettingsPage : UserControl, INotifyPropertyChan
             return;
 
         var currentCount = SelectedStudentList.Students.Count;
+        _logger.LogInformation("导入回调进入: 现有={Current}, 导入={Incoming}", currentCount, students.Count);
         if (currentCount > 0 && !await ConfirmOverwriteAsync(currentCount, students.Count))
+        {
+            _logger.LogInformation("覆盖确认被取消");
             return;
+        }
+
+        _logger.LogInformation("覆盖确认通过,执行替换");
 
         _catalogManager.ReplaceStudents(SelectedStudentListName, students);
         SelectedStudentList = _catalogManager.LoadStudentList(SelectedStudentListName);
