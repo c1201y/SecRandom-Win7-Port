@@ -31,8 +31,7 @@ public partial class FloatingWindowSettingsPage : UserControl
     {
         Settings = ViewModel.Config.FloatingWindowSettings;
         var migratedSize = NormalizeFloatingWindowSize() | NormalizeDockedWindowSize();
-        foreach (var option in BuildButtonOptions())
-            ButtonOptions.Add(option);
+        ButtonOptions = BuildButtonOptions();
         SelectedButtonOptions = BuildSelectedOptions(ButtonOptions);
         SelectedButtonOptions.CollectionChanged += SelectedButtonOptions_OnCollectionChanged;
         DataContext = this;
