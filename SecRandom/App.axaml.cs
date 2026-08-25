@@ -2311,6 +2311,18 @@ public partial class App : Application
 
         window.Show();
         window.Activate();
+
+        // Win7 软件渲染的重定向表面在 Hide→Show 后顶部区域可能残留未重绘的黑条;
+        // 显示后强制整窗重新呈现一帧。
+        if (OperatingSystem.IsWindows())
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (!window.IsVisible)
+                    return;
+                window.InvalidateVisual();
+            }, DispatcherPriority.Background);
+        }
     }
 
     internal static void RestoreWithoutActivating(Window window)
