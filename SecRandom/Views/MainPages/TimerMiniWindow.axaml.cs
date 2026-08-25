@@ -20,6 +20,8 @@ public sealed partial class TimerMiniWindow : Window
         DataContext = viewModel;
         InitializeComponent();
         // Win7 软件渲染路径不支持窗口透明,保持不透明背景避免整窗变黑。
+        Opened += (_, _) => viewModel.AttachView();
+        Closed += (_, _) => viewModel.DetachView();
         Loaded += OnLoaded;
         Closing += OnClosing;
     }

@@ -15,6 +15,8 @@ public sealed partial class TimerView : ViewBase
         Header = ViewModel.PageTitle;
         DataContext = ViewModel;
         InitializeComponent();
+        AttachedToVisualTree += (_, _) => ViewModel.AttachView();
+        DetachedFromVisualTree += (_, _) => ViewModel.DetachView();
     }
 
     public TimerViewModel ViewModel { get; } = IAppHost.GetService<TimerViewModel>();

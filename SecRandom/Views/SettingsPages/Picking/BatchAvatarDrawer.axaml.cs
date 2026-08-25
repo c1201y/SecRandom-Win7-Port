@@ -278,18 +278,25 @@ public partial class BatchAvatarDrawer : UserControl
 
         var imagesDirectory = Utils.GetDirectoryPath("images");
         var applied = 0;
-        foreach (var row in selectedRows)
+        try
         {
-            var path = await ResolveImagePathAsync(row.SelectedFile!, imagesDirectory);
-            if (path is null)
-                continue;
-
-            row.Record.WriteAttachedObject(DrawImageSettingsId, new DrawImageAttachedSettings
+            foreach (var row in selectedRows)
             {
-                IsAttachSettingsEnabled = true,
-                ImagePath = path
-            });
-            applied++;
+                var path = await ResolveImagePathAsync(row.SelectedFile!, imagesDirectory);
+                if (path is null)
+                    continue;
+
+                row.Record.WriteAttachedObject(DrawImageSettingsId, new DrawImageAttachedSettings
+                {
+                    IsAttachSettingsEnabled = true,
+                    ImagePath = path
+                });
+                applied++;
+            }
+        }
+        catch (Exception exception)
+        {
+            this.ShowErrorToast(exception.Message);
         }
 
         if (IsRosterTab)

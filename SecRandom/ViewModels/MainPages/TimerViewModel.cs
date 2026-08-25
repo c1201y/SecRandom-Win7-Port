@@ -36,8 +36,22 @@ public sealed partial class TimerViewModel : ObservableObject, IDisposable
         LoadRecentPresets();
         _refreshHandler = (_, _) => Refresh();
         _refreshTimer.Tick += _refreshHandler;
-        _refreshTimer.Start();
         Refresh();
+    }
+
+    // 单例 VM:计时器只在有可见视图(主窗口或小窗)时运行,避免 33ms 空转常驻耗 CPU。
+    private int _viewRefs;
+
+    public void AttachView()
+    {
+        if (Interlocked.Increment(ref _viewRefs) == 1)
+            _refreshTimer.Start();
+    }
+
+    public void DetachView()
+    {
+        if (Interlocked.Decrement(ref _viewRefs) <= 0)
+            _refreshTimer.Stop();
     }
 
     public bool IsCountdownMode => _mode == TimerMode.Countdown;
