@@ -222,8 +222,28 @@ internal sealed class Program
 
                 if (msg == 0x0014 && resizeState.IsActive) // WM_ERASEBKGND
                 {
-                    // SetWindowPos sends an erase request for each resize step. Letting the
-                    // Win7 background brush run here produces a visible erase -> render flash.
+                    // 缩放的每一步都会触发擦除:完全抑制会让新暴露区域露出黑色表面,
+                    // 放行系统刷子又会产生刺眼的擦除-渲染闪烁。填充主题背景色与
+                    // 应用底色一致,快速拖拽时观感是"空白等待渲染"而非黑块。
+                    if (ResolveWindows7BackgroundColor(resizableWindow) is { } eraseColor)
+                    {
+                        var eraseRect = new RECT();
+                        if (GetClientRect(hWnd, out eraseRect))
+                        {
+                            var eraseBrush = CreateSolidBrush(eraseColor);
+                            try
+                            {
+                                FillRect(wParam, ref eraseRect, eraseBrush);
+                                handled = true;
+                                return new IntPtr(1);
+                            }
+                            finally
+                            {
+                                DeleteObject(eraseBrush);
+                            }
+                        }
+                    }
+
                     handled = true;
                     return new IntPtr(1);
                 }
