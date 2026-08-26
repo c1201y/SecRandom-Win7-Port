@@ -10,7 +10,7 @@ Maintenance contract:
 - `docs/project_rules.md` is the source of truth when a convention conflicts with this summary.
 -->
 
-**Last Update:** 2026-08-17
+**Last Update:** 2026-08-26
 **Last Submit:** 79e08f6
 **Last modified model:** MiMoCode
 
@@ -42,6 +42,7 @@ This checkout has been ported from .NET 10 to .NET 6 for Windows 7 SP1 support. 
   - `StreamReader.ReadLineAsync(CancellationToken)` → `ReadLineAsync()`
   - `Process.StandardOutput.ReadToEndAsync(CancellationToken)` → `ReadToEndAsync()`
   - `UnsafeAccessorKind.StaticMethod` → reflection
+- **Window decorations (resize / Aero Snap, 2026-08-26):** The three resizable app windows — `MainWindow` (used for both the primary window and the settings window via `MainWindowSettingsScope.Primary`/`Settings`) and `FirstRunOobeWindow` — keep `SystemDecorations.BorderOnly` on Windows (see `MainWindow.axaml.cs` / `FirstRunOobeWindow.axaml.cs`). `BorderOnly` preserves `WS_THICKFRAME`; FluentAvalonia's `Win32WindowManager.WndProc` relies on the system sizing border (`DefWindowProc(WM_NCHITTEST)` returning `HTLEFT/HTRIGHT/HTBOTTOM`) to drive the native resize loop, and the `HTCAPTION` title-bar hit returns into the system move loop that powers Aero Snap (drag-to-top maximize). Do NOT switch these back to `SystemDecorations.None`: `None` strips `WS_THICKFRAME`, which previously forced a manual `SetWindowPos`-based resize hack in `Program.cs` (causing resize flicker and black edges during fast drags) and broke drag-to-top maximize on Windows 7. The manual resize hack was removed; `Program.cs` keeps a `WM_ERASEBKGND` hook plus a WndProc hook that (a) strips `CS_HREDRAW | CS_VREDRAW` from the BorderOnly window class via `SetClassLongPtr` (each Avalonia window registers a unique class name, so this is per-window) and (b) paints only the invalidated region from `GetUpdateRect` during `WM_ERASEBKGND` instead of the whole client area. The `CS_HREDRAW | CS_VREDRAW` class styles are the actual root cause of the resize flicker: they make Windows invalidate and erase the entire client area on every interactive resize, which — combined with the async render loop — produces a content→background→content cycle. Stripping them keeps the previous frame on screen; only the newly exposed strip is painted. NOTE: `WS_EX_COMPOSITED` was tried first but is ineffective on Windows 7 because the app runs software rendering + `RedirectionSurface`, whose `FramebufferManager` presents via `SetDIBitsToDevice` straight to the window DC, bypassing the `WM_PAINT`-based double-buffer that `WS_EX_COMPOSITED` provides. Do NOT reintroduce `CS_HREDRAW | CS_VREDRAW` on these windows. Transient/transparent windows (`SecRandomTmpRootWindow`, `DesktopViewHostWindow`, the overlay dialog host and quick-draw float in `App.axaml.cs`, all `CanResize=false`) correctly stay `None` and are left un-composited.
 - **Warnings to expect:**
   - `NU1701`: Package compatibility warnings (Pastel, ClassIsland.Shared, etc.)
   - `NETSDK1138`: net6.0 target framework is out of support
