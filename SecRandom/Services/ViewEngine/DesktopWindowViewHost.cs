@@ -27,7 +27,10 @@ internal sealed class DesktopWindowViewHost : IViewHost
         _window = window;
         _contentHost = new ViewHostControl(hostId);
         _contentHost.Destroyed += (_, _) => Destroyed?.Invoke(this, EventArgs.Empty);
-        _window.Content = _contentHost;
+        if (window is SecRandom.Views.MainWindow mainBorderWindow)
+            mainBorderWindow.SetHostContent(_contentHost);
+        else
+            window.Content = _contentHost;
         _window.Closed += WindowOnClosed;
     }
 

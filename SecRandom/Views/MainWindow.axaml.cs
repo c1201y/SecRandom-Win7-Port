@@ -67,6 +67,16 @@ public partial class MainWindow : AppWindow
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+        _contentBorder = this.FindControl<Border>("ContentBorder");
+        Content = _contentBorder;
+    }
+
+    private Border? _contentBorder;
+
+    // 视图宿主把内容装入 1px 边框包装;不走 Window.Content,避免逻辑树父级冲突。
+    public void SetHostContent(Control? content)
+    {
+        _contentBorder!.Child = content;
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
