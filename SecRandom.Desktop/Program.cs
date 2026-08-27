@@ -220,59 +220,63 @@ internal sealed class Program
         // resizable app windows keep WS_THICKFRAME via SystemDecorations.BorderOnly (see
         // MainWindow / FirstRunOobeWindow). DWM stretches the previous frame over regions
         // exposed during the resize, so no manual capture-based resize is needed here.
-        if (s_windows7BackgroundHooks.TryGetValue(topLevel, out _))
-            return;
-
-        Win32Properties.CustomWndProcHookCallback callback = (IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, ref bool handled) =>
+        // GetValue makes the guard + add atomic: the window-creation path can run the
+        // IsVisible class handler for the same top-level more than once (or from re-entrant
+        // message pump calls), which previously allowed a duplicate ConditionalWeakTable key
+        // and crashed Win7 startup with "An item with the same key has already been added".
+        s_windows7BackgroundHooks.GetValue(topLevel, _ =>
         {
-            // Strip CS_HREDRAW | CS_VREDRAW from the window class of the opaque, resizable
-            // app windows (OOBE / Main / Settings = SystemDecorations.BorderOnly). Avalonia
-            // registers each window under a unique class name with CS_OWNDC | CS_HREDRAW |
-            // CS_VREDRAW. The two redraw styles make Windows invalidate and erase the whole
-            // client area on every interactive resize, which — combined with the async
-            // render loop — produces the flicker seen on Windows 7 (Basic theme, no DWM
-            // stretch). Removing them keeps the previous frame on screen during a resize;
-            // only the newly exposed strip is invalidated and painted (see WM_ERASEBKGND
-            // below), so resizing stays smooth and the exposed area never flashes black.
-            // Each window has a unique class name, so this affects only the target window.
-            // Idempotent by reading the live style first (also re-entrancy safe).
-            if (topLevel is Window { SystemDecorations: SystemDecorations.BorderOnly })
+            Win32Properties.CustomWndProcHookCallback callback = (IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, ref bool handled) =>
             {
-                var style = GetClassLongPtrSafe(hWnd, GCL_STYLE);
-                var newStyle = style & ~(CS_HREDRAW | CS_VREDRAW);
-                if (newStyle != style)
-                    SetClassLongPtrSafe(hWnd, GCL_STYLE, newStyle);
-            }
-
-            if (msg != 0x0014) // WM_ERASEBKGND
-                return IntPtr.Zero;
-
-            if (ResolveWindows7BackgroundColor(topLevel) is { } color)
-            {
-                // Paint only the invalidated (newly exposed) region, not the whole client
-                // area, so the previous frame stays intact during resize and only the strip
-                // actually being exposed receives the theme background (no black edge).
-                if (GetUpdateRect(hWnd, out var rect, false) && rect.Right > rect.Left && rect.Bottom > rect.Top)
+                // Strip CS_HREDRAW | CS_VREDRAW from the window class of the opaque, resizable
+                // app windows (OOBE / Main / Settings = SystemDecorations.BorderOnly). Avalonia
+                // registers each window under a unique class name with CS_OWNDC | CS_HREDRAW |
+                // CS_VREDRAW. The two redraw styles make Windows invalidate and erase the whole
+                // client area on every interactive resize, which — combined with the async
+                // render loop — produces the flicker seen on Windows 7 (Basic theme, no DWM
+                // stretch). Removing them keeps the previous frame on screen during a resize;
+                // only the newly exposed strip is invalidated and painted (see WM_ERASEBKGND
+                // below), so resizing stays smooth and the exposed area never flashes black.
+                // Each window has a unique class name, so this affects only the target window.
+                // Idempotent by reading the live style first (also re-entrancy safe).
+                if (topLevel is Window { SystemDecorations: SystemDecorations.BorderOnly })
                 {
-                    var brush = CreateSolidBrush(color);
-                    try
+                    var style = GetClassLongPtrSafe(hWnd, GCL_STYLE);
+                    var newStyle = style & ~(CS_HREDRAW | CS_VREDRAW);
+                    if (newStyle != style)
+                        SetClassLongPtrSafe(hWnd, GCL_STYLE, newStyle);
+                }
+
+                if (msg != 0x0014) // WM_ERASEBKGND
+                    return IntPtr.Zero;
+
+                if (ResolveWindows7BackgroundColor(topLevel) is { } color)
+                {
+                    // Paint only the invalidated (newly exposed) region, not the whole client
+                    // area, so the previous frame stays intact during resize and only the strip
+                    // actually being exposed receives the theme background (no black edge).
+                    if (GetUpdateRect(hWnd, out var rect, false) && rect.Right > rect.Left && rect.Bottom > rect.Top)
                     {
-                        FillRect(wParam, ref rect, brush);
-                        handled = true;
-                        return new IntPtr(1);
-                    }
-                    finally
-                    {
-                        DeleteObject(brush);
+                        var brush = CreateSolidBrush(color);
+                        try
+                        {
+                            FillRect(wParam, ref rect, brush);
+                            handled = true;
+                            return new IntPtr(1);
+                        }
+                        finally
+                        {
+                            DeleteObject(brush);
+                        }
                     }
                 }
-            }
 
-            return IntPtr.Zero;
-        };
+                return IntPtr.Zero;
+            };
 
-        Win32Properties.AddWndProcHookCallback(topLevel, callback);
-        s_windows7BackgroundHooks.Add(topLevel, callback);
+            Win32Properties.AddWndProcHookCallback(topLevel, callback);
+            return callback;
+        });
     }
 
     private static uint? ResolveWindows7BackgroundColor(TopLevel topLevel)
