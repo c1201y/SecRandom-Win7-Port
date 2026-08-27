@@ -553,6 +553,9 @@ public partial class App : Application
         {
             Width = 420,
             Height = 220,
+            // Keep the host centered. A negative/off-screen start coordinate is
+            // clamped by the Win32/Avalonia show path on Windows 7 and surfaced a
+            // stray rectangle at the top-left corner, so we never start off-screen.
             WindowStartupLocation = WindowStartupLocation.CenterScreen,
             ShowInTaskbar = false,
             Topmost = true,
@@ -562,15 +565,23 @@ public partial class App : Application
             // DWM shadow for WS_POPUP windows; NoChrome removes both.
             ExtendClientAreaToDecorationsHint = true,
             ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome,
-            ExtendClientAreaTitleBarHeightHint = 0
+            ExtendClientAreaTitleBarHeightHint = 0,
+            // Opacity 0 hides the window until the card is ready; it is honoured only
+            // under Aero (DWM compositing). On Windows 7 classic (no DWM) the OS
+            // ignores Opacity, so the bare host surface must already be card-colored
+            // (see the surface brush below) to avoid a visible gray flash.
+            Opacity = 0
         };
 
         // The hugged window must stay fully opaque: under the Win7 software-rendering
         // path every pixel not covered by the card composites as black. The FA window
         // template does not reliably paint Window.Background, so an explicit full-size
-        // surface border carries the card color instead.
+        // surface border carries the card color instead. Seed it with the same
+        // CardBackground brush the dialog card uses, so the brief moment before the
+        // hug resizes the window reads as card color rather than the darker base gray
+        // (SolidBackgroundFillColorBaseBrush) that previously flashed as a "gray window".
         var surface = new Border();
-        if (host.TryFindResource("SolidBackgroundFillColorBaseBrush", out var background)
+        if (host.TryFindResource("CardBackgroundFillColorDefaultBrush", out var background)
             && background is IBrush backgroundBrush)
             surface.Background = backgroundBrush;
         else
@@ -631,13 +642,21 @@ public partial class App : Application
         // borderless window to the card bounds and adopt the card background so
         // no host surface, smoke layer, or gray frame stays visible. Any failure
         // here must degrade to the normal dialog, never take the process down.
-        for (var attempt = 0; attempt < 3; attempt++)
+        // Render priority (not Background) guarantees the card has actually been
+        // measured/arranged before we read its bounds. Once the card is hugged we
+        // reveal the host (Opacity 1): the card is already in place, so the user
+        // never sees the bare gray surface that would otherwise flash first.
+        var hugged = false;
+        for (var attempt = 0; attempt < 6; attempt++)
         {
             try
             {
-                await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+                await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
                 if (HugDialogCard(host, surface))
+                {
+                    hugged = true;
                     break;
+                }
             }
             catch (Exception exception)
             {
@@ -645,6 +664,22 @@ public partial class App : Application
                 break;
             }
         }
+
+        // On a failed hug the window was never resized to the card, so center it as a
+        // normal dialog instead of leaving it at the default 420x220 size. HugDialogCard
+        // already calls CenterOnScreen on success.
+        if (!hugged)
+            CenterOnScreen(host);
+
+        // Ensure one more render pass so the (possibly resized) card is committed
+        // before the window becomes visible, avoiding a first-frame of the bare host
+        // surface on slow compositions such as Windows 7 software rendering.
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
+
+        // Reveal the window now that the card is (or, on failure, will be) visible.
+        // The fallback ensures the process never hangs on an invisible window if the
+        // hug loop never succeeds.
+        host.Opacity = 1;
 
         return await dialogTask;
     }
