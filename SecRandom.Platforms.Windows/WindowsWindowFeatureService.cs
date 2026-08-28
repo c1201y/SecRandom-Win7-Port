@@ -50,7 +50,7 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
         try
         {
             Marshal.SetLastPInvokeError(0);
-            var style = (long)GetWindowLongPtr(window, GwlExStyle);
+            var style = (long)GetWindowLongPtrSafe(window, GwlExStyle);
             if (style == 0 && Marshal.GetLastWin32Error() != 0)
             {
                 failure = $"GetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
@@ -60,7 +60,7 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
             if ((style & WsExLayered) == 0)
             {
                 Marshal.SetLastPInvokeError(0);
-                var previous = SetWindowLongPtr(window, GwlExStyle, new IntPtr(style | WsExLayered));
+                var previous = SetWindowLongPtrSafe(window, GwlExStyle, new IntPtr(style | WsExLayered));
                 if (previous == 0 && Marshal.GetLastWin32Error() != 0)
                 {
                     failure = $"SetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
@@ -203,6 +203,16 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
 
     private static bool TrySetCaptureExclusion(nint window, bool enabled, out string? failure)
     {
+        // Win7 降级处理：SetWindowDisplayAffinity 是 Win8+ API，Win7 上 user32.dll 未导出此符号，
+        // 直接调用会抛 EntryPointNotFoundException。即使 SupportedFeatures 已在公开层面过滤，
+        // 此处仍做运行时防御，确保任何代码路径均不会在 Win7 上触发原生调用。
+        // Win7 兼容实现：静默跳过，该功能在 Win7 上不可用，仅输出日志提示。
+        if (!OperatingSystem.IsWindowsVersionAtLeast(6, 2))
+        {
+            failure = "ExcludeFromCapture requires Windows 8 or later; silently skipped on Windows 7.";
+            return false;
+        }
+
         try
         {
             if (SetWindowDisplayAffinity(window, enabled ? WdaExcludeFromCapture : WdaNone))
@@ -226,7 +236,7 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
         try
         {
             Marshal.SetLastPInvokeError(0);
-            var style = (long)GetWindowLongPtr(window, GwlExStyle);
+            var style = (long)GetWindowLongPtrSafe(window, GwlExStyle);
             if (style == 0 && Marshal.GetLastWin32Error() != 0)
             {
                 failure = $"GetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
@@ -248,7 +258,7 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
             if (updated != style)
             {
                 Marshal.SetLastPInvokeError(0);
-                var previous = SetWindowLongPtr(window, GwlExStyle, new IntPtr(updated));
+                var previous = SetWindowLongPtrSafe(window, GwlExStyle, new IntPtr(updated));
                 if (previous == 0 && Marshal.GetLastWin32Error() != 0)
                 {
                     failure = $"SetWindowLongPtr failed with Win32 error {Marshal.GetLastWin32Error()}.";
@@ -297,7 +307,9 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
 
             var width = Math.Max(1, rect.Right - rect.Left);
             var height = Math.Max(1, rect.Bottom - rect.Top);
-            var region = CreateRoundRectRgn(0, 0, width + 1, height + 1, 16, 16);
+            // Win7 兼容实现：CreateRoundRectRgn 的 right/bottom 是坐标值而非宽高，
+            // 之前的 width+1 / height+1 会创建比客户区大 1 像素的圆角区域，导致边缘渲染溢出。
+            var region = CreateRoundRectRgn(0, 0, width, height, 16, 16);
             if (region == (nint)0)
             {
                 failure = $"CreateRoundRectRgn failed with Win32 error {Marshal.GetLastWin32Error()}.";
@@ -323,11 +335,26 @@ public sealed class WindowsWindowFeatureService : IWindowFeatureService
 
     private static long SetFlag(long value, long flag, bool enabled) => enabled ? value | flag : value & ~flag;
 
+    // Win7 兼容实现：GetWindowLongPtrW/SetWindowLongPtrW 仅在 64 位 user32.dll 上存在；
+    // 32 位 Windows 上它们是头文件宏，解析为 GetWindowLongW/SetWindowLongW。
+    // 按指针宽度路由到正确的导出函数，避免 32 位 Win7 上 EntryPointNotFoundException。
     [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
     private static extern nint GetWindowLongPtr(nint hWnd, int nIndex);
 
     [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
     private static extern nint SetWindowLongPtr(nint hWnd, int nIndex, nint value);
+
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongW", SetLastError = true)]
+    private static extern int GetWindowLong32(nint hWnd, int nIndex);
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowLongW", SetLastError = true)]
+    private static extern int SetWindowLong32(nint hWnd, int nIndex, int dwNewLong);
+
+    private static nint GetWindowLongPtrSafe(nint hWnd, int nIndex)
+        => IntPtr.Size == 8 ? GetWindowLongPtr(hWnd, nIndex) : GetWindowLong32(hWnd, nIndex);
+
+    private static nint SetWindowLongPtrSafe(nint hWnd, int nIndex, nint value)
+        => IntPtr.Size == 8 ? SetWindowLongPtr(hWnd, nIndex, value) : new IntPtr(SetWindowLong32(hWnd, nIndex, (int)value));
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

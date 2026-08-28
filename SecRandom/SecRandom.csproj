@@ -475,7 +475,10 @@
         <PackageReference Include="QRCoder" Version="1.8.0" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
         <PackageReference Include="OpenCvSharp4" Version="4.13.0.20260627" />
-        <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.13.0.20260302" />
+        <!-- Win7 兼容实现：OpenCvSharp4.runtime.win 4.13 的原生 DLL 依赖 Win8.1+ API，
+             降级到 4.7.0（最后确认支持 Win7 的版本）。managed wrapper 保持 4.13，
+             VideoCapture/Mat/Cv2.ImEncode 等核心 API 无破坏性变更。 -->
+        <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.7.0.20230115" />
         <PackageReference Include="OpenCvSharp4.official.runtime.linux-x64" Version="4.13.0.20260627" />
         <PackageReference Include="OpenCvSharp4.runtime.osx.10.15-x64" Version="4.6.0.20230105"
                           Condition="'$(RuntimeIdentifier)' == 'osx-x64'" />

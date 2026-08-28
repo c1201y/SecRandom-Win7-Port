@@ -32,6 +32,11 @@ internal sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        // Win7 兼容实现：SetProcessDPIAware 必须在任何窗口创建或子进程派生之前调用，
+        // 否则子进程会继承非 DPI 感知状态。UiAccessStartup 可能通过 CreateProcessAsUser
+        // 派生替代进程，因此将 DPI 感知设置提前到所有操作之前。
+        ConfigureWindows7DpiAwareness();
+
         // UiAccess startup reads the persisted topmost setting, so data-root selection must precede it.
         Utils.PrepareDesktopDataRoot();
         if (!UiAccessStartup.ShouldContinue(args))
@@ -41,7 +46,6 @@ internal sealed class Program
         }
 
         args = UiAccessStartup.GetApplicationArguments(args);
-        ConfigureWindows7DpiAwareness();
         ConfigurePlatformServices();
         ProtocolActivation.SetStartupArguments(args);
         CrashRecoveryRuntime.SetStartupArguments(args);
@@ -140,15 +144,25 @@ internal sealed class Program
         var implementation = topLevel.PlatformImpl!;
         ApplyWindows7ScalingToImpl(implementation);
 
-        // Notify the TopLevel so its own _scaling field and layout scaling follow the impl.
-        var scalingChanged = implementation.GetType()
-            .GetProperty("ScalingChanged", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-            ?.GetValue(implementation) as Action<double>;
-        if (scalingChanged is not null)
+        // Win7 兼容实现：通过反射触发 Avalonia 内部的 ScalingChanged 委托，
+        // 使 TopLevel 自身的 _scaling 字段和渲染缩放跟随 Win7 补丁后的 DPI 值。
+        // 此操作是尽力而为的：字段名或委托类型在 Avalonia 版本更新时可能变化，
+        // 因此失败时仅记录日志，不影响窗口显示。
+        try
         {
-            var dpi = GetSystemDpi();
-            if (dpi > 0)
-                scalingChanged(dpi / 96d);
+            var scalingChanged = implementation.GetType()
+                .GetProperty("ScalingChanged", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                ?.GetValue(implementation) as Action<double>;
+            if (scalingChanged is not null)
+            {
+                var dpi = GetSystemDpi();
+                if (dpi > 0)
+                    scalingChanged(dpi / 96d);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Win7 DPI] Failed to invoke ScalingChanged: {ex.Message}");
         }
     }
 
@@ -165,8 +179,18 @@ internal sealed class Program
         if (scalingField is null || dpiField is null)
             return;
 
-        scalingField.SetValue(implementation, scaling);
-        dpiField.SetValue(implementation, (uint)dpi);
+        // Win7 兼容实现：通过反射将 GetDeviceCaps(LOGPIXELSX) 获取的真实 DPI 写入
+        // Avalonia 平台实现的 _scaling 和 _dpi 字段，补偿 GetDpiForMonitor 不可用的缺陷。
+        // 失败时静默跳过，不阻塞窗口创建——窗口会以 1.0 缩比渲染，外观模糊但功能可用。
+        try
+        {
+            scalingField.SetValue(implementation, scaling);
+            dpiField.SetValue(implementation, (uint)dpi);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Win7 DPI] Failed to patch scaling fields: {ex.Message}");
+        }
     }
 
     private static int GetSystemDpi()
