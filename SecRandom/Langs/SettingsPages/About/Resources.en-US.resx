@@ -33,6 +33,9 @@
     <data name="C_ProjectHome" xml:space="preserve">
         <value>Documentation</value>
     </data>
+    <data name="C_OrgHome" xml:space="preserve">
+        <value>Organization Home</value>
+    </data>
     <data name="S_Author_D" xml:space="preserve">
         <value>Developer of the SecRandom port</value>
     </data>
@@ -41,6 +44,18 @@
     </data>
     <data name="S_Author_BiliBili_D" xml:space="preserve">
         <value>Visit 椰汁's BiliBili account</value>
+    </data>
+    <data name="S_Author_Donate" xml:space="preserve">
+        <value>Donate</value>
+    </data>
+    <data name="S_Author_Donate_D" xml:space="preserve">
+        <value>Visit 椰汁's Afdian page to support the project's development; thank you for your donation!</value>
+    </data>
+    <data name="S_Author_Org" xml:space="preserve">
+        <value>SECTL</value>
+    </data>
+    <data name="S_Author_Org_D" xml:space="preserve">
+        <value>SecRandom's Affiliated Organization</value>
     </data>
     <data name="S_App_License" xml:space="preserve">
         <value>Program License</value>

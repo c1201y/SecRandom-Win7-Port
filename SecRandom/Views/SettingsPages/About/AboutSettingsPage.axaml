@@ -106,7 +106,7 @@
                     <TextBlock Background="Transparent">
                         <Run Text="Copyright (c) 2025-" />
                         <Run Text="{Binding Year, Source={x:Static system:DateTime.Now}, Mode=OneWay}" />
-                        椰汁
+                        SECTL
                     </TextBlock>
                 </fa:SettingsExpanderItem>
 
@@ -148,6 +148,31 @@
                                             IsClickEnabled="True" ActionIconSource="{sr:FluentIconSource {sr:Fi OpenFilled}}"
                                            Click="UriNavigationCommands_OnClick"
                                             CommandParameter="https://space.bilibili.com/3546609547741581" />
+
+                <fa:SettingsExpanderItem x:Name="S_Author_Org"
+                                            Content="{x:Static lsa:Resources.S_Author_Org}"
+                                            Description="{x:Static lsa:Resources.S_Author_Org_D}"
+                                            PointerPressed="OrganizationIcon_OnPointerPressed">
+                    <fa:SettingsExpanderItem.IconSource>
+                        <fa:ImageIconSource Source="/Assets/SECTLLogo.png" />
+                    </fa:SettingsExpanderItem.IconSource>
+
+                    <fa:SettingsExpanderItem.Footer>
+                        <WrapPanel>
+                            <WrapPanel.Styles>
+                                <Style Selector="HyperlinkButton">
+                                    <Setter Property="Padding" Value="4" />
+                                    <Setter Property="Margin" Value="2" />
+                                </Style>
+                            </WrapPanel.Styles>
+
+                             <HyperlinkButton Click="UriNavigationCommands_OnClick"
+                                              CommandParameter="https://sectl.cn">
+                                 <TextBlock Text="{x:Static lsa:Resources.C_OrgHome}" />
+                             </HyperlinkButton>
+                        </WrapPanel>
+                    </fa:SettingsExpanderItem.Footer>
+                </fa:SettingsExpanderItem>
             </fa:SettingsExpander>
 
             <fa:SettingsExpander x:Name="S_Ack"
@@ -163,8 +188,18 @@
                             人
                         </TextBlock>
                     </fa:SettingsExpanderItem.Footer>
-</fa:SettingsExpanderItem>
+                </fa:SettingsExpanderItem>
 
+                <fa:SettingsExpanderItem x:Name="S_Ack_OriginalAuthor"
+                                           Content="黎泽懿_Aionflux"
+                                           Description="SecRandom 原作者"
+                                            IsClickEnabled="True" ActionIconSource="{sr:FluentIconSource {sr:Fi OpenFilled}}"
+                                           Click="UriNavigationCommands_OnClick"
+                                            CommandParameter="https://space.bilibili.com/520571577">
+                    <fa:SettingsExpanderItem.IconSource>
+                        <fa:ImageIconSource Source="/Assets/AuthorAionflux.png" />
+                    </fa:SettingsExpanderItem.IconSource>
+                </fa:SettingsExpanderItem>
             </fa:SettingsExpander>
         </StackPanel>
     </sr:StickyScrollViewer>

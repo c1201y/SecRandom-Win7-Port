@@ -33,6 +33,9 @@
     <data name="C_ProjectHome" xml:space="preserve">
         <value>文档站</value>
     </data>
+    <data name="C_OrgHome" xml:space="preserve">
+        <value>组织主页</value>
+    </data>
     <data name="S_Author_R" xml:space="preserve">
         <value>椰汁</value>
     </data>
@@ -44,6 +47,18 @@
     </data>
     <data name="S_Author_BiliBili_D" xml:space="preserve">
         <value>访问 椰汁 的哔哩哔哩账号</value>
+    </data>
+    <data name="S_Author_Donate" xml:space="preserve">
+        <value>捐赠支持</value>
+    </data>
+    <data name="S_Author_Donate_D" xml:space="preserve">
+        <value>访问 椰汁 的爱发电账号，支持项目发展，感谢您的捐赠</value>
+    </data>
+    <data name="S_Author_Org" xml:space="preserve">
+        <value>SECTL 思拓创联</value>
+    </data>
+    <data name="S_Author_Org_D" xml:space="preserve">
+        <value>SecRandom 所属组织</value>
     </data>
     <data name="S_App_License" xml:space="preserve">
         <value>应用协议</value>

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -20,6 +21,7 @@ using SecRandom.Core;
 using SecRandom.Services;
 using SecRandom.Services.Desktop;
 using LR = SecRandom.Langs.SettingsPages.About.Resources;
+using DebugResources = SecRandom.Langs.SettingsPages.Debug.DebugStrings;
 
 namespace SecRandom.Views.SettingsPages.About;
 
@@ -30,6 +32,11 @@ public partial class AboutSettingsPage : UserControl, INotifyPropertyChanged
         .GetServices<IHostedService>().OfType<OnlineStatusService>().First();
     private IExternalLauncher ExternalLauncher { get; } = IAppHost.GetService<IExternalLauncher>();
     public int OnlineUsersCount => OnlineStatusService.CachedOnlineCount;
+
+    private const int InternalSettingsActivationClickCount = 20;
+    private static readonly TimeSpan InternalSettingsActivationClickInterval = TimeSpan.FromMilliseconds(200);
+    private int _bannerClickCount;
+    private DateTimeOffset _lastBannerClickAt;
 
     private static readonly Dictionary<string, Bitmap> BannerCache = new();
     public IImage BannerSource => LoadBanner(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName switch
@@ -77,6 +84,27 @@ public partial class AboutSettingsPage : UserControl, INotifyPropertyChanged
         };
 
         if (url != null) OpenLink(url);
+    }
+
+    private void OrganizationIcon_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is not Control control || e.GetPosition(control).X > 48)
+            return;
+
+        e.Handled = true;
+        var now = DateTimeOffset.UtcNow;
+        _bannerClickCount = now - _lastBannerClickAt <= InternalSettingsActivationClickInterval
+            ? _bannerClickCount + 1
+            : 1;
+        _lastBannerClickAt = now;
+
+        if (_bannerClickCount < InternalSettingsActivationClickCount)
+            return;
+
+        _bannerClickCount = 0;
+        _lastBannerClickAt = default;
+        SettingsView.Current?.ShowDebugNavigationItem();
+        this.ShowToast(DebugResources.Get("M_DebugShown"));
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

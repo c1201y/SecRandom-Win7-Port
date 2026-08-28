@@ -1383,7 +1383,7 @@ public partial class App : Application
 
         logger.LogInformation(@"SecRandom {VERSION} (Codename: {CODENAME})", GlobalConstants.Version,
             GlobalConstants.CodeName);
-        logger.LogInformation(@"Copyright by 椰汁(2025~{YEAR})  Licensed under GPL3.0", DateTime.Now.Year);
+        logger.LogInformation(@"Copyright by SECTL(2025~{YEAR})  Licensed under GPL3.0", DateTime.Now.Year);
         logger.LogInformation("Host built.");
 
         // ˢ�¸��Ի�����
