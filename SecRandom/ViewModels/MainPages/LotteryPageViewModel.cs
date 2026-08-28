@@ -968,6 +968,9 @@ public sealed partial class LotteryPageViewModel : ViewModelBase, IDisposable
     public void Dispose()
     {
         StopPreview();
+        foreach (var item in ResultItems)
+            item.Image?.Dispose();
+        ResultItems.Clear();
         PrizeListNames.CollectionChanged -= PrizeListNamesOnCollectionChanged;
         StudentListNames.CollectionChanged -= StudentListNamesOnCollectionChanged;
         Config.LotterySettings.PropertyChanged -= SettingsOnPropertyChanged;

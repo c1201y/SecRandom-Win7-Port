@@ -265,6 +265,7 @@ public sealed class ShortcutService(
             return;
         _disposed = true;
         _settings.PropertyChanged -= SettingsOnPropertyChanged;
+        featureAvailability.Changed -= FeatureAvailabilityOnChanged;
     }
 
     private enum ShortcutAction

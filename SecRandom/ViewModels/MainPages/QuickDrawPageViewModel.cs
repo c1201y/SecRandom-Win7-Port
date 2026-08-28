@@ -691,16 +691,25 @@ public sealed partial class QuickDrawPageViewModel : ViewModelBase, IDisposable
 
     private async void StartCooldown()
     {
-        _isCoolingDown = true;
-        OnPropertyChanged(nameof(CanStartDraw));
-        await Task.Delay(Math.Clamp(Config.QuickDrawSettings.DisableAfterClick, 0, 60) * 1000).ConfigureAwait(true);
-        _isCoolingDown = false;
-        OnPropertyChanged(nameof(CanStartDraw));
+        try
+        {
+            _isCoolingDown = true;
+            OnPropertyChanged(nameof(CanStartDraw));
+            await Task.Delay(Math.Clamp(Config.QuickDrawSettings.DisableAfterClick, 0, 60) * 1000).ConfigureAwait(true);
+        }
+        finally
+        {
+            _isCoolingDown = false;
+            OnPropertyChanged(nameof(CanStartDraw));
+        }
     }
 
     public void Dispose()
     {
         StopPreview();
+        foreach (var item in ResultItems)
+            item.Image?.Dispose();
+        ResultItems.Clear();
     }
 }
 

@@ -455,6 +455,9 @@ public sealed partial class RollCallPageViewModel : ViewModelBase, IDisposable
     {
         StopPreview();
         _ = _drawAudioService?.StopAnimationMusicAsync(0, immediate: true);
+        foreach (var item in ResultItems)
+            item.Image?.Dispose();
+        ResultItems.Clear();
         StudentListNames.CollectionChanged -= StudentListNamesOnCollectionChanged;
         Config.RollCallSettings.PropertyChanged -= SettingsOnPropertyChanged;
         Config.DefaultDrawSettings.PropertyChanged -= SettingsOnPropertyChanged;

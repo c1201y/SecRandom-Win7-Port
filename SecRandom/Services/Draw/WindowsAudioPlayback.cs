@@ -191,7 +191,8 @@ internal static class WindowsAudioPlayback
                 return;
 
             _playing = false;
-            _output.Stop();
+            try { _output.Stop(); }
+            catch (ObjectDisposedException) { }
         }
 
         public void Dispose()

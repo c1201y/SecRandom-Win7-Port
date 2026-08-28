@@ -102,7 +102,9 @@ public sealed class UpdateCenterService(
             return;
 
         CancelCurrentOperation();
-        _operationCancellation = new CancellationTokenSource();
+        var old = Interlocked.Exchange(ref _operationCancellation, new CancellationTokenSource());
+        old?.Cancel();
+        old?.Dispose();
         var cancellationToken = _operationCancellation.Token;
         try
         {
@@ -164,7 +166,9 @@ public sealed class UpdateCenterService(
             return;
 
         CancelCurrentOperation();
-        _operationCancellation = new CancellationTokenSource();
+        var old = Interlocked.Exchange(ref _operationCancellation, new CancellationTokenSource());
+        old?.Cancel();
+        old?.Dispose();
         var cancellationToken = _operationCancellation.Token;
         try
         {

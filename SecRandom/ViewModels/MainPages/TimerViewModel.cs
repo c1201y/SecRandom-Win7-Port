@@ -44,14 +44,20 @@ public sealed partial class TimerViewModel : ObservableObject, IDisposable
 
     public void AttachView()
     {
-        if (Interlocked.Increment(ref _viewRefs) == 1)
+        var refs = Interlocked.Increment(ref _viewRefs);
+        if (refs == 1)
             _refreshTimer.Start();
     }
 
     public void DetachView()
     {
-        if (Interlocked.Decrement(ref _viewRefs) <= 0)
+        var refs = Interlocked.Decrement(ref _viewRefs);
+        if (refs <= 0)
+        {
             _refreshTimer.Stop();
+            if (refs < 0)
+                Interlocked.Exchange(ref _viewRefs, 0);
+        }
     }
 
     public bool IsCountdownMode => _mode == TimerMode.Countdown;
