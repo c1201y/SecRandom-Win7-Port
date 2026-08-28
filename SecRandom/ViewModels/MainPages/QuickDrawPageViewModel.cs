@@ -89,7 +89,7 @@ public sealed partial class QuickDrawPageViewModel : ViewModelBase, IDisposable
         _voiceAnnouncementService = voiceAnnouncementService;
         _notificationService = notificationService;
         ResultItems.CollectionChanged += (_, _) => OnPropertyChanged(nameof(ResultFontSize));
-        RefreshStudentLists();
+        _ = RefreshStudentListsAsync();
     }
 
     public ObservableCollection<string> StudentListNames { get; } = [];
@@ -369,11 +369,12 @@ public sealed partial class QuickDrawPageViewModel : ViewModelBase, IDisposable
             return Task.CompletedTask;
         });
 
-    private void RefreshStudentLists()
+    private async Task RefreshStudentListsAsync()
     {
         StudentListNames.Clear();
-        foreach (var file in Directory.GetFiles(Utils.GetDirectoryPath("list", "roll_call_list"), "*.json")
-                     .OrderBy(Path.GetFileName))
+        var files = await Task.Run(() => Directory.GetFiles(Utils.GetDirectoryPath("list", "roll_call_list"), "*.json")
+                     .OrderBy(Path.GetFileName).ToList());
+        foreach (var file in files)
             StudentListNames.Add(Path.GetFileNameWithoutExtension(file));
 
         var defaultClass = Config.QuickDrawSettings.DefaultClass;

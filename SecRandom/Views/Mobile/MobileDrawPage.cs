@@ -119,19 +119,19 @@ public sealed partial class MobileDrawPage : UserControl
             LotteryResources.C_RemainingListTitle, LotteryViewModel.RemainingItems, LotteryResources.M_NoRemainingPrizes);
     }
 
-    private void ClearRollCallTemporaryRecords_OnClick(object? sender, RoutedEventArgs e)
+    private async void ClearRollCallTemporaryRecords_OnClick(object? sender, RoutedEventArgs e)
     {
         IAppHost.GetService<IDrawTemporaryRecordService>().ClearStudentList(RollCallViewModel.SelectedStudentListName);
-        RollCallViewModel.RefreshAfterProfileChange();
+        await RollCallViewModel.RefreshAfterProfileChangeAsync();
     }
 
-    private void ClearLotteryTemporaryRecords_OnClick(object? sender, RoutedEventArgs e)
+    private async void ClearLotteryTemporaryRecords_OnClick(object? sender, RoutedEventArgs e)
     {
         var temporaryRecords = IAppHost.GetService<IDrawTemporaryRecordService>();
         temporaryRecords.ClearPrizeList(LotteryViewModel.SelectedPrizeListName);
         if (LotteryViewModel.IsStudentAssignmentEnabled)
             temporaryRecords.ClearStudentList(LotteryViewModel.SelectedStudentListName);
-        LotteryViewModel.RefreshAfterProfileChange();
+        await LotteryViewModel.RefreshAfterProfileChangeAsync();
     }
 
     private void OpenRollCallListSettings_OnClick(object? sender, RoutedEventArgs e) =>

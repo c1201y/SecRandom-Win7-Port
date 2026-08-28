@@ -71,11 +71,12 @@ public partial class QuickDrawSettingsPage : UserControl
         _isSubscribed = true;
     }
 
-    private void RefreshStudentLists()
+    private async void RefreshStudentLists()
     {
         StudentListNames.Clear();
-        foreach (var file in Directory.GetFiles(Utils.GetDirectoryPath("list", "roll_call_list"), "*.json")
-                     .OrderBy(Path.GetFileName))
+        var files = await Task.Run(() => Directory.GetFiles(Utils.GetDirectoryPath("list", "roll_call_list"), "*.json")
+                     .OrderBy(Path.GetFileName).ToList());
+        foreach (var file in files)
             StudentListNames.Add(Path.GetFileNameWithoutExtension(file));
 
         if (StudentListNames.Count > 0

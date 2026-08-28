@@ -346,12 +346,22 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
     private void OnUnloaded(object? sender, RoutedEventArgs e)
     {
         IAppHost.TryGetService<MainConfigHandler>()?.Save();
+
+        if (_appToastAdorner is not null && Content is Control element)
+        {
+            var layer = AdornerLayer.GetAdornerLayer(element);
+            layer?.Children.Remove(_appToastAdorner);
+            _appToastAdorner = null;
+        }
+        _isAdornerAdded = false;
     }
 
-    private static void RefreshMobileDrawSessions()
+    private static async void RefreshMobileDrawSessions()
     {
-        IAppHost.TryGetService<RollCallPageViewModel>()?.RefreshAfterProfileChange();
-        IAppHost.TryGetService<LotteryPageViewModel>()?.RefreshAfterProfileChange();
+        var rollCall = IAppHost.TryGetService<RollCallPageViewModel>();
+        var lottery = IAppHost.TryGetService<LotteryPageViewModel>();
+        if (rollCall is not null) await rollCall.RefreshAfterProfileChangeAsync();
+        if (lottery is not null) await lottery.RefreshAfterProfileChangeAsync();
     }
 
     #endregion

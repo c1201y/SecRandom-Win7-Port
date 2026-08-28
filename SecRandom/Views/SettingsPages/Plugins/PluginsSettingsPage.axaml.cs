@@ -137,6 +137,7 @@ public partial class PluginsSettingsPage : UserControl, INotifyPropertyChanged
             OnPropertyChanged(nameof(CanUninstallSelectedPlugin));
             OnPropertyChanged(nameof(MarketActionText));
             OnPropertyChanged(nameof(CanRunMarketAction));
+            _ = LoadSelectedPluginReadmeAsync();
             OnPropertyChanged(nameof(MarketDependenciesText));
         }
     }
@@ -157,7 +158,9 @@ public partial class PluginsSettingsPage : UserControl, INotifyPropertyChanged
     public string SelectedPluginMetaLine => SelectedItem?.MetaLine ?? string.Empty;
     public string SelectedPluginStatus => SelectedItem?.StatusText ?? "-";
     public string SelectedPluginError => SelectedItem is PluginOverviewItem item ? item.ErrorMessage ?? string.Empty : string.Empty;
-    public string SelectedPluginReadme => BuildSelectedPluginReadme();
+    public string SelectedPluginReadme => _selectedPluginReadme;
+
+    private string _selectedPluginReadme = string.Empty;
 
     public string MarketActionText => SelectedItem is PluginMarketItem { HasUpdate: true } item
         ? LR.C_Update
@@ -496,7 +499,13 @@ public partial class PluginsSettingsPage : UserControl, INotifyPropertyChanged
         };
     }
 
-    private string BuildSelectedPluginReadme()
+    private async Task LoadSelectedPluginReadmeAsync()
+    {
+        _selectedPluginReadme = await BuildSelectedPluginReadmeAsync();
+        OnPropertyChanged(nameof(SelectedPluginReadme));
+    }
+
+    private async Task<string> BuildSelectedPluginReadmeAsync()
     {
         if (SelectedItem is PluginOverviewItem overview)
         {
@@ -504,7 +513,7 @@ public partial class PluginsSettingsPage : UserControl, INotifyPropertyChanged
             {
                 var path = Path.Combine(overview.DirectoryPath, fileName);
                 if (File.Exists(path))
-                    return File.ReadAllText(path, Encoding.UTF8);
+                    return await File.ReadAllTextAsync(path, Encoding.UTF8);
             }
 
             return $"# {overview.Name}{Environment.NewLine}{Environment.NewLine}{overview.Description}";

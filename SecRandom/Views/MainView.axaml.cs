@@ -145,6 +145,14 @@ public partial class MainView : ViewBase, IFANavigationPageFactory
             _featureAvailability.Changed -= FeatureAvailabilityOnChanged;
             _isFeatureAvailabilitySubscribed = false;
         }
+
+        if (_appToastAdorner is not null && Content is Control element)
+        {
+            var layer = AdornerLayer.GetAdornerLayer(element);
+            layer?.Children.Remove(_appToastAdorner);
+            _appToastAdorner = null;
+        }
+        _isAdornerAdded = false;
     }
 
     private void BuildNavigationMenuItems()

@@ -72,11 +72,12 @@ public partial class LotteryDrawSettingsPage : UserControl
         _isSubscribed = true;
     }
 
-    private void RefreshPrizeLists()
+    private async void RefreshPrizeLists()
     {
         PrizeListNames.Clear();
-        foreach (var file in Directory.GetFiles(Utils.GetDirectoryPath("list", "lottery_list"), "*.json")
-                     .OrderBy(Path.GetFileName))
+        var files = await Task.Run(() => Directory.GetFiles(Utils.GetDirectoryPath("list", "lottery_list"), "*.json")
+                     .OrderBy(Path.GetFileName).ToList());
+        foreach (var file in files)
             PrizeListNames.Add(Path.GetFileNameWithoutExtension(file));
 
         if (PrizeListNames.Count > 0

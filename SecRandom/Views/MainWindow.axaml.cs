@@ -145,7 +145,7 @@ public partial class MainWindow : AppWindow
             && e.PropertyName == nameof(BasicSettingsConfig.MainWindowTopmostMode))
             ApplyPlatformWindowFeatures();
         else if (e.PropertyName == nameof(BasicSettingsConfig.AutoSaveWindowSize)
-                 && _settings!.AutoSaveWindowSize)
+                 && _settings is { AutoSaveWindowSize: true })
             SaveWindowSize();
     }
 

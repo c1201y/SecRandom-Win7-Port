@@ -120,7 +120,7 @@ public sealed partial class RollCallPageViewModel : ViewModelBase, IDisposable
         Config.MoreSettings.PropertyChanged += SettingsOnPropertyChanged;
         Config.Appearance.PropertyChanged += SettingsOnPropertyChanged;
 
-        RefreshLists();
+        _ = RefreshListsAsync();
         RefreshFilterOptions();
         RefreshCounts();
     }
@@ -403,7 +403,7 @@ public sealed partial class RollCallPageViewModel : ViewModelBase, IDisposable
         App.ShowSettingsWindow("settings.listManagement.rollCallList");
     }
 
-    public void RefreshLists()
+    public async Task RefreshListsAsync()
     {
         if (_isRefreshingLists)
             return;
@@ -415,7 +415,8 @@ public sealed partial class RollCallPageViewModel : ViewModelBase, IDisposable
             StudentListNames.Clear();
 
             var directory = Utils.GetDirectoryPath("list", "roll_call_list");
-            foreach (var file in Directory.GetFiles(directory, "*.json").OrderBy(Path.GetFileName))
+            var files = await Task.Run(() => Directory.GetFiles(directory, "*.json").OrderBy(Path.GetFileName).ToList());
+            foreach (var file in files)
                 StudentListNames.Add(Path.GetFileNameWithoutExtension(file));
 
             if (StudentListNames.Count == 0)
@@ -444,9 +445,9 @@ public sealed partial class RollCallPageViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>Refreshes the shared draw session after profile mutations made by settings or import flows.</summary>
-    public void RefreshAfterProfileChange()
+    public async Task RefreshAfterProfileChangeAsync()
     {
-        RefreshLists();
+        await RefreshListsAsync();
         RefreshFilterOptions();
         RefreshCounts();
     }
@@ -497,10 +498,10 @@ public sealed partial class RollCallPageViewModel : ViewModelBase, IDisposable
             return;
 
         _isStudentListRefreshQueued = true;
-        Dispatcher.UIThread.Post(() =>
+        Dispatcher.UIThread.Post(async () =>
         {
             _isStudentListRefreshQueued = false;
-            RefreshLists();
+            await RefreshListsAsync();
             RefreshFilterOptions();
             RefreshCounts();
         });

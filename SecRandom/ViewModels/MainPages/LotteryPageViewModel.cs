@@ -123,8 +123,8 @@ public sealed partial class LotteryPageViewModel : ViewModelBase, IDisposable
         Config.DefaultDrawSettings.PropertyChanged += SettingsOnPropertyChanged;
         Config.MoreSettings.PropertyChanged += SettingsOnPropertyChanged;
         Config.Appearance.PropertyChanged += SettingsOnPropertyChanged;
-        RefreshPrizeLists();
-        RefreshStudentLists();
+        _ = RefreshPrizeListsAsync();
+        _ = RefreshStudentListsAsync();
         RefreshCounts();
     }
 
@@ -440,7 +440,7 @@ public sealed partial class LotteryPageViewModel : ViewModelBase, IDisposable
             StopPreview();
     }
 
-    public void RefreshPrizeLists()
+    public async Task RefreshPrizeListsAsync()
     {
         if (_isRefreshingLists)
             return;
@@ -450,8 +450,9 @@ public sealed partial class LotteryPageViewModel : ViewModelBase, IDisposable
         {
             var previousName = SelectedPrizeListName;
             PrizeListNames.Clear();
-            foreach (var file in Directory.GetFiles(Utils.GetDirectoryPath("list", "lottery_list"), "*.json")
-                         .OrderBy(Path.GetFileName))
+            var files = await Task.Run(() => Directory.GetFiles(Utils.GetDirectoryPath("list", "lottery_list"), "*.json")
+                         .OrderBy(Path.GetFileName).ToList());
+            foreach (var file in files)
                 PrizeListNames.Add(Path.GetFileNameWithoutExtension(file));
 
             if (PrizeListNames.Count == 0)
@@ -477,14 +478,15 @@ public sealed partial class LotteryPageViewModel : ViewModelBase, IDisposable
         }
     }
 
-    public void RefreshStudentLists()
+    public async Task RefreshStudentListsAsync()
     {
         var previousName = SelectedStudentListName;
         StudentListNames.Clear();
         StudentListNames.Add(NoStudentOption);
 
-        foreach (var file in Directory.GetFiles(Utils.GetDirectoryPath("list", "roll_call_list"), "*.json")
-                     .OrderBy(Path.GetFileName))
+        var files = await Task.Run(() => Directory.GetFiles(Utils.GetDirectoryPath("list", "roll_call_list"), "*.json")
+                     .OrderBy(Path.GetFileName).ToList());
+        foreach (var file in files)
             StudentListNames.Add(Path.GetFileNameWithoutExtension(file));
 
         SelectedStudentListName = StudentListNames.Contains(previousName) ? previousName : NoStudentOption;
@@ -492,10 +494,10 @@ public sealed partial class LotteryPageViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>Refreshes the shared draw session after profile mutations made by settings or import flows.</summary>
-    public void RefreshAfterProfileChange()
+    public async Task RefreshAfterProfileChangeAsync()
     {
-        RefreshPrizeLists();
-        RefreshStudentLists();
+        await RefreshPrizeListsAsync();
+        await RefreshStudentListsAsync();
         RefreshCounts();
     }
 
@@ -535,10 +537,10 @@ public sealed partial class LotteryPageViewModel : ViewModelBase, IDisposable
             return;
 
         _isPrizeListRefreshQueued = true;
-        Dispatcher.UIThread.Post(() =>
+        Dispatcher.UIThread.Post(async () =>
         {
             _isPrizeListRefreshQueued = false;
-            RefreshPrizeLists();
+            await RefreshPrizeListsAsync();
             RefreshCounts();
         });
     }
@@ -569,10 +571,10 @@ public sealed partial class LotteryPageViewModel : ViewModelBase, IDisposable
             return;
 
         _isStudentListRefreshQueued = true;
-        Dispatcher.UIThread.Post(() =>
+        Dispatcher.UIThread.Post(async () =>
         {
             _isStudentListRefreshQueued = false;
-            RefreshStudentLists();
+            await RefreshStudentListsAsync();
             RefreshCounts();
         });
     }
