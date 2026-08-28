@@ -1,8 +1,8 @@
 using System.Reflection;
 using SecRandom;
 
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyInformationalVersion("3.0.0.0+移植版")]
+[assembly: AssemblyVersion("3.1.5.0")]
+[assembly: AssemblyInformationalVersion("3.1.5.0+移植版")]
 [assembly: AssemblyTitle("SecRandom")]
 [assembly: AssemblyProduct("SecRandom")]
 
