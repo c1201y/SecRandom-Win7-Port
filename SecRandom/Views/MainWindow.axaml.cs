@@ -211,7 +211,7 @@ public partial class MainWindow : AppWindow
 
     private void SaveWindowSize()
     {
-        if (_settings?.AutoSaveWindowSize != true || !IsVisible)
+        if (_configHandler is null || _settings?.AutoSaveWindowSize != true || !IsVisible)
             return;
 
         if (_lastNormalWindowWidth <= 0 || _lastNormalWindowHeight <= 0)

@@ -277,7 +277,7 @@ public sealed partial class LotteryPageViewModel : ViewModelBase, IDisposable
 
     private async Task StartDrawCoreAsync()
     {
-        if (IsDrawing)
+        if (IsDrawing || _isDrawCommandRunning)
             return;
 
         RefreshCounts();

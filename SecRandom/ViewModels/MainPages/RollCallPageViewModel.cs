@@ -287,7 +287,7 @@ public sealed partial class RollCallPageViewModel : ViewModelBase, IDisposable
 
     private async Task StartDrawCoreAsync()
     {
-        if (IsDrawing)
+        if (IsDrawing || _isDrawCommandRunning)
             return;
 
         RefreshCounts();
