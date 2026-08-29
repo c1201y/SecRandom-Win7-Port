@@ -1653,8 +1653,33 @@ public partial class App : Application
     /// </summary>
     private static async Task StartRuntimeServicesAsync()
     {
-        await InitializeRuntimeServicesAsync().ConfigureAwait(false);
-        await IAppHost.Host!.StartAsync().ConfigureAwait(false);
+        // Hosted services must NOT start on the UI thread. ContinueDesktopStartup calls this
+        // via ObserveTask on the UI thread; if telemetry init completes synchronously and the
+        // first hosted service whose StartAsync runs synchronously does any blocking work —
+        // a BackgroundService.ExecuteAsync prologue that blocks before its first await, or a
+        // Dispatcher.UIThread.Invoke / .Result / .Wait() that needs the UI thread — then
+        // host.StartAsync() never yields, the UI thread is frozen inside it before any window
+        // is created, ApplicationStarted never fires, and the app runs with no window and no
+        // error (only background hosted services like SecAgent/OnlineStatus keep going on the
+        // thread pool). Running the whole runtime-service startup on the thread pool keeps the
+        // UI thread free to build the floating/main windows, and lets any sync UI invoke from
+        // a hosted service complete instead of deadlocking against a busy UI thread.
+        await Task.Run(async () =>
+        {
+            await InitializeRuntimeServicesAsync().ConfigureAwait(false);
+
+            WriteDesktopStartupDiagnostic("Starting runtime host (host.StartAsync).");
+            try
+            {
+                await IAppHost.Host!.StartAsync().ConfigureAwait(false);
+                WriteDesktopStartupDiagnostic("Runtime host started (ApplicationStarted fired).");
+            }
+            catch (Exception ex)
+            {
+                WriteDesktopStartupDiagnostic("Runtime host startup failed.", ex);
+                throw;
+            }
+        }).ConfigureAwait(false);
     }
 
     private static void ObserveTask(Task task, string failureMessage)
