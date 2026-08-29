@@ -187,6 +187,7 @@ public partial class FloatingWindowSettingsPage : UserControl
         Settings.ShowRollCallButton = SelectedButtonOptions.Contains(ButtonOptions[0]);
         Settings.ShowQuickDrawButton = SelectedButtonOptions.Contains(ButtonOptions[1]);
         Settings.ShowLotteryButton = SelectedButtonOptions.Contains(ButtonOptions[2]);
+        Settings.ShowTimerButton = SelectedButtonOptions.Contains(ButtonOptions[3]);
         ConfigHandler.Save();
     }
 }
