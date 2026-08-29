@@ -705,23 +705,44 @@ public partial class SettingsView : ViewBase, IFANavigationPageFactory, INavigat
     {
         if (!CanTransferData())
             return;
-        var path = await PickSavePathAsync(
-            GetResource("C_ExportAllDataFileTitle"),
-            $"SecRandom_{GlobalConstants.Version}_all_data.zip",
-            "zip",
-            GetResource("C_ZipFileType"));
-        if (path is null)
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
             return;
 
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = GetResource("C_ExportAllDataFileTitle"),
+            SuggestedFileName = $"SecRandom_{GlobalConstants.Version}_all_data.zip",
+            DefaultExtension = "zip",
+            FileTypeChoices = [new FilePickerFileType(GetResource("C_ZipFileType")) { Patterns = ["*.zip"] }]
+        });
+        if (file is null)
+            return;
+
+        var localPath = file.TryGetLocalPath();
+        var temporaryPath = localPath ?? Path.Combine(Path.GetTempPath(), $"secrandom-export-{Guid.NewGuid():N}.zip");
+        var displayName = file.Name;
         try
         {
-            await ImportExportService.ExportAllDataAsync(path);
-            this.ShowSuccessToast(string.Format(GetResource("M_ExportSuccess"), Path.GetFileName(path)));
+            await ImportExportService.ExportAllDataAsync(temporaryPath);
+            if (localPath is null)
+            {
+                await using var source = File.OpenRead(temporaryPath);
+                await using var destination = await file.OpenWriteAsync();
+                await source.CopyToAsync(destination);
+            }
+
+            this.ShowSuccessToast(string.Format(GetResource("M_ExportSuccess"), displayName));
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "����ȫ������ʧ�ܡ�");
+            _logger?.LogError(ex, "导出全部数据失败");
             this.ShowErrorToast(GetResource("M_ExportFailed"));
+        }
+        finally
+        {
+            if (localPath is null && File.Exists(temporaryPath))
+                File.Delete(temporaryPath);
         }
     }
 
