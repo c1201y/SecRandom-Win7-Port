@@ -76,8 +76,7 @@
         </DataTemplate>
     </UserControl.Resources>
     <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="*" MinHeight="560">
-        <Border Grid.Column="0" Margin="12,0,24,24" 我手动删吧
-        HorizontalAlignment="Left" VerticalAlignment="Bottom"
+        <Border Grid.Column="0" Margin="12,0,24,24" HorizontalAlignment="Left" VerticalAlignment="Bottom"
                 IsVisible="{Binding IsControlPanelOnLeft}">
             <ContentControl Content="{Binding}" ContentTemplate="{StaticResource RollCallControlPanelTemplate}" />
         </Border>
