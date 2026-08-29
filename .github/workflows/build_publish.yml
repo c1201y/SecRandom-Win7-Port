@@ -440,20 +440,39 @@ jobs:
             $remotePath = "$targetDir/$($file.Name)"
             $sizeMB = [math]::Round($file.Length / 1MB, 1)
             Write-Host "[$index/$total] Uploading $($file.Name) ($sizeMB MB)..."
-            $result = & curl.exe -X PUT "$env:OPENLIST_URL/api/fs/put" `
-              -H "Authorization: $token" `
-              -H "File-Path: $remotePath" `
-              -H "Content-Type: application/octet-stream" `
-              --data-binary "@$($file.FullName)" `
-              --connect-timeout 30 --max-time 7200 -s -w "`n%{http_code}"
-            $lines = $result -split "`n"
-            $httpCode = $lines[-1]
-            $body = ($lines[0..($lines.Count-2)] -join "`n")
-            if ($httpCode -eq "200") {
-              Write-Host "  Done."
-            } else {
-              Write-Warning "  Upload failed (HTTP $httpCode): $body"
+            $retries = 3
+            for ($attempt = 1; $attempt -le $retries; $attempt++) {
+              $httpCode = ''
+              $body = ''
+              try {
+                $result = & curl.exe -X PUT "$env:OPENLIST_URL/api/fs/put" `
+                  -H "Authorization: $token" `
+                  -H "File-Path: $remotePath" `
+                  -H "Content-Type: application/octet-stream" `
+                  -H "Expect:" `
+                  --data-binary "@$($file.FullName)" `
+                  --connect-timeout 30 --max-time 7200 `
+                  --retry 2 --retry-delay 5 `
+                  -s -w "`n%{http_code}" 2>&1
+                $lines = ($result | Out-String) -split "`n"
+                $httpCode = ($lines | Where-Object { $_ -match '^\d{3}$' } | Select-Object -Last 1)
+                $body = ($lines | Where-Object { $_ -notmatch '^\d{3}$' }) -join "`n"
+              } catch {
+                Write-Host "  Attempt $attempt/$retries exception: $_"
+              }
+              if ($httpCode -eq "200") {
+                Write-Host "  Done."
+                break
+              } else {
+                if ($attempt -lt $retries) {
+                  Write-Warning "  Attempt $attempt/$retries failed (HTTP $httpCode), retrying in 10s..."
+                  Start-Sleep -Seconds 10
+                } else {
+                  Write-Warning "  Upload failed after $retries attempts (HTTP $httpCode): $body"
+                }
+              }
             }
+            if ($index -lt $total) { Start-Sleep -Seconds 3 }
           }
 
           Write-Host "Cloud upload completed: $targetDir"
