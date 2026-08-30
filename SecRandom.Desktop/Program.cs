@@ -230,19 +230,6 @@ internal sealed class Program
     // interactive resize — the root cause of the flicker. We strip them per-window below.
     private const uint CS_VREDRAW = 0x0001;
     private const uint CS_HREDRAW = 0x0002;
-    private const uint WM_NCCALCSIZE = 0x0083;
-    private const uint WM_NCHITTEST = 0x0084;
-    private const int HTCLIENT = 1;
-    private const int HTCAPTION = 2;
-    private const int HTLEFT = 10;
-    private const int HTRIGHT = 11;
-    private const int HTTOP = 12;
-    private const int HTTOPLEFT = 13;
-    private const int HTTOPRIGHT = 14;
-    private const int HTBOTTOM = 15;
-    private const int HTBOTTOMLEFT = 16;
-    private const int HTBOTTOMRIGHT = 17;
-    private const int Win7ResizeGripPixels = 6;
 
     private static void AttachWindows7BackgroundErase(TopLevel topLevel)
     {
@@ -283,25 +270,6 @@ internal sealed class Program
                     if (newStyle != style)
                         SetClassLongPtrSafe(hWnd, GCL_STYLE, newStyle);
 
-                    // BorderOnly leaves the Win7 sizing frame outside the Avalonia client
-                    // area. That frame is painted by the system (white in the Basic theme),
-                    // which makes the visible 1px application border appear inset. Extend the
-                    // client area over it, then expose the first 6px inside that border as the
-                    // native sizing hit zone. WS_THICKFRAME is kept, so the system resize loop
-                    // and Aero Snap remain available without a manual SetWindowPos loop.
-                    if (msg == WM_NCCALCSIZE)
-                    {
-                        handled = true;
-                        return IntPtr.Zero;
-                    }
-
-                    if (msg == WM_NCHITTEST
-                        && topLevel is Window { WindowState: WindowState.Normal }
-                        && TryGetWindows7ResizeHitTest(hWnd, lParam, out var hitTest))
-                    {
-                        handled = true;
-                        return new IntPtr(hitTest);
-                    }
                 }
 
                 if (msg != 0x0014) // WM_ERASEBKGND
@@ -334,38 +302,6 @@ internal sealed class Program
             Win32Properties.AddWndProcHookCallback(topLevel, callback);
             return callback;
         });
-    }
-
-    private static bool TryGetWindows7ResizeHitTest(IntPtr hWnd, IntPtr lParam, out int hitTest)
-    {
-        hitTest = HTCLIENT;
-        if (!GetWindowRect(hWnd, out var windowRect))
-            return false;
-
-        int screenX = unchecked((short)(long)lParam);
-        int screenY = unchecked((short)((long)lParam >> 16));
-        int left = screenX - windowRect.Left;
-        int top = screenY - windowRect.Top;
-        int right = windowRect.Right - screenX - 1;
-        int bottom = windowRect.Bottom - screenY - 1;
-        bool onLeft = left > 0 && left <= Win7ResizeGripPixels;
-        bool onRight = right > 0 && right <= Win7ResizeGripPixels;
-        bool onTop = top > 0 && top <= Win7ResizeGripPixels;
-        bool onBottom = bottom > 0 && bottom <= Win7ResizeGripPixels;
-
-        hitTest = (onTop, onBottom, onLeft, onRight) switch
-        {
-            (true, false, true, false) => HTTOPLEFT,
-            (true, false, false, true) => HTTOPRIGHT,
-            (false, true, true, false) => HTBOTTOMLEFT,
-            (false, true, false, true) => HTBOTTOMRIGHT,
-            (true, false, false, false) => HTTOP,
-            (false, true, false, false) => HTBOTTOM,
-            (false, false, true, false) => HTLEFT,
-            (false, false, false, true) => HTRIGHT,
-            _ => HTCLIENT
-        };
-        return hitTest != HTCLIENT;
     }
 
     private static uint? ResolveWindows7BackgroundColor(TopLevel topLevel)
@@ -436,9 +372,6 @@ internal sealed class Program
 
     [DllImport("user32.dll")]
     private static extern bool GetUpdateRect(IntPtr hWnd, out RECT lpRect, bool bErase);
-
-    [DllImport("user32.dll")]
-    private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
     // GetClassLongPtr/SetClassLongPtr only exist as real exports on 64-bit; on 32-bit they
     // are macros resolving to GetClassLong/SetClassLong. Route by pointer size so neither

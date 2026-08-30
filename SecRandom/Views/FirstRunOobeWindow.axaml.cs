@@ -39,15 +39,12 @@ public partial class FirstRunOobeWindow : AppWindow
         TitleBar.Height = 32;
         TitleBar.ExtendsContentIntoTitleBar = true;
         
-        // è¦†ç›–æ ‡é¢˜æ æŒ‰é’®é¢œè‰?
+        // è¦†ç›–æ ‡é¢˜æ æŒ‰é’®é¢œè‰²
         TitleBar.ButtonHoverBackgroundColor = Color.FromArgb(23, 0, 0, 0);
         TitleBar.ButtonPressedBackgroundColor = Color.FromArgb(52, 0, 0, 0);
         TitleBar.ButtonInactiveForegroundColor = Colors.Gray;
 
-        // Windows ÉÏ±£ÁôÒşĞÎ sizing ±ß¿ò(WS_THICKFRAME,ÎŞ±êÌâÀ¸):
-        // ±ßÔµ resize Óë Aero Snap(ÍÏÖÁÆÁÄ»¶¥²¿×î´ó»¯)½»ÓÉÏµÍ³Ô­ÉúÑ­»·´¦Àí,
-        // DWM ÒÔ¾ÉÖ¡À­ÉìÌî³äĞÂÇøÓò,±ÜÃâÊÖ¶¯ SetWindowPos Ñ­»·Ôì³ÉµÄÉÁË¸ÓëºÚ¿é;
-        // ÎŞ±ß¿òÊÓ¾õÓÉ FluentAvalonia µÄ WM_NCCALCSIZE ´¦Àí,²¼¾Ö²»±ä¡£
+        // Windows uses the native BorderOnly frame for resizing, moving, and Aero Snap.
         if (OperatingSystem.IsWindows())
             SystemDecorations = SystemDecorations.BorderOnly;
 

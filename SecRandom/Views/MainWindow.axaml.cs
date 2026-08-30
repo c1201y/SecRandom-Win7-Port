@@ -46,10 +46,7 @@ public partial class MainWindow : AppWindow
         TitleBar.ButtonPressedBackgroundColor = Color.FromArgb(52, 0, 0, 0);
         TitleBar.ButtonInactiveForegroundColor = Colors.Gray;
 
-        // Windows 上保留隐形 sizing 边框(WS_THICKFRAME,无标题栏):
-        // - 边缘 resize 与 Aero Snap(拖至屏幕顶部最大化)由系统原生循环处理,
-        //   DWM 以旧帧拉伸填充新区域,避免手动 SetWindowPos 循环造成的闪烁与黑块;
-        // - 无边框视觉由 FluentAvalonia 的 WM_NCCALCSIZE 处理,布局不变。
+        // Windows uses the native BorderOnly frame for resizing, moving, and Aero Snap.
         // XAML 默认 None 仅为其他平台保留原行为。
         if (OperatingSystem.IsWindows())
             SystemDecorations = SystemDecorations.BorderOnly;
