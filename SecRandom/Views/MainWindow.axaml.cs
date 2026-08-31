@@ -8,7 +8,6 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
-using FluentAvalonia.UI.Windowing;
 using SecRandom.Core.Abstraction;
 using SecRandom.Core.Enums.Configs;
 using SecRandom.Core.Models.SubConfigs.General;
@@ -18,7 +17,7 @@ using SecRandom.Services.Platform;
 
 namespace SecRandom.Views;
 
-public partial class MainWindow : AppWindow
+public partial class MainWindow : Window
 {
     private readonly MainWindowSettingsScope _settingsScope;
     private readonly BasicSettingsConfig? _settings;
@@ -37,19 +36,6 @@ public partial class MainWindow : AppWindow
     {
         _settingsScope = settingsScope;
         InitializeComponent();
-
-        TitleBar.Height = 48;
-        TitleBar.ExtendsContentIntoTitleBar = true;
-
-        // 透明标题栏按钮颜色
-        TitleBar.ButtonHoverBackgroundColor = Color.FromArgb(23, 0, 0, 0);
-        TitleBar.ButtonPressedBackgroundColor = Color.FromArgb(52, 0, 0, 0);
-        TitleBar.ButtonInactiveForegroundColor = Colors.Gray;
-
-        // Windows uses the native BorderOnly frame for resizing, moving, and Aero Snap.
-        // XAML 默认 None 仅为其他平台保留原行为。
-        if (OperatingSystem.IsWindows())
-            SystemDecorations = SystemDecorations.BorderOnly;
 
         if (!UsesStoredWindowSettings)
             return;

@@ -4,7 +4,6 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:sr="http://secrandom.sectl.cn/schemas/xaml/core"
                     xmlns:fa="using:FluentAvalonia.UI.Controls"
-                    xmlns:faw="using:FluentAvalonia.UI.Windowing"
                     xmlns:core="using:SecRandom.Core"
                     xmlns:coreviews="clr-namespace:SecRandom.Core.Views;assembly=SecRandom.Core"
                     xmlns:ls="clr-namespace:SecRandom.Langs.SettingsView"
@@ -32,7 +31,6 @@
                             Click="TogglePaneButton_OnClick"
                             IsVisible="{Binding !#NavigationView.IsPaneToggleButtonVisible}"
                             MinWidth="40" Width="48"
-                            faw:AppWindow.AllowInteractionInTitleBar="True"
                            />
 
                     <Button Name="BackButton"
@@ -42,7 +40,6 @@
                             IsVisible="{Binding ViewModel.CanGoBack}"
                             MinWidth="40" Width="48"
                             Classes="nav-back"
-                            faw:AppWindow.AllowInteractionInTitleBar="True"
                            />
 
                     <Button HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -50,22 +47,11 @@
                             Theme="{DynamicResource TransparentButton}"
                             IsVisible="{Binding HomeButtonVisible}"
                             Click="MobileHomeButton_OnClick"
-                            faw:AppWindow.AllowInteractionInTitleBar="True"
                            >
                         <sr:FluentIcon Glyph="{sr:Fi HomeFilled}" FontSize="16"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Button>
 
-                    <Image Source="/Assets/AppLogo.png"
-                           Width="18" Height="18"
-                           VerticalAlignment="Center"
-                           Margin="8 0 0 0"
-                           IsVisible="{Binding !IsMobile}" />
-
-                    <TextBlock Text="SecRandom"
-                               FontSize="12"
-                               VerticalAlignment="Center"
-                               IsVisible="{Binding !IsMobile}" />
                 </StackPanel>
 
                 <AutoCompleteBox Grid.Column="2"
@@ -81,7 +67,6 @@
                                  SelectedItem="{Binding ViewModel.SelectedSettings}"
                                  SelectionChanged="SearchBox_OnSelectionChanged"
                                  KeyUp="SearchBox_OnKeyUp"
-                                 faw:AppWindow.AllowInteractionInTitleBar="True"
                                 >
                     <AutoCompleteBox.InnerRightContent>
                         <StackPanel Orientation="Horizontal">
@@ -108,7 +93,6 @@
                             IsVisible="{Binding ViewModel.IsRequestedRestart}"
                             ToolTip.Tip="{x:Static ls:Resources.M_NeedsRestarting_Tooltip}"
                             Click="ButtonRestartApp_OnClick"
-                            faw:AppWindow.AllowInteractionInTitleBar="True"
                            >
                         <sr:IconText Glyph="{sr:Fi ArrowCounterclockwiseFilled}"
                                      Text="{x:Static ls:Resources.M_NeedsRestarting}" />
@@ -124,7 +108,6 @@
                             ToolTip.Tip="{x:Static ls:Resources.C_MoreOptions}"
                             VerticalAlignment="Center" HorizontalAlignment="Right"
                             Margin="0 0 4 0"
-                            faw:AppWindow.AllowInteractionInTitleBar="True"
                            >
                         <sr:FluentIcon Glyph="{sr:Fi MoreHorizontalFilled}" />
 

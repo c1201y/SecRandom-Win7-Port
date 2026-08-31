@@ -11,7 +11,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
-using FluentAvalonia.UI.Windowing;
 using SecRandom.Core;
 using SecRandom.Core.Abstraction;
 using SecRandom.Core.Controls;
@@ -24,7 +23,7 @@ using LR = SecRandom.Langs.FirstRunOobe.Resources;
 
 namespace SecRandom.Views;
 
-public partial class FirstRunOobeWindow : AppWindow
+public partial class FirstRunOobeWindow : Window
 {
     private bool _canClose;
     private bool _isDevelopmentAdornerAdded;
@@ -35,18 +34,6 @@ public partial class FirstRunOobeWindow : AppWindow
     {
         DataContext = this;
         InitializeComponent();
-        
-        TitleBar.Height = 32;
-        TitleBar.ExtendsContentIntoTitleBar = true;
-        
-        // 覆盖标题栏按钮颜色
-        TitleBar.ButtonHoverBackgroundColor = Color.FromArgb(23, 0, 0, 0);
-        TitleBar.ButtonPressedBackgroundColor = Color.FromArgb(52, 0, 0, 0);
-        TitleBar.ButtonInactiveForegroundColor = Colors.Gray;
-
-        // Windows uses the native BorderOnly frame for resizing, moving, and Aero Snap.
-        if (OperatingSystem.IsWindows())
-            SystemDecorations = SystemDecorations.BorderOnly;
 
         Loaded += OnLoaded;
         Closed += WindowOnClosed;

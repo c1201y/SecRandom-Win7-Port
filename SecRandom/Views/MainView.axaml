@@ -13,33 +13,8 @@
              coreviews:NavigationPage.HasNavigationBar="False"
              Loaded="OnLoaded"
              Unloaded="OnUnloaded">
-    <Grid RowDefinitions="Auto *">
-        <Border Grid.Row="0" Height="48"
-                Background="Transparent"
-               >
-            <StackPanel Orientation="Horizontal" Margin="8" Spacing="8">
-                <Border Width="60" IsVisible="{Binding IsMacOs}" />
-                
-                <Button Theme="{StaticResource PaneToggleButtonStyle}"
-                        IsVisible="{Binding ViewModel.IsNavPaneToggleButtonVisible}"
-                        MinWidth="40" Width="48"
-                        VerticalAlignment="Center"
-                        Margin="-7 -8 -15 -8"
-                        Click="TogglePaneButton_OnClick"
-                       />
-
-                <Image Source="/Assets/AppLogo.png"
-                       Width="18" Height="18"
-                       VerticalAlignment="Center"
-                       Margin="8 0 0 0" />
-
-                <TextBlock Text="SecRandom"
-                           FontSize="12"
-                           VerticalAlignment="Center" />
-            </StackPanel>
-        </Border>
-
-        <fa:NavigationView Grid.Row="1"
+    <Grid>
+        <fa:NavigationView
                              x:Name="NavigationView"
                              PaneDisplayMode="Left"
                              IsSettingsVisible="False"
